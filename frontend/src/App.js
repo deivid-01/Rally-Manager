@@ -2,20 +2,22 @@ import React ,{ useState}from "react";
 import './App.css';
 import {useForm} from "react-hook-form";
 import {parse} from 'papaparse';
+import axios from 'axios';
 function App() {
   const [highlighted,setHighlighted] = React.useState();
-  const [waypoints, setWayPoints] = React.useState([{
-  },]);
 
   const [ file, setFile] = useState('');
   const [ filename, setFilename] = useState('');
+  const [ message, setMessage] = useState('');
+
+
 
   const onSubmit = (data) => {
     console.log(data);
   }
 
 
-  const onChange = e =>{
+  const onChange =async e =>{
  
    
     if ( e.target.files.length  >0) 
@@ -30,17 +32,48 @@ function App() {
         const text = await file.text();
 
         var linesText = text.split("\n");
-        linesText.splice(0,4);            
+        linesText.splice(0,5);            
      
-        const result = parse( linesText.join("\n") , {header : true } );
+        const result = parse( linesText.join("\n") );
 
+        //cols = ["waypoint","latitude","longitude","type","distance","speedtype"];
         setFile(file);
         setFilename(file.name);
 
+        result.data=result.data.filter(elem=> elem[3].length>0);
+        result.data.forEach(async function(elem,i) {
+   
+          var waypoint={};
+          waypoint.waypoint = elem[0];
+          waypoint.latitude = elem[1];
+          waypoint.longitude = elem[2];
+          waypoint.type= elem[3];
+          waypoint.distance = elem[4];
+          waypoint.speed= elem[6];         
+          try{
+            const res = await axios.post('http://localhost:5000/api/waypoints',waypoint);
 
-        console.log(result.data); //Waypoints
+            if( i === ( result.data.length-1))
+            {
+              console.log("It's done");
+            }
+            
 
-       
+            
+          }catch(err){
+            
+              console.log(err.response);
+            
+          }
+
+        });
+
+
+
+
+          
+
+ 
       })
     }
 

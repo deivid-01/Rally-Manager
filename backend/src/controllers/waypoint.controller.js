@@ -9,7 +9,8 @@ waypointCtrl.getWaypoints = async ( req , res ) =>
 }
 waypointCtrl.createWaypoint = async ( req , res ) =>
 {
-   const waypoint =  new Waypoint(req.body);
+  
+  const waypoint =  new Waypoint(req.body);
    await waypoint.save();
   res.json({
       'status': 'Waypoint saved'
