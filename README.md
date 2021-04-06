@@ -1,4 +1,4 @@
-#GPX Analyzer
+# GPX Analyzer
 
 - Run *frontend* with
 ```python
