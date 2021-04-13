@@ -16,3 +16,5 @@ gpxCtrl.createGPX = async ( req , res ) =>
       'status': 'GPX saved'
   });
 }
+
+module.exports = gpxCtrl;
