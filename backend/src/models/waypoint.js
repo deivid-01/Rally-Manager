@@ -10,4 +10,6 @@ const  WaypointSchema = new Schema({
     speed: { type: String},
 });
 
+
 module.exports = mongoose.model('Waypoint',WaypointSchema);
+
