@@ -1,4 +1,4 @@
-const Waypoint = require('../models/waypoint');
+const Waypoint = require('../models/waypoint.js');
 
 const waypointCtrl = {};
 
