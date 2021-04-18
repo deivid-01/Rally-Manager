@@ -1,14 +1,14 @@
 import React ,{ useState}from "react";
-import './App.css';
+import '../App.css';
 import {parse} from 'papaparse';
 import axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CancelIcon from "@material-ui/icons/Cancel";
-import LinearProgressWithLabel from './components/LinearProgressWithLabel';
-
-function App() {
+import LinearProgressWithLabel from './LinearProgressWithLabel';
+import GPX from 'gpx-parser-builder';
+function UploadGPX() {
   const [highlighted,setHighlighted] = React.useState();
 
   const [ file, setFile] = useState('');
@@ -19,41 +19,41 @@ function App() {
   const [openError, setOpenError] = useState(false);
 
 
-  const uploadWayPoints = (files) => {
+  const uploadGPX = (files) => {
     setFile(files[0]);
     setFilename(files[0].name);
 
     Array.from(files)
     .forEach(async (file) => {
           
-      const text = await file.text();
+      const gpxtext = await file.text();
 
-      var linesText = text.split("\n");
-      linesText.splice(0,5);            
-   
-      const result = parse( linesText.join("\n") );
+      const gpx = GPX.parse(gpxtext);
+      const waypoints= gpx.wpt;
 
       setFile(file);
       setFilename(file.name);
-
-      result.data=result.data.filter(elem=> elem[3].length>0);
-
       setStartLoad(true);
-      result.data.forEach(async function(elem,i) {
- 
-        var waypoint={};
-        waypoint.waypoint = elem[0];
-        waypoint.latitude = elem[1];
-        waypoint.longitude = elem[2];
-        waypoint.type= elem[3];
-        waypoint.distance = elem[4];
-        waypoint.speed= elem[6];         
+
+    
+      var distanceName = 'openrally:distance';
+      waypoints.forEach(async function(elem,i) {
+        
+        var waypoint ={}
+        waypoint.latitude= elem.$.lat; // Latitude
+        waypoint.longitude =  elem.$.lon // Latitude
+        waypoint.elevation =  elem.ele // Latitude
+        waypoint.name =  elem.name // Latitude
+        waypoint.distance =  elem.extensions[distanceName];
+        
+        console.log(waypoint);      
+        
         try{
-          const res = await axios.post('http://localhost:5000/api/waypoints',waypoint);
+          const res = await axios.post('http://localhost:5000/api/gpx',waypoint);
 
           console.log(progress);
-          setProgress(i/(result.data.length-1)*100);
-          if( i === ( result.data.length-1))
+          setProgress(i/(waypoints.length-1)*100);
+          if( i === ( waypoints.length-1))
           {
             setOpen(true);
             //setMessage('File Uploaded');
@@ -66,6 +66,7 @@ function App() {
             //setMessage("ERRROR");
           
         }
+        
 
       });
 
@@ -81,30 +82,9 @@ function App() {
   const onDropHandler = (e) => {
     e.preventDefault();
     setHighlighted(false);
-    uploadWayPoints(e.dataTransfer.files);
-
-  /*
-    Array.from(e.dataTransfer.files)
-   // .filter((file) => file.name.endsWith(".d"))
-   // .filter((file) => file.name.endsWith === ".csv")
-    
-    .forEach(async (file) => {
-      
-      const text = await file.text();
-
-      var linesText = text.split("\n");
-      linesText.splice(0,4);            
-   
-      const result = parse( linesText.join("\n") , {header : true } );
-
-      setFile(file);
-      setFilename(file.name);
+    uploadGPX(e.dataTransfer.files);
 
 
-      console.log(result.data); //Waypoints
-      *
-     
-    })*/
   }
   const  updateHighlighted = ()=>{
     setHighlighted(true);
@@ -131,13 +111,13 @@ function App() {
    
     if ( e.target.files.length  >0) 
     {      
-      console.log(e.target.files[0].name)
-      if( !e.target.files[0].name.endsWith(".csv"))
+     
+      if( !e.target.files[0].name.endsWith(".gpx"))
       {
         setOpenError(true);
         return;
       }
-      uploadWayPoints(e.target.files);
+      uploadGPX(e.target.files);
       
     }
 
@@ -152,7 +132,7 @@ function App() {
 
       
       <div className="center2">
-          Upload waypoints:
+          Upload GPX file:
       </div>
       <br></br>
       <div
@@ -170,7 +150,7 @@ function App() {
       </label>
       </div>      
     </form>     
-      <p>or drop .CSVs here</p>
+      <p>or drop .GPX here</p>
       <br></br>
 
 
@@ -193,7 +173,7 @@ function App() {
             </IconButton>
           }
         >
-        File type must be .csv"
+        File type must be .GPX"
         </Alert>
         </Collapse>
 
@@ -228,4 +208,4 @@ function App() {
   );
 }
 
-export default App;
+export default UploadGPX;

@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import UploadWayPoints from './components/UploadWaypoints';
+import UploadGPX from './components/UploadGPX';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   //<React.StrictMode>
-    <App />,
-    
+    <UploadWayPoints />,
+   // <UploadGPX/>,
   //</React.StrictMode>,
   document.getElementById('root')
 );
