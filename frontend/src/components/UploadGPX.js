@@ -1,6 +1,5 @@
 import React ,{ useState}from "react";
 import '../App.css';
-import {parse} from 'papaparse';
 import axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,9 +7,10 @@ import Collapse from '@material-ui/core/Collapse';
 import CancelIcon from "@material-ui/icons/Cancel";
 import LinearProgressWithLabel from './LinearProgressWithLabel';
 import GPX from 'gpx-parser-builder';
-function UploadGPX() {
-  const [highlighted,setHighlighted] = React.useState();
 
+function UploadGPX() {
+  
+  const [highlighted,setHighlighted] = React.useState();
   const [ file, setFile] = useState('');
   const [ filename, setFilename] = useState('');
   const [ progress, setProgress] = useState(0);
@@ -51,7 +51,7 @@ function UploadGPX() {
         try{
           const res = await axios.post('http://localhost:5000/api/gpx',waypoint);
 
-          console.log(progress);
+        
           setProgress(i/(waypoints.length-1)*100);
           if( i === ( waypoints.length-1))
           {

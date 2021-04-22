@@ -1,5 +1,5 @@
-import React ,{ useState}from "react";
-import {Box,LinearProgress, SvgIcon} from '@material-ui/core';
+import React from "react";
+import {Box,LinearProgress} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types'; 
 

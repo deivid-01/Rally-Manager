@@ -4,12 +4,10 @@ import './index.css';
 import UploadWayPoints from './components/UploadWaypoints';
 import UploadGPX from './components/UploadGPX';
 import reportWebVitals from './reportWebVitals';
+import App from './App'
 
 ReactDOM.render(
-  //<React.StrictMode>
-    <UploadWayPoints />,
-   // <UploadGPX/>,
-  //</React.StrictMode>,
+  <App/>,
   document.getElementById('root')
 );
 

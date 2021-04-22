@@ -1,8 +1,8 @@
 const { request } = require('express');
 const express = require ('express');
+const fileupload = require ('express-fileupload');
 const morgan = require('morgan');
 const cors = require('cors');
-
 const { mongoose} = require('./database');
 //Initialization
 const app = express();
@@ -12,6 +12,7 @@ app.set('port', process.env.PORT || 5000);
 //Middlewares
 
 //Global Variables
+app.use(fileupload())
 app.use(morgan('dev'));
 app.use(express.json()); //Get json data
 app.use(cors({origin: 'http://localhost:3000'}));

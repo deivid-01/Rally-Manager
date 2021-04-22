@@ -7,7 +7,9 @@ const  GPXSchema = new Schema({
     elevation: {type:String, required: false},
     name: { type: String, required: true},
     distance: { type: String, required: true},
-    danger: { type: String}, //??? Si lo ponemos? Que significa?
+    typeSpeed: { type: String}, //??? Si lo ponemos? Que significa?
+    speed: {type: String},
+    time: { type: String}, 
 });
 
-module.exports = mongoose.model('GPX',GPXSchema);
+module.exports = mongoose.model('Waypoints_Competitor',GPXSchema);

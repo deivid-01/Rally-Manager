@@ -1,97 +1,97 @@
 import React ,{ useState}from "react";
 import '../App.css';
-import {parse} from 'papaparse';
 import axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CancelIcon from "@material-ui/icons/Cancel";
 import LinearProgressWithLabel from './LinearProgressWithLabel';
-import {BrowserRouter, Route, Switch, useHistory, withRouter} from 'react-router-dom'
-import UploadGPX from "./UploadGPX";
-import PropTypes from 'prop-types'; 
-
+import {useHistory} from 'react-router-dom'
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Box from "@material-ui/core/Box";
 
 function UploadWayPoints(props) {
-  const [highlighted,setHighlighted] = React.useState();
 
-  const [ file, setFile] = useState('');
+  const [highlighted,setHighlighted] = React.useState();
   const [ filename, setFilename] = useState('');
   const [ progress, setProgress] = useState(0);
-  const [ startLoad, setStartLoad] = useState(false);
-  const [open, setOpen] = useState(false);
   const [openError, setOpenError] = useState(false);
-  const [redirect, setRedirect] = useState(false);
-  const history   =useHistory();
-
-
-
-  
-  const uploadWayPoints = (files) => {
-    setFile(files[0]);
-    setFilename(files[0].name);
-
-    Array.from(files)
-    .forEach(async (file) => {
-          
-      const text = await file.text();
-
-      var linesText = text.split("\n");
-      linesText.splice(0,5);            
-   
-      const result = parse( linesText.join("\n") );
-
-      setFile(file);
-      setFilename(file.name);
-
-      result.data=result.data.filter(elem=> elem[3].length>0);
-
-      setStartLoad(true);
-      result.data.forEach(async function(elem,i) {
+  const [timeNextPage, SetTimeNextPage] = useState(null);
+  const [timeLeft, SetTimeLeft] = useState(0);
+  const [interTimeLeft, SetInterTimeLeft] = useState(null);
+  const history   = useHistory();
+  const nextRoute= "/gpxupload";
  
-        var waypoint={};
-        waypoint.waypoint = elem[0];
-        waypoint.latitude = elem[1];
-        waypoint.longitude = elem[2];
-        waypoint.type= elem[3];
-        waypoint.distance = elem[4];
-        waypoint.speed= elem[6];         
-        try{
-          const res = await axios.post('http://localhost:5000/api/waypoints',waypoint);
+ 
 
-          console.log(progress);
-          setProgress(i/(result.data.length-1)*100);
-          if( i === ( result.data.length-1))
-          {
-            setOpen(true);
-            //setMessage('File Uploaded');
-          }
-          
-
-          
-        }catch(err){
-          
-            //setMessage("ERRROR");
-          
-        }
-
-      });
-
-
-
-
-        
-
-
-    })
+  const loadNextPage = () =>{  
+   SetTimeNextPage( setTimeout(() =>{
+      clearInterval(interTimeLeft)  
+       history.push(nextRoute)
+       },3000))
 
   }
+
+  const stopNextPage = async() =>
+  {
+    
+    clearTimeout(timeNextPage);
+    clearInterval(interTimeLeft)  ;
+    SetTimeLeft(0);
+    deleteWayPoints();
+  }
+
+  const deleteWayPoints = async() => {
+    try
+    {
+      const res = await axios.delete('http://localhost:5000/api/waypoints');
+      console.log(res.data);
+    }
+
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  const uploadWayPoints = async(file) => {
+
+    setFilename(file.name);
+
+    const formData = new FormData();
+
+    formData.append('file',file)   
+    try{
+      
+      const res = await axios.post('http://localhost:5000/api/waypoints/file',formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progressEvent =>{
+          setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
+        }
+      });
+      console.log(res.data);    
+    }
+    catch(err)
+    {
+      if ( err.response.status == 500)
+      {
+        console.log("Problem with the server");
+      }
+      else
+      {
+        console.log(err.response.data);
+      }
+    }
+      
+    
+  
+  }
+
   const onDropHandler = (e) => {
     e.preventDefault();
     setHighlighted(false);
     uploadWayPoints(e.dataTransfer.files);
-
-
   }
   const  updateHighlighted = ()=>{
     setHighlighted(true);
@@ -107,120 +107,101 @@ function UploadWayPoints(props) {
     }
     else
     {
-      setOpen(false);
       setFilename("");
       setProgress(0);
-      setStartLoad(false);
+      stopNextPage();   
     }
   }
+
+
   const onChange =async e =>{
  
    
     if ( e.target.files.length  >0) 
     {      
-      console.log(e.target.files[0].name)
-      if( !e.target.files[0].name.endsWith(".csv"))
+      var file = e.target.files[0];
+      e.target.value = null;
+      if( !file.name.endsWith(".csv"))
       {
         setOpenError(true);
         return;
       }
-      uploadWayPoints(e.target.files);
-      
+      uploadWayPoints(file)      
+      loadNextPage();
+      SetInterTimeLeft( setInterval(() => {    
+      SetTimeLeft((prevProgress) => {     
+          return (prevProgress >= 100 ? 100 : prevProgress + 1.1)
+        });
+      }, 30))
+
     }
 
-  } 
-/*
-  setTimeout(()=>{
-    this.props.history.push('/oda')
-  },1000)
-*/
+  }
+  
   return (
     <div>
       <br></br>
       <h1 className="text-center text-4xl">GPX Analyser </h1>   
-   <br></br>
-
-      
-      <div className="center2">
-          Upload waypoints:
-      </div>
-      <br></br>
+      <br></br>   
+      <div className="center2"> Upload waypoints: </div>
+      <br></br>        
       <div
         className={`center messD p-24  border-2 ${ highlighted ?  'border-green-400 bg-green-100': 'border-gray-400'}` }
-        onDragEnter = { updateHighlighted}
-        onDragOver = {overWriteDefault }
-        onDrop = { onDropHandler }
-      >  
-    <Collapse in={!startLoad}> 
-    <form>
-      <div>
-      <input id="file-upload" type="file" onChange={onChange}/>
-      <label htmlFor="file-upload" className="custom-file-upload">
-      Select File
-      </label>
-      </div>      
-    </form>     
-      <p>or drop .CSVs here</p>
-      <br></br>
+        onDragEnter = { updateHighlighted}  onDragOver = {overWriteDefault } onDrop = { onDropHandler } >
 
-
-      </Collapse>
+        <Collapse in={progress==0}> 
+          <form>
+            <div>
+              <input id="file-upload" type="file" onChange={onChange}/>
+              <label htmlFor="file-upload" className="custom-file-upload"> Select File</label>       
+            </div>      
+          </form>     
+          <p>or drop .CSVs here</p>
+          <br></br>
+          </Collapse>
       
-      <Collapse in={openError}>
-      <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={
-                onShowAlert.bind(this,"hideError")              
-              }
-            >
-              <CancelIcon fontSize="inherit" />
-              
-            </IconButton>
-          }
-        >
-        File type must be .csv"
-        </Alert>
+        <Collapse in={openError}>
+
+          <Alert
+              severity="error"
+              action={
+                <IconButton aria-label="close" color="inherit" size="small" onClick={onShowAlert.bind(this,"hideError") } >
+                  <CancelIcon fontSize="inherit" />
+                </IconButton> }
+          >           
+            File type must be .csv"
+          </Alert>
+
         </Collapse>
 
-      <Collapse in={startLoad}>
-      <p>{filename}</p>
-      <br></br>
-      <LinearProgressWithLabel value={progress} />
-      </Collapse>
-      <Collapse in ={open}> 
-      <Alert
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={  onShowAlert.bind(this," ") }         
-           
+        <Collapse in={progress!=0}>
+
+          <p>{filename}</p>
+          <br></br>
+          <LinearProgressWithLabel value={progress} />
+
+        </Collapse>
+
+        <Collapse in ={progress==100} > 
+
+          <Alert          
+              action={     
+                <Box position="relative" display="inline-flex">
+                    < CircularProgress  variant="determinate" value={timeLeft} />
+                      <Box top={0} left={0} bottom={0} right={0} position="absolute" display="flex" alignItems="center" justifyContent="center">                        
+                        <IconButton aria-label="close" color="inherit" size="small" onClick={ onShowAlert.bind(this," ") } >                             
+                          <CancelIcon fontSize="inherit" />    
+                        </IconButton>
+                      </Box>
+                </Box>
+              }
             >
-              <CancelIcon fontSize="inherit" />
-              
-            </IconButton>
-          }
-        >
-        Waypoints Uploaded
-        </Alert>
+            Waypoints Uploaded
+          </Alert>
         </Collapse>
 
       </div>
-{/*
-    <BrowserRouter>
-          <Switch>
-            <Route path = "/c">       
-             <UploadGPX/> 
-            </Route>
-          </Switch>
-    </BrowserRouter>
-*/  }
+    
     </div>
   )
 }
