@@ -9,7 +9,7 @@ import LinearProgressWithLabel from './LinearProgressWithLabel';
 import GPX from 'gpx-parser-builder';
 
 function UploadGPX() {
-  
+
   const [highlighted,setHighlighted] = React.useState();
   const [ file, setFile] = useState('');
   const [ filename, setFilename] = useState('');
@@ -19,10 +19,37 @@ function UploadGPX() {
   const [openError, setOpenError] = useState(false);
 
 
-  const uploadGPX = (files) => {
+  const uploadGPX = async(files) => {
     setFile(files[0]);
     setFilename(files[0].name);
 
+    const formData = new FormData();
+
+    formData.append('file',files[0]);
+
+    try
+    {
+      const res = await axios.post('http://localhost:5000/api/gpx/file',formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progressEvent =>{
+          setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
+        }  
+      });
+ 
+    }
+    catch(err)
+    {
+      if ( err.response.status == 500)
+      {
+        console.log("Problem with the server");
+      }
+      else
+      {
+        console.log(err.response.data);
+      }
+    }
     Array.from(files)
     .forEach(async (file) => {
           
@@ -46,7 +73,7 @@ function UploadGPX() {
         waypoint.name =  elem.name // Latitude
         waypoint.distance =  elem.extensions[distanceName];
         
-        console.log(waypoint);      
+           
         
         try{
           const res = await axios.post('http://localhost:5000/api/gpx',waypoint);

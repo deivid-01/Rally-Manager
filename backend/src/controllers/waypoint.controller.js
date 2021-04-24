@@ -34,6 +34,7 @@ waypointCtrl.createWaypoints = async ( req , res ) =>
     return res.status(400).json({msg:'No file uploaded'});
   }
 
+
   const file = req.files.file;
 
   var data = file.data.toString('utf8');

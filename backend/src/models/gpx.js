@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const  GPXSchema = new Schema({
+const  WaypointCompetitorSchema = new Schema({
     latitude: { type: String, required: true},
     longitude: { type: String, required: true},
     elevation: {type:String, required: false},
@@ -12,4 +12,4 @@ const  GPXSchema = new Schema({
     time: { type: String}, 
 });
 
-module.exports = mongoose.model('Waypoints_Competitor',GPXSchema);
+module.exports = mongoose.model('Waypoints_Competitor',WaypointCompetitorSchema);

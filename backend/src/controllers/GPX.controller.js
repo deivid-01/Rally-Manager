@@ -1,20 +1,37 @@
-const GPX = require('../models/gpx.js');
-
+const WaypointCompetitor = require('../models/gpx.js');
+let GPX = require('gpxparser');
 const gpxCtrl = {};
 
 gpxCtrl.getGPX = async ( req , res ) =>
 {
-  const gpx = await GPX.find();
-  res.json(gpx);
+  const waypoints = await WaypointCompetitor.find();
+  res.json(waypoints);
 }
 gpxCtrl.createGPX = async ( req , res ) =>
 {
   
-  const gpx =  new GPX(req.body);
-   await gpx.save();
+  const waypoints =  new WaypointCompetitor(req.body);
+   await waypoints.save();
   res.json({
-      'status': 'GPX saved'
+      'status': 'Waypointss Competitor saved'
   });
 }
+
+gpxCtrl.createWaypoints = async ( req , res ) =>
+{
+  if (req.files === null) {
+    return res.status(400).json({msg:'No file uploaded'});
+  }
+
+  const file = req.files.file;
+  var data = file.data.toString('utf8');
+  var gpx = new GPX();
+  //console.log(data);
+  gpx.parse(data);
+  console.log(gpx.waypoints);
+
+}
+
+
 
 module.exports = gpxCtrl;

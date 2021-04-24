@@ -91,10 +91,27 @@ function UploadWayPoints(props) {
   const onDropHandler = (e) => {
     e.preventDefault();
     setHighlighted(false);
-    uploadWayPoints(e.dataTransfer.files);
+
+    if ( e.dataTransfer.files.length  >0) 
+    {      
+      var file = e.dataTransfer.files[0];
+      e.dataTransfer.value = null;
+      if( !file.name.endsWith(".csv"))
+      {
+        setOpenError(true);
+        return;
+      }
+    uploadWayPoints(e.dataTransfer.files[0]);
+    loadNextPage();
+    SetInterTimeLeft( setInterval(() => {    
+    SetTimeLeft((prevProgress) => {     
+        return (prevProgress >= 100 ? 100 : prevProgress + 1.1)
+      });
+    }, 30))
   }
-  const  updateHighlighted = ()=>{
-    setHighlighted(true);
+}
+  const  updateHighlighted = (state)=>{
+    setHighlighted(state);
   }
   const overWriteDefault = (e) =>{
     e.preventDefault();
@@ -147,7 +164,7 @@ function UploadWayPoints(props) {
       <br></br>        
       <div
         className={`center messD p-24  border-2 ${ highlighted ?  'border-green-400 bg-green-100': 'border-gray-400'}` }
-        onDragEnter = { updateHighlighted}  onDragOver = {overWriteDefault } onDrop = { onDropHandler } >
+        onDragEnter = { updateHighlighted.bind(this,true)}  onDragOver = {overWriteDefault } onDrop = { onDropHandler } onDragLeave = { updateHighlighted.bind(this,false)}  >
 
         <Collapse in={progress==0}> 
           <form>
