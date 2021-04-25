@@ -1,15 +1,14 @@
 const Waypoint = require('../models/waypoint');
-const parse = require('papaparse');
 const toolsCtrl = require('../controllers/tools.controller');
 const waypointCtrl = {};
 
-waypointCtrl.getWaypoints = async ( req , res ) =>
+waypointCtrl.getAll = async ( req , res ) =>
 {
   const waypoints = await Waypoint.find();
   res.json(waypoints);
 }
 
-waypointCtrl.createWaypoint = async ( req , res ) =>
+waypointCtrl.createOne = async ( req , res ) =>
 {
     const waypoint =  new Waypoint(req.body);
    await waypoint.save();
@@ -18,31 +17,23 @@ waypointCtrl.createWaypoint = async ( req , res ) =>
   });
 }
 
-waypointCtrl.createWaypoint_ = async ( wayPointData) =>
+waypointCtrl.createOne_ = async ( wayPointData) =>
 {
   const waypoint =  new Waypoint(wayPointData);
   await waypoint.save();
 
 }
-waypointCtrl.createWaypoints = async ( req , res ) =>
+waypointCtrl.createAll = async ( req , res ) =>
 {
   if (req.files === null) {
     return res.status(400).json({msg:'No file uploaded'});
   }
 
+  await  Waypoint.deleteMany({}); // Cleaning database
 
-  const file = req.files.file;
+  const waypoints = toolsCtrl.garbageOut(req.files.file) // Data pre-processing
 
-  var data = file.data.toString('utf8');
-
-  data = data.split("\n");
-  data.splice(0,5);  //Deleting frist 5 rows          
-
-  var result = parse.parse( data.join("\n") ); //CSV to JSON
-
-  result.data=result.data.filter(elem=> elem[3].length>0);
-
-  result.data.forEach(async function(elem,i) {
+  waypoints.forEach(async function(elem,i) {
        
       try{
         var waypoint={};
@@ -53,7 +44,7 @@ waypointCtrl.createWaypoints = async ( req , res ) =>
         waypoint.distance = elem[4];
         waypoint.speed= elem[6]; 
 
-        await   waypointCtrl.createWaypoint_ (waypoint);     
+        await   waypointCtrl.createOne_ (waypoint);     
       }
       catch(err)
       {

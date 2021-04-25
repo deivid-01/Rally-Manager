@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const waypoint = require('../controllers/waypoint.controller');
+const waypointCtrl = require('../controllers/waypoint.controller');
 
-router.get('/', waypoint.getWaypoints);
-router.post('/', waypoint.createWaypoint);
-router.post('/file', waypoint.createWaypoints);
-router.delete('/', waypoint.deleteAll);
+router.get('/', waypointCtrl.getAll);
+router.post('/', waypointCtrl.createOne);
+router.post('/file', waypointCtrl.createAll);
+router.delete('/', waypointCtrl.deleteAll);
 
 
 module.exports = router;

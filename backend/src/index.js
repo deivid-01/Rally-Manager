@@ -19,7 +19,7 @@ app.use(cors({origin: 'http://localhost:3000'}));
 
 //Routes
 app.use('/api/waypoints',require('./routes/waypoint.routes'));
-app.use('/api/gpx',require('./routes/gpx.routes'));
+app.use('/api/trackpoints',require('./routes/trackpoint.routes'));
 //Static FIles
 
 
