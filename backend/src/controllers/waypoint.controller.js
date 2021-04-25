@@ -1,5 +1,6 @@
 const Waypoint = require('../models/waypoint');
-const parse = require('papaparse')
+const parse = require('papaparse');
+const toolsCtrl = require('../controllers/tools.controller');
 const waypointCtrl = {};
 
 waypointCtrl.getWaypoints = async ( req , res ) =>
@@ -10,23 +11,18 @@ waypointCtrl.getWaypoints = async ( req , res ) =>
 
 waypointCtrl.createWaypoint = async ( req , res ) =>
 {
-  
-  const waypoint =  new Waypoint(req.body);
+    const waypoint =  new Waypoint(req.body);
    await waypoint.save();
   res.json({
       'status': 'Waypoint saved'
   });
 }
- const createWaypointx2 = async ( wayPointData) =>
+
+waypointCtrl.createWaypoint_ = async ( wayPointData) =>
 {
-  
   const waypoint =  new Waypoint(wayPointData);
-   await waypoint.save();
-  /*
-   res.json({
-      'status': 'Waypoint saved'
-  });
-  */
+  await waypoint.save();
+
 }
 waypointCtrl.createWaypoints = async ( req , res ) =>
 {
@@ -48,20 +44,20 @@ waypointCtrl.createWaypoints = async ( req , res ) =>
 
   result.data.forEach(async function(elem,i) {
        
-      var waypoint={};
-      waypoint.waypoint = elem[0];
-      waypoint.latitude = elem[1];
-      waypoint.longitude = elem[2];
-      waypoint.type= elem[3];
-      waypoint.distance = elem[4];
-      waypoint.speed= elem[6]; 
       try{
+        var waypoint={};
+        waypoint._id= i +1; 
+        waypoint.latitude =toolsCtrl.DDM2DD( elem[1], typeAD = 1);
+        waypoint.longitude =toolsCtrl.DDM2DD( elem[2],typeAD = 2);
+        waypoint.type= elem[3];
+        waypoint.distance = elem[4];
+        waypoint.speed= elem[6]; 
 
-        await  createWaypointx2(waypoint);     
+        await   waypointCtrl.createWaypoint_ (waypoint);     
       }
       catch(err)
       {
-        console.log("fail");
+        console.log(err);
       }
 
     
@@ -70,8 +66,6 @@ waypointCtrl.createWaypoints = async ( req , res ) =>
   res.json({
     'status': 'Waypoints saved'
 });
-
-
 
 
 

@@ -26,7 +26,6 @@ gpxCtrl.createWaypoints = async ( req , res ) =>
   const file = req.files.file;
   var data = file.data.toString('utf8');
   var gpx = new GPX();
-  //console.log(data);
   gpx.parse(data);
   console.log(gpx.waypoints);
 
