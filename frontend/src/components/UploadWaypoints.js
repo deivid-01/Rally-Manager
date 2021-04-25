@@ -70,7 +70,7 @@ function UploadWayPoints(props) {
           setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
         }
       });
-      console.log(res.data);    
+      
     }
     catch(err)
     {
@@ -175,10 +175,9 @@ function UploadWayPoints(props) {
           </form>     
           <p>or drop .CSVs here</p>
           <br></br>
-          </Collapse>
+        </Collapse>
       
         <Collapse in={openError}>
-
           <Alert
               severity="error"
               action={

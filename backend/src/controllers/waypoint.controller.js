@@ -31,7 +31,7 @@ waypointCtrl.createAll = async ( req , res ) =>
 
   await  Waypoint.deleteMany({}); // Cleaning database
 
-  const waypoints = toolsCtrl.garbageOut(req.files.file) // Data pre-processing
+  const waypoints = toolsCtrl.garbageOutCSVFile(req.files.file) // Data pre-processing
 
   waypoints.forEach(async function(elem,i) {
        

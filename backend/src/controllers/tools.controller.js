@@ -1,4 +1,5 @@
 const parse = require('papaparse');
+let GPX = require('gpxparser');
 const toolsCtrl = {};
 /**
  * Convert Degrees Decimal  Minutes (DDM) to Decimal Degrees (DD).
@@ -26,7 +27,7 @@ const toolsCtrl = {};
  * @param {File} file  The .csv file.
  * @return {number} JSON with Waypoints.
  */
- toolsCtrl.garbageOut = (file) => {
+ toolsCtrl.garbageOutCSVFile = (file) => {
 
     var data = file.data.toString('utf8');// Convert to string 
   
@@ -38,6 +39,14 @@ const toolsCtrl = {};
     result.data=result.data.filter(elem=> elem[3].length>0); //Filter columns with empty values;
 
     return result.data;
+ }
+
+ toolsCtrl.gargabeOutGPXFile = (file) =>
+ {
+    var data = file.data.toString('utf8');
+    var gpx = new GPX();
+    gpx.parse(data);
+    return gpx.tracks[0].points;
  }
 
 module.exports = toolsCtrl;
