@@ -19,6 +19,8 @@ function UploadWayPoints(props) {
   const [timeNextPage, SetTimeNextPage] = useState(null);
   const [timeLeft, SetTimeLeft] = useState(0);
   const [interTimeLeft, SetInterTimeLeft] = useState(null);
+  const [errorMsg, SetErrorMsg] = useState('Error');
+  const [successMsg, SetSuccessMsg] = useState('Success');
   const history   = useHistory();
   const nextRoute= "/gpxupload";
  
@@ -62,15 +64,17 @@ function UploadWayPoints(props) {
     formData.append('file',file)   
     try{
       
-      const res = await axios.post('http://localhost:5000/api/waypoints/file',formData,{
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: progressEvent =>{
-          setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
-        }
-      });
-      
+      const res = await axios.post('http://localhost:5000/api/waypoints/file',
+                                  formData,
+                                  { headers: { 'Content-Type': 'multipart/form-data'},                                 
+                                  onUploadProgress: progressEvent =>
+                                  { setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))}
+                                  });
+      SetSuccessMsg(res.data.msg);
+      loadNextPage();
+      SetInterTimeLeft( setInterval(() => {    
+                        SetTimeLeft((prevProgress) => { return (prevProgress >= 100 ? 100 : prevProgress + 1.1)}); },
+                         30))
     }
     catch(err)
     {
@@ -80,34 +84,24 @@ function UploadWayPoints(props) {
       }
       else
       {
-        console.log(err.response.data);
+        SetErrorMsg(err.response.data.msg);
+        setProgress(0);
+        setOpenError(true);
       }
+
     }
-      
-    
-  
   }
 
   const onDropHandler = (e) => {
+ 
     e.preventDefault();
     setHighlighted(false);
 
     if ( e.dataTransfer.files.length  >0) 
     {      
-      var file = e.dataTransfer.files[0];
+      uploadWayPoints(e.dataTransfer.files[0]);
       e.dataTransfer.value = null;
-      if( !file.name.endsWith(".csv"))
-      {
-        setOpenError(true);
-        return;
-      }
-    uploadWayPoints(e.dataTransfer.files[0]);
-    loadNextPage();
-    SetInterTimeLeft( setInterval(() => {    
-    SetTimeLeft((prevProgress) => {     
-        return (prevProgress >= 100 ? 100 : prevProgress + 1.1)
-      });
-    }, 30))
+
   }
 }
   const  updateHighlighted = (state)=>{
@@ -133,26 +127,11 @@ function UploadWayPoints(props) {
 
   const onChange =async e =>{
  
-   
     if ( e.target.files.length  >0) 
     {      
-      var file = e.target.files[0];
+      uploadWayPoints(e.target.files[0]);
       e.target.value = null;
-      if( !file.name.endsWith(".csv"))
-      {
-        setOpenError(true);
-        return;
-      }
-      uploadWayPoints(file)      
-      loadNextPage();
-      SetInterTimeLeft( setInterval(() => {    
-      SetTimeLeft((prevProgress) => {     
-          return (prevProgress >= 100 ? 100 : prevProgress + 1.1)
-        });
-      }, 30))
-
     }
-
   }
   
   return (
@@ -185,7 +164,7 @@ function UploadWayPoints(props) {
                   <CancelIcon fontSize="inherit" />
                 </IconButton> }
           >           
-            File type must be .csv"
+            {errorMsg}
           </Alert>
 
         </Collapse>
@@ -212,7 +191,7 @@ function UploadWayPoints(props) {
                 </Box>
               }
             >
-            Waypoints Uploaded
+           {successMsg}
           </Alert>
         </Collapse>
 

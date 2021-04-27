@@ -29,6 +29,11 @@ waypointCtrl.createAll = async ( req , res ) =>
     return res.status(400).json({msg:'No file uploaded'});
   }
 
+  if (!req.files.file.name.endsWith('.csv'))
+  {
+    return res.status(400).json({msg:'File type must be .CSV'});
+  }
+
   await  Waypoint.deleteMany({}); // Cleaning database
 
   const waypoints = toolsCtrl.garbageOutCSVFile(req.files.file) // Data pre-processing
@@ -54,12 +59,7 @@ waypointCtrl.createAll = async ( req , res ) =>
     
   });
 
-  res.json({
-    'status': 'Waypoints saved'
-});
-
-
-
+  res.status(201).json({msg:' Waypoints uploaded'});
 }
 waypointCtrl.deleteAll = async (req,res) =>
 {

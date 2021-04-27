@@ -13,7 +13,7 @@ trackpointCtrl.createOne = async ( req , res ) =>
   var trackpoint =  new Trackpoint(req.body);
    await trackpoint.save();
   res.json({
-      'status': 'Waypointss Competitor Saved'
+      'status': 'Trackpoint saved'
   });
 }
 
@@ -28,6 +28,10 @@ trackpointCtrl.createAll = async ( req , res ) =>
 
   if (req.files === null) {
     return res.status(400).json({msg:'No file uploaded'});
+  }
+  if (!req.files.file.name.endsWith('.gpx'))
+  {
+    return res.status(400).json({msg:'File type must be .GPX'});
   }
   await Trackpoint.deleteMany({});
 
@@ -50,9 +54,8 @@ trackpointCtrl.createAll = async ( req , res ) =>
 
   
   });
-  res.json({
-    'status': 'Trackpoints saved'
-  });
+  res.status(201).json({msg:' Trackpoints uploaded'});
+
 
 
 }

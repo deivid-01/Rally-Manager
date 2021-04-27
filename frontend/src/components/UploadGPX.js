@@ -6,19 +6,19 @@ import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CancelIcon from "@material-ui/icons/Cancel";
 import LinearProgressWithLabel from './LinearProgressWithLabel';
-import GPX from 'gpx-parser-builder';
 
 function UploadGPX() {
 
   const [highlighted,setHighlighted] = React.useState();
-  const [ file, setFile] = useState('');
   const [ filename, setFilename] = useState('');
   const [ progress, setProgress] = useState(0);
   const [openError, setOpenError] = useState(false);
+  const [errorMsg, SetErrorMsg] = useState('Error');
+  const [successMsg, SetSuccessMsg] = useState('Trackpoints uploaded');
 
 
-  const uploadGPX = async(files) => {
-    setFile(files[0]);
+  const uploadTrackpoints = async(files) => {
+
     setFilename(files[0].name);
 
     const formData = new FormData();
@@ -35,7 +35,9 @@ function UploadGPX() {
           setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
         }  
       });
- 
+
+      SetSuccessMsg(res.data.msg);
+
     }
     catch(err)
     {
@@ -45,7 +47,9 @@ function UploadGPX() {
       }
       else
       {
-        console.log(err.response.data);
+        SetErrorMsg(err.response.data.msg);
+        setProgress(0);
+        setOpenError(true);
       }
     }
  
@@ -54,7 +58,9 @@ function UploadGPX() {
   const onDropHandler = (e) => {
     e.preventDefault();
     setHighlighted(false);
-    uploadGPX(e.dataTransfer.files);
+    uploadTrackpoints(e.dataTransfer.files);
+    e.dataTransfer.value = null;
+
   }
   const  updateHighlighted = (state)=>{
     setHighlighted(state);
@@ -79,13 +85,7 @@ function UploadGPX() {
    
     if ( e.target.files.length  >0) 
     {     
-      var files = e.target.files;
-      if( !files[0].name.endsWith(".gpx"))
-      {
-        setOpenError(true);
-        return;
-      }
-      uploadGPX(files);
+      uploadTrackpoints(e.target.files);
       e.target.value = null;
     }
 
@@ -123,7 +123,7 @@ function UploadGPX() {
                 </IconButton>
               }
             >
-            File type must be .GPX"
+            {errorMsg}
           </Alert>
         </Collapse>
 
@@ -143,7 +143,7 @@ function UploadGPX() {
                 </IconButton>
               }
             >
-            File Uploaded
+            {successMsg}
           </Alert>
         </Collapse>
       </div>
