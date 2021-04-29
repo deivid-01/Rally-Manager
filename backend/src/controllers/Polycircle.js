@@ -12,7 +12,6 @@ Polycircle.vertices = (latitude,longitude,radius,number_of_vertices)=>{
             lon = vertex['lon2'];
             vertices.push([lat,lon]);        
         };
-        
         return vertices;
 };
 
