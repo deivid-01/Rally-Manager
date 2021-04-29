@@ -4,8 +4,12 @@ const fileupload = require ('express-fileupload');
 const morgan = require('morgan');
 const cors = require('cors');
 const { mongoose} = require('./database');
+const analysisCtrl = require('./controllers/analysis.controller');
+
 //Initialization
 const app = express();
+
+
 
 //Settings
 app.set('port', process.env.PORT || 5000);
@@ -26,4 +30,10 @@ app.use('/api/trackpoints',require('./routes/trackpoint.routes'));
 // Server is listenning
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
+    
+    analysisCtrl.checkWaypoints();
+
+    //analysisCtrl.checkTrackpoints();
 });
+
+
