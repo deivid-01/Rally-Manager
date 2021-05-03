@@ -18,10 +18,10 @@ analysisCtrl.verifyPoint = (lat,long,pointsCircle,center)=>{
      * Este metodo verifica si un punto dado está dentro de un circulo de waypoint
      */
     for(var i = 0; i<= pointsCircle.length-1;i++){
-        if(lat-center[0]<pointsCircle[i][0]-center[0]){
-            if(long-center[1]<pointsCircle[i][0]-center[1]){
-                return true;
-            }
+        distanceWithPoints = analysisCtrl.checkDistance(lat,long,center[0],center[1]);
+        distanceWithCircle = analysisCtrl.checkDistance(pointsCircle[i][0],pointsCircle[i][1],center[0],center[1]);
+        if(distanceWithPoints<distanceWithCircle){
+            return true;
         }
     }
     return false;
@@ -33,6 +33,8 @@ analysisCtrl.checkWaypoints=async()=>{
         trackpoints = await Trackpoint.find();  
    
         //console.log(Trackpoint.find({"_id":"latitude","longitude":1}));
+        //var num = await Trackpoint.findById({'_id':11});
+        //console.log(num.latitude);
         for(var i=0; i<= waypoints.length-1;i++){
             latitudeWayPoint = waypoints[i]['latitude'];
             longitudeWayPoint = waypoints[i]['longitude'];
@@ -96,6 +98,7 @@ analysisCtrl.checkWPM=(listCircle,trackpoints,center)=>{
         verifyWaypoint=analysisCtrl.verifyPoint(lat,long,listCircle,center);
         if(verifyWaypoint){
             return true;
+
         }
     }
     return false;
@@ -118,7 +121,7 @@ analysisCtrl.checkDistance=(lat1,long1,lat2,long2)=>{
         const phi1 = lat1 * Math.PI/180; 
         const phi2 = lat2 * Math.PI/180;
         const phiDiference = (lat2-lat1) * Math.PI/180;
-        const lambdaDiference = (lon2-lon1) * Math.PI/180;
+        const lambdaDiference = (long2-long1) * Math.PI/180;
 
         const a = Math.sin(phiDiference/2) * Math.sin(phiDiference/2) +
                 Math.cos(phi1) * Math.cos(phi2) *
