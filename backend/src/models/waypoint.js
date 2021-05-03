@@ -3,16 +3,22 @@ const { Schema } = mongoose;
 
 const  WaypointSchema = new Schema(
 {
-    _id : {type : Number},
-    latitude: { type: Number, required: true},
-    longitude: { type: Number, required: true},
-    type: { type: String, required: true},
+    location: {
+        // It's important to define type within type field, because
+        // mongoose use "type" to identify field's object type.
+        type: {type: String, default: 'Trackpoint'},
+        // Default value is needed. Mongoose pass an empty array to
+        // array type by default, but it will fail MongoDB's pre-save
+        // validation.
+        coordinates: {type: [Number], default: [0, 0]}
+    },
     distance: { type: String, required: true},
-    speed: { type: String}
-},
-{
-    _id : false
-}  
+    speed: { type: String},
+    rule:{
+        penalization: {type:Number},
+        ratius: {type:Number},
+    }
+}
 );
 
 

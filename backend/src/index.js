@@ -24,6 +24,10 @@ app.use(cors({origin: 'http://localhost:3000'}));
 //Routes
 app.use('/api/waypoints',require('./routes/waypoint.routes'));
 app.use('/api/trackpoints',require('./routes/trackpoint.routes'));
+app.use('/api/competitors',require('./routes/competitor.routes'));
+app.use('/api/races',require('./routes/race.routes'));
+app.use('/api/users',require('./routes/user.routes'));
+app.use('/api/stages',require('./routes/stage.routes'));
 //Static FIles
 
 
@@ -31,9 +35,9 @@ app.use('/api/trackpoints',require('./routes/trackpoint.routes'));
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
     
-    analysisCtrl.checkWaypoints();
+   // analysisCtrl.checkWaypoints();
 
-    //analysisCtrl.checkTrackpoints();
+ 
 });
 
 
