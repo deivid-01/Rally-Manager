@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const  TrackpointSchema = new Schema({
-    _id : {type: Number},
+
     location: {
         // It's important to define type within type field, because
         // mongoose use "type" to identify field's object type.
@@ -14,11 +14,9 @@ const  TrackpointSchema = new Schema({
     },
     elevation: {type:Number, required: false},
     time: { type: String, required:false},
-    competitor: { type: Schema.Types.ObjectId, ref: 'Competitor',required: true }
+    competitor: { type: Schema.Types.Number, ref: 'Competitor',required: true },
+    stage: { type: Schema.Types.ObjectId, ref: 'Stage',required: true },
 
-},
-{
-    _id : false
 }
 );
 

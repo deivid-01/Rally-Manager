@@ -1,5 +1,5 @@
 const Stage = require('../models/stage.js');
-const Race = require('../models/race.js');
+const Category = require('../models/category.js');
 const stageCtrl = {};
 
 stageCtrl.getAll= async ( req , res ) =>
@@ -10,31 +10,38 @@ stageCtrl.getAll= async ( req , res ) =>
 stageCtrl.createOne = async ( req , res ) =>
 {
   
-  var stage =  new Stage(req.body);
-  await stage.save( async (err)=>{
-    if ( err ) return err;
+  try
+  {
+    var stage =  new Stage(req.body);
+    await stage.save((err,saveData)=>{
+        Stage.populate(stage,{path:"categories"},function(err,stage){
+          stage.categories.forEach(async(category)=>{
+            category.stages.push(stage._id);
+            await category.save();
+          })
+        })
+        res.json({
+          'status': 'Stage saved'
+      });
+    })
 
-    //Adding stage to Race
-      var race =  await  Race.findById({"_id":req.body.race_id } );
-      race.stages.push(stage._id);
-      await Race.findByIdAndUpdate(race._id,race);
-      
-
-    }
-);
-  res.json({
-      'status': 'Stage saved'
-  });
+  }
+  catch(err)
+  {
+    return res.json(err);
+  }
+ 
+ 
 }
 
 stageCtrl.deleteOne = async ( req,res) => {
 
   //THIS IS NOT HAS BEEN TESTED YET
   
-  //Delete from Race
-  var race = await Race.findById({"_id":req.body.race_id});
-  race.stages =races.stages.filter((stage_id)=> (String(stage_id)).localeCompare(req.params.id));
-  await Race.findByIdAndUpdate(race._id,race);
+  //Delete from Category
+  var category = await Category.findById({"_id":req.body.category_id});
+  category.stages =categorys.stages.filter((stage_id)=> (String(stage_id)).localeCompare(req.params.id));
+  await Category.findByIdAndUpdate(category._id,category);
 
   //Delete  Stage
   await Stage.findByIdAndDelete(req.params.id);
@@ -45,14 +52,14 @@ stageCtrl.deleteAll = async ( req, res ) => {
 
   //THIS IS NOT HAS BEEN TESTED YET
 
-  //Delete from Race
-  var race = await Race.findById({"_id":req.body.race_id});
-  race.stages =[]
-  await Race.findByIdAndUpdate(race._id,race);
+  //Delete from Category
+  var category = await Category.findById({"_id":req.body.category_id});
+  category.stages =[]
+  await Category.findByIdAndUpdate(category._id,category);
 
   //Delete All stages
   await Stage.deleteMany({});
-  res.json({'status': 'All races deleted'})
+  res.json({'status': 'All stages deleted'})
 
 }
 

@@ -33,27 +33,26 @@ trackpointCtrl.createAll = async ( req , res ) =>
   {
     return res.status(400).json({msg:'File type must be .GPX'});
   }
-  await Trackpoint.deleteMany({});
+ 
 
-  var trackpoints =  toolsCtrl.gargabeOutGPXFile(req.files.file);  
-  trackpoints.forEach(async function(elem,i) {
-       
-    try{
-      var trackpoint={};
-      trackpoint._id= i +1; 
-      trackpoint.latitude = elem.lat;
-      trackpoint.longitude = elem.lon;
-      trackpoint.elevation= elem.ele;
-      trackpoint.time = elem.time.toString();
-      await   trackpointCtrl.createOne_ (trackpoint);     
-    }
-    catch(err)
-    {
-      console.log(err);
-    }
-
+  var trackpoints =  toolsCtrl.getTrackPointsFromFile(req.files.file);  
+  trackpoints.forEach((point)=>{
+    point.competitor = parseInt(req.body.competitor_id);
+    point.stage = req.body.stage_id;
+  })
+  console.log(trackpoints[0]);
+  try
+  {
+    await Trackpoint.insertMany(trackpoints);
+  }
+  catch(err)
+  {
+    console.log(err);
+    return res.status(400).json({msg : " id param don't founded",solution:"check id param in body request"});
   
-  });
+  }
+
+
   res.status(201).json({msg:' Trackpoints uploaded'});
 
 

@@ -53,22 +53,40 @@ waypointCtrl.createAll = async ( req , res ) =>
   var waypoints = toolsCtrl.getWaypointsFromFile(req.files.file) // Data pre-processing
   
   //Send to database
+  try
+  {
+    await Waypoint.insertMany(waypoints,async (err,savedData)=>{
+      if ( err ) return err;
+      try
+      {
+        //Save Waypoints in Stage
+        var stage =  await  Stage.findById({"_id":req.body.stage_id } );
+        stage.waypoints =[] //reset waypoints 
+        savedData.forEach((wp)=>{
+            stage.waypoints.push(wp._id);
+          })
 
-  await Waypoint.insertMany(waypoints,async (err,savedData)=>{
-    if ( err ) return err;
+        await Stage.findByIdAndUpdate(stage._id,stage);
+        res.status(201).json({msg:' Waypoints uploaded'});
+      }
+      catch(err)
+      {
+        await Waypoint.deleteMany({});
+        return res.status(400).json({msg : " stage_id don't founded",solution:"check stage_id in body request"});
+  
+      }
+      
 
-    //Save Waypoints in Stage
-    var stage =  await  Stage.findById({"_id":req.body.stage_id } );
-    stage.waypoints =[] //reset waypoints 
-    savedData.forEach((wp)=>{
-        stage.waypoints.push(wp._id);
-      })
+  
+    })
+  }
+  catch(err)
+  {
+    return res.json(err);
+  }
 
-    await Stage.findByIdAndUpdate(stage._id,stage);
+  
 
-  })
-
-  res.status(201).json({msg:' Waypoints uploaded'});
   
 
  

@@ -22,7 +22,8 @@ const StageSchema = new Schema({
 
     name : { type:String, required:false},
     waypoints : [ {type: Schema.Types.ObjectId, ref :'Waypoint'} ],
-    speedControls : [ {type:Number} ]
+    speedControls : [ {type:Number} ],
+    categories : [ {type: Schema.Types.ObjectId, ref :'Category'} ]
     //speedRules : {}
     //location : { type:String, required:true},
 

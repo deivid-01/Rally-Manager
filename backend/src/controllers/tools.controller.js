@@ -89,12 +89,35 @@ toolsCtrl.getPartialResultsFromFile = ( file )=>{
 }
 
 
- toolsCtrl.gargabeOutGPXFile = (file) =>
+ toolsCtrl.getTrackPointsFromFile = (file) =>
  {
     var data = file.data.toString('utf8');
     var gpx = new GPX();
     gpx.parse(data);
-    return gpx.tracks[0].points;
+
+    var trackpoints = gpx.tracks[0].points
+    var i ;
+    for(i = 0; i < trackpoints.length; i++)
+    {
+      try{
+        var trackpoint={
+          location:{
+            type:"",
+            coordinates:[]
+          }
+        };
+        trackpoint.location.coordinates[0] = trackpoints[i].lat;
+        trackpoint.location.coordinates[1] = trackpoints[i].lon;
+        trackpoint.elevation= trackpoints[i].ele;
+        trackpoint.time = trackpoints[i].time.toString();   
+        trackpoints[i] = trackpoint;
+      }
+      catch(err)
+      {
+        console.log(err);
+      }
+    }
+    return trackpoints;
  }
 
 module.exports = toolsCtrl;
