@@ -4,7 +4,7 @@ const fileupload = require ('express-fileupload');
 const morgan = require('morgan');
 const cors = require('cors');
 const { mongoose} = require('./database');
-const analysisCtrl = require('./controllers/analysis.controller');
+const resultsCtrl = require('./controllers/results.controller');
 
 //Initialization
 const app = express();
@@ -36,7 +36,7 @@ app.use('/api/stages',require('./routes/stage.routes'));
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
     
-   // analysisCtrl.checkWaypoints();
+    resultsCtrl.getStageResult();
 
  
 });
