@@ -12,22 +12,23 @@ resultCtrl.getStageResult=async(/*req,res*/)=>{
     //req.body.race_id id de la carrera
     /*stageID = req.params.id;
     raceID = req.body.race_id;*/
-    stageID = "609a0aee45748a3e4460e575";
+    stageID = "6091a7af1d549a37b8db11d0";
     raceID = "609a095345748a3e4460e572";
 
     //res.json(resultado)
     var stage = await Stages.findById({"_id":stageID});
     var waypoints = stage.waypoints;
+    var waypointList = [];
+    //console.log(Waypoints.findById({"_id":}));
+    /*for(var i=0; i <= waypoints.length;i++){
+        waypointList.push(Waypoints.findById({"_id":waypoints[i]}));
+    }*/
     var race = await Races.findById({"_id":raceID})
     var category = race.categories[2];
     var competidor = await Competitors.find({category:category})
     var idCompetidor = competidor[0]._id;
     var trackpoints = await Trackpoints.find({competitor:idCompetidor})
-    console.log(trackpoints[0].location.coordinates);
-
-
-
-    
+    analysisCtrl.checkWaypoints(waypointList,trackpoints);
 
     /**
      * 1. Hacer query pa obtener la etapa

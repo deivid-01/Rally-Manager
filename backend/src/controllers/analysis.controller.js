@@ -27,11 +27,11 @@ analysisCtrl.verifyPoint = (lat,long,pointsCircle,center)=>{
     return false;
 };
 
-analysisCtrl.checkWaypoints=async()=>{
+analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
     try{
-        waypoints = await WayPoints.find();
-        trackpoints = await Trackpoint.find();  
-   
+        console.log(waypoints);
+        console.log(trackpoints[0].location);
+        return;  
         //console.log(Trackpoint.find({"_id":"latitude","longitude":1}));
         //var num = await Trackpoint.findById({'_id':11});
         //console.log(num.latitude);
