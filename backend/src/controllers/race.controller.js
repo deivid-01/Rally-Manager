@@ -75,8 +75,8 @@ raceCtrl.createOne = async ( req , res ) =>
         res.status(200).json({"msg":"Race Saved"});
       }
       catch(err){
-        
-        await Race.findByIdAndDelete(race._id);
+        console.log(err)
+        //await Race.findByIdAndDelete(race._id);
         return res.status(400).json({msg : " user_id don't founded",solution:"check user_id in body request"});
      
       }
@@ -105,9 +105,13 @@ raceCtrl.deleteOne = async ( req,res) => {
 
 raceCtrl.deleteAll = async ( req, res ) => {
   //Delete from User
-  var user = await User.findById({"_id":req.body.user_id});
+  /**
+   *   var user = await User.findById({"_id":req.body.user_id});
   user.races =[]
   await User.findByIdAndUpdate(user._id,user);
+   * 
+   */
+
 
   //Delete All races
   await Race.deleteMany({});

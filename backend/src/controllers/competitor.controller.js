@@ -1,5 +1,6 @@
 const Competitor = require("../models/competitor");
 const Category = require("../models/category");
+const CategoryType = require("../models/categorytype");
 const Race = require("../models/race");
 const toolsCtrl = require('../controllers/tools.controller');
 
@@ -9,7 +10,9 @@ const competitorCtrl = {}
 competitorCtrl.getAll= async ( req , res ) =>
 {
   await Competitor.find()
-  .populate("races","name").exec((err,competitors)=>{
+  .populate("races","name")
+  .populate("categorytype","name")
+  .exec((err,competitors)=>{
     res.json(competitors);
   });
  
@@ -40,26 +43,63 @@ competitorCtrl.createAll = async ( req , res ) =>
 
   //Cleaning File
   var competitors = toolsCtrl.getCompetitorsFromFile(req.files.file) // Data pre-processing
-  await Competitor.insertMany(competitors,(err,savedData)=>{
-    var _ids= savedData.map(data=>data._id);
+
+  //Create categories
+    var i = 0;
+   
+    for (competitor of competitors)
+   {
+      var categoryName = competitor.category;
+      var categoryFound = await CategoryType.findOne({name:categoryName});
+
+      if ( categoryFound == null) // new category
+      {
+        categoryTypedata = {}
+        categoryTypedata.name = categoryName;
+        var newCategoryType = new CategoryType(categoryTypedata);
+        await newCategoryType.save()
+        .then(async()=>{     
+          competitors[i].categorytype = newCategoryType._id;
+            
+            data = {}
+            data.categoryType = newCategoryType._id;
+            var newCategory = new Category(data);        
+            await newCategory.save();
+          
+        });
+       
+      }
+      else
+      {
+          competitors[i].categorytype = categoryFound._id;
+           
+
+
+      }
+      i +=1;
+    }
+
+
+  await Competitor.insertMany(competitors).then(async(competitors)=>{
+    
+    for ( competitor of competitors)
+    {
+
+      var categoryType = await CategoryType.findById(competitor.categorytype);
+      var category = await Category.findOne({categoryType:categoryType._id})
+  
+      
+      if (!category.competitors.includes(competitor._id))
+      {
+        category.competitors.push( competitor._id);
+        await category.save();
+      }
+
+    }
+    var _ids= competitors.map(data=>data._id);
+
     res.status(201).json({msg:' Competitors uploaded',ids:_ids});
   })
-/*
-  await Race.findById({"_id":req.body.race_id}).populate('categories').exec(function(err,race){
-    if (err) return err;
-
-    race.categories.forEach(async (category)=>{
-      //Filter Competitors by category
-      var comps=  competitors.filter( competitor => competitor.category == category.name);
-      comps.forEach((comp)=>{category.competitors.push(comp._id);   })
-      //Save Competitors
-      await Competitor.insertMany(comps);
-      //Update Category with comps id
-      await category.save();
-
-    })
-    */
-    
   
 
 }
@@ -99,9 +139,9 @@ competitorCtrl.deleteAll = async ( req, res ) => {
   //THIS IS NOT HAS BEEN TESTED YET
 
   //Delete from Category
-  var category = await Category.findById({"_id":req.body.category_id});
-  category.competitors =[]
-  await Category.findByIdAndUpdate(category._id,category);
+ // var category = await Category.findById({"_id":req.body.category_id});
+ // category.competitors =[]
+ // await Category.findByIdAndUpdate(category._id,category);
 
   //Delete All competitors
   await Competitor.deleteMany({});

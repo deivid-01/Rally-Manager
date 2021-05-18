@@ -67,13 +67,6 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
   var i;
 
 
-  for( i = 0; i<result.data.length;i++ )
-  {
-    delete result.data[i].categorytype
-
-
-  }
-
 
   return result.data;
 

@@ -66,9 +66,9 @@ categorytypeCtrl.deleteOne = async ( req,res) => {
 
 categorytypeCtrl.deleteAll = async ( req, res ) => {
   //Delete from Race
-  var race = await Race.findById({"_id":req.body.race_id});
-  race.categorytypes =[]
-  await Race.findByIdAndUpdate(race._id,race);
+  //var race = await Race.findById({"_id":req.body.race_id});
+  //race.categorytypes =[]
+  //await Race.findByIdAndUpdate(race._id,race);
 
   //Delete All categorytypes
   await CategoryType.deleteMany({});

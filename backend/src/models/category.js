@@ -6,7 +6,7 @@ const {Schema} = moongose;
 const CategorySchema = new Schema({
 
     categoryType : {type: Schema.Types.ObjectId, ref :'CategoryType'},
-    competitors : [ {type: Schema.Types.Number, ref :'Competitor'} ],
+    competitors : [ {type: Schema.Types.ObjectId, ref :'Competitor'} ],
     stages : [ {type: Schema.Types.ObjectId, ref :'Stage'} ],
     race : {type: Schema.Types.ObjectId, ref :'Race'}
 
