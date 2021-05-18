@@ -1,7 +1,7 @@
 const moongose = require("mongoose");
 const {Schema} = moongose;
 
-const UserSchema = new Schema({
+const AdminSchema = new Schema({
 
     name : { type:String, required:true},
     lastname : { type:String, required:false},
@@ -10,4 +10,4 @@ const UserSchema = new Schema({
     races : [ {type: Schema.Types.ObjectId, ref :'Race'} ]
 });
 
-module.exports = moongose.model('User',UserSchema);
+module.exports = moongose.model('Admin',AdminSchema);

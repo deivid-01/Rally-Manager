@@ -69,11 +69,7 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
 
   for( i = 0; i<result.data.length;i++ )
   {
-    var competitorP = {};
-    competitorP._id = 0;
-    competitorP = result.data[i];
-    competitorP._id = parseInt(result.data[i].number);
-    result.data[i] = competitorP;
+    delete result.data[i].categorytype
 
 
   }

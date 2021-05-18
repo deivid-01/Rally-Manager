@@ -8,8 +8,11 @@ const competitorCtrl = {}
 
 competitorCtrl.getAll= async ( req , res ) =>
 {
-  const competitors = await Competitor.find();
-  res.json(competitors);
+  await Competitor.find()
+  .populate("races","name").exec((err,competitors)=>{
+    res.json(competitors);
+  });
+ 
 }
 competitorCtrl.createOne = async ( req , res ) =>
 { 
@@ -23,6 +26,7 @@ competitorCtrl.createOne = async ( req , res ) =>
 competitorCtrl.createAll = async ( req , res ) =>
 {
 
+
   if (req.files === null) {
     return res.status(400).json({msg:'No file uploaded'});
   }
@@ -35,9 +39,12 @@ competitorCtrl.createAll = async ( req , res ) =>
   await  Competitor.deleteMany({}); // Reset database
 
   //Cleaning File
-
   var competitors = toolsCtrl.getCompetitorsFromFile(req.files.file) // Data pre-processing
-
+  await Competitor.insertMany(competitors,(err,savedData)=>{
+    var _ids= savedData.map(data=>data._id);
+    res.status(201).json({msg:' Competitors uploaded',ids:_ids});
+  })
+/*
   await Race.findById({"_id":req.body.race_id}).populate('categories').exec(function(err,race){
     if (err) return err;
 
@@ -51,8 +58,9 @@ competitorCtrl.createAll = async ( req , res ) =>
       await category.save();
 
     })
-    res.status(201).json({msg:' Competitors uploaded'});
-  })
+    */
+    
+  
 
 }
 

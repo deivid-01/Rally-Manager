@@ -1,15 +1,22 @@
 const Category = require('../models/category.js');
+const CategoryType = require('../models/categorytype.js');
 const Race = require('../models/race.js');
 const categoryCtrl = {};
 
 categoryCtrl.getAll= async ( req , res ) =>
 {
-  const categories = await Category.find();
-  res.json(categories);
+  await Category.find().
+  populate("race","name").
+  populate("categoryType","name").
+  populate("competitors","name").exec((err,categories)=>
+  {
+    res.json(categories);
+  })
+ 
 }
 categoryCtrl.createOne = async ( req , res ) =>
 {
-    console.log("olas");
+    
  try
  {
     var category =  new Category(req.body);
@@ -42,6 +49,38 @@ categoryCtrl.createOne = async ( req , res ) =>
     return res.json(err);
   }
  
+}
+
+categoryCtrl.createMany = async ( req , res ) => {
+
+    //Create Category Types
+    await CategoryType.insertMany(req.body.types,async(err,categorytypes)=>{
+ 
+      var cont = 1;
+      categories_ids = []
+      await Promise.all(categorytypes.map(async(categoryType)=>{
+        var categoryData = {}
+        categoryData.categoryType=categoryType._id;
+        var category = new Category(categoryData);
+        await category.save(async(err)=>{
+          categories_ids.push (category._id);
+       
+          if (cont >= categorytypes.length)
+          {       
+            res.status(200).json({"msg":"Category types created","Ids":categories_ids});
+            return;
+
+          }
+          cont +=1;
+        })
+      
+        
+        
+      }))
+
+      
+    });
+    
 }
 
 categoryCtrl.deleteOne = async ( req,res) => {

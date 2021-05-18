@@ -26,8 +26,9 @@ app.use('/api/waypoints',require('./routes/waypoint.routes'));
 app.use('/api/trackpoints',require('./routes/trackpoint.routes'));
 app.use('/api/competitors',require('./routes/competitor.routes'));
 app.use('/api/categories',require('./routes/category.routes'));
+app.use('/api/categorytypes',require('./routes/categorytypes.routes'));
 app.use('/api/races',require('./routes/race.routes'));
-app.use('/api/users',require('./routes/user.routes'));
+app.use('/api/admins',require('./routes/admin.routes'));
 app.use('/api/stages',require('./routes/stage.routes'));
 //Static FIles
 
