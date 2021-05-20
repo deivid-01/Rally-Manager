@@ -1,9 +1,12 @@
 const analysisCtrl = require('./analysis.controller');
+var mongo = require('mongodb');
 const Stages = require('../models/stage');
 const Races = require('../models/race');
 const Waypoints = require('../models/waypoint');
 const Competitors = require('../models/competitor');
 const Trackpoints = require('../models/trackpoint');
+const Categories = require('../models/category');
+var mongoose = require('mongoose');
 
 const resultCtrl = {};
 
@@ -12,22 +15,21 @@ resultCtrl.getStageResult=async(/*req,res*/)=>{
     //req.body.race_id id de la carrera
     /*stageID = req.params.id;
     raceID = req.body.race_id;*/
-    stageID = "6091a7af1d549a37b8db11d0";
-    raceID = "609a095345748a3e4460e572";
-
-    //res.json(resultado)
+    stageID = "60a41cb13c14873c684d626f";
+    raceID = "60a41b8a3c14873c684d626d";
+    const {
+        ObjectId
+      } = require('mongodb');
+    //res.json(resultado    )
     var stage = await Stages.findById({"_id":stageID});
-    var waypoints = stage.waypoints;
-    var waypointList = [];
-    //console.log(Waypoints.findById({"_id":}));
-    /*for(var i=0; i <= waypoints.length;i++){
-        waypointList.push(Waypoints.findById({"_id":waypoints[i]}));
-    }*/
+    var waypointStage = stage.waypoints;
+    var waypointList =await Waypoints.find({'_id':waypointStage});
     var race = await Races.findById({"_id":raceID})
-    var category = race.categories[2];
-    var competidor = await Competitors.find({category:category})
-    var idCompetidor = competidor[0]._id;
-    var trackpoints = await Trackpoints.find({competitor:idCompetidor})
+    var categorias = race.categories[0];
+    var categoriasName = await Categories.find({"_id":categorias}); 
+    var competidor = await Competitors.find({category:categoriasName[0].name});    
+    var idCompetidor = competidor[2]._id;    
+    var trackpoints = await Trackpoints.find({competitor:idCompetidor});
     analysisCtrl.checkWaypoints(waypointList,trackpoints);
 
     /**
