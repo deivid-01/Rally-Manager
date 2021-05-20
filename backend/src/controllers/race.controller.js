@@ -8,8 +8,8 @@ raceCtrl.getAll= async ( req , res ) =>
 {
   await Race.find().
   populate({
-    path:"categories",select:"categoryType",
-    populate:{path:"categoryType",select:"name"}}).
+    path:"categories",select:"categorytype",
+    populate:{path:"categorytype",select:"name"}}).
   populate("competitors","name").
   populate("admin","name").
     exec((err,races)=>{
@@ -39,38 +39,66 @@ raceCtrl.getOne= async ( req , res ) =>
 }
 raceCtrl.createOne = async ( req , res ) =>
 {
+
+  
   try
   {
     var race =  new Race(req.body);
-    await race.save( async (err)=>{
-     if ( err ) return err;
+    await race.save().then(async (race)=>{
+      
       try
       {
-          //Set race to each category
 
-       await Promise.all(race.categories.map(async (category_id) =>{
-             var category = await Category.findById(category_id);
-             category.race = race._id;
-             category.save();
-        }));
 
-        // Set race to each competitor
 
-        await Promise.all(race.competitors.map(async (competitor_id) =>{
-          var competitor = await Competitor.findById(competitor_id);
-          if (!competitor.races.includes(competitor_id))
-          {
-            competitor.races.push(race._id);
-            competitor.save();
-          }
-          }));
+            typesAdded = []
+           //Create categories
 
+            for ( competitor_id of race.competitors)
+            {
+              
+              
+              var competitor = await Competitor.findById(competitor_id);
+     
+          
+                if ( !typesAdded.includes(String(competitor.categorytype)))
+                {
+                  //Create Category
+                    data = {
+                      competitors :[]
+                    }
+                    data.categorytype = competitor.categorytype;
+                    data.race = race._id;
+                    data.competitors.push(competitor._id);
+                    var category = new Category(data);
+                    await category.save();
+                    typesAdded.push(String(competitor.categorytype));
+                }
+                else
+                {
+                  var category = await Category.findOne({race:race._id,categorytype:competitor.categorytype});
+            
+                  category.competitors.push( competitor._id);
+                  await category.save();
+                  if(!race.categories.includes(category._id))
+                  {
+                    race.categories.push(category._id);
+                  }
+                }
+
+                competitor.races.push(race._id);
+                await competitor.save();
+                
+            }
+          
+          
         //add race to admin
         var admin =  await  Admin.findById(race.admin);
         admin.races.push(race._id);
         await admin.save();
 
-
+        await race.save();
+        
 
         res.status(200).json({"msg":"Race Saved"});
       }
@@ -83,12 +111,11 @@ raceCtrl.createOne = async ( req , res ) =>
      }
  
     );
-  }
-  catch(err)
-  {
-    return res.json(err);
-  }
-  
+    }
+    catch(err)
+    {
+      return res.json(err);
+    }
 }
 
 raceCtrl.deleteOne = async ( req,res) => {

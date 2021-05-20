@@ -7,7 +7,7 @@ categoryCtrl.getAll= async ( req , res ) =>
 {
   await Category.find().
   populate("race","name").
-  populate("categoryType","name").
+  populate("categorytype","name").
   populate("competitors","name").exec((err,categories)=>
   {
     res.json(categories);

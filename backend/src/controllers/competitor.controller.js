@@ -1,7 +1,6 @@
 const Competitor = require("../models/competitor");
-const Category = require("../models/category");
 const CategoryType = require("../models/categorytype");
-const Race = require("../models/race");
+
 const toolsCtrl = require('../controllers/tools.controller');
 
 const competitorCtrl = {}
@@ -57,45 +56,20 @@ competitorCtrl.createAll = async ( req , res ) =>
         categoryTypedata = {}
         categoryTypedata.name = categoryName;
         var newCategoryType = new CategoryType(categoryTypedata);
-        await newCategoryType.save()
-        .then(async()=>{     
+        await newCategoryType.save().then(()=>{
           competitors[i].categorytype = newCategoryType._id;
-            
-            data = {}
-            data.categoryType = newCategoryType._id;
-            var newCategory = new Category(data);        
-            await newCategory.save();
-          
-        });
-       
+        })    
       }
       else
       {
           competitors[i].categorytype = categoryFound._id;
-           
-
-
       }
       i +=1;
     }
 
 
-  await Competitor.insertMany(competitors).then(async(competitors)=>{
-    
-    for ( competitor of competitors)
-    {
-
-      var categoryType = await CategoryType.findById(competitor.categorytype);
-      var category = await Category.findOne({categoryType:categoryType._id})
-  
-      
-      if (!category.competitors.includes(competitor._id))
-      {
-        category.competitors.push( competitor._id);
-        await category.save();
-      }
-
-    }
+  await Competitor.insertMany(competitors).then(async(competitors)=>
+  {
     var _ids= competitors.map(data=>data._id);
 
     res.status(201).json({msg:' Competitors uploaded',ids:_ids});
