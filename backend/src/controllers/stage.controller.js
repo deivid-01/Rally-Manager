@@ -4,26 +4,40 @@ const stageCtrl = {};
 
 stageCtrl.getAll= async ( req , res ) =>
 {
-  const stage = await Stage.find();
-  res.json(stage);
+  await Stage.find(). populate({
+    path:"categories",select:"categorytype",
+    populate:{path:"categorytype",select:"name"}})
+    .exec((err,stages)=>{
+    res.json(stages);
+  });
 }
 stageCtrl.createOne = async ( req , res ) =>
 {
   
   try
   {
-    var stage =  new Stage(req.body);
-    await stage.save((err,saveData)=>{
-        Stage.populate(stage,{path:"categories"},function(err,stage){
-          stage.categories.forEach(async(category)=>{
-            category.stages.push(stage._id);
-            await category.save();
-          })
-        })
-        res.json({
-          'status': 'Stage saved'
-      });
-    })
+
+
+    var stage = new Stage(req.body);
+    await stage.save().then(async()=>{
+
+      //Adding stages to category
+        for ( category_id of stage.categories)
+        {
+          var category = await Category.findById(category_id);
+
+          category.stages.push(stage._id);
+
+          await category.save();
+
+        }
+
+        res.status(200).json({"msg":"Stage created"});
+      
+
+    });
+
+
 
   }
   catch(err)

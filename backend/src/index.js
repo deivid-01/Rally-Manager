@@ -30,6 +30,7 @@ app.use('/api/categorytypes',require('./routes/categorytypes.routes'));
 app.use('/api/races',require('./routes/race.routes'));
 app.use('/api/admins',require('./routes/admin.routes'));
 app.use('/api/stages',require('./routes/stage.routes'));
+app.use('/api/testing',require('./routes/testing.routes'));
 //Static FIles
 
 

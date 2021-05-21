@@ -17,7 +17,9 @@ const  WaypointSchema = new Schema(
     rule:{
         penalization: {type:Number},
         ratius: {type:Number},
-    }
+    },
+    stage : {type: Schema.Types.ObjectId, ref :'Stage'}
+
 }
 );
 

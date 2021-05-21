@@ -3,11 +3,24 @@ const CategoryType = require('../models/categorytype.js');
 const Race = require('../models/race.js');
 const categoryCtrl = {};
 
+
+categoryCtrl.getOne= async ( req , res ) =>
+{
+  await Category.findById(req.params.id).
+  populate("race","name").
+  populate("categorytype","name").
+  populate("competitors","name").exec((err,category)=>
+  {
+    res.json(category);
+  })
+ 
+}
 categoryCtrl.getAll= async ( req , res ) =>
 {
   await Category.find().
   populate("race","name").
   populate("categorytype","name").
+  populate("stages","name").
   populate("competitors","name").exec((err,categories)=>
   {
     res.json(categories);

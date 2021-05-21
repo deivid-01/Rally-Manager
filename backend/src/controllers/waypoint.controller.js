@@ -1,6 +1,7 @@
 const Waypoint = require('../models/waypoint');
 const Stage = require('../models/stage');
 const toolsCtrl = require('../controllers/tools.controller');
+const waypoint = require('../models/waypoint');
 const waypointCtrl = {};
 
 waypointCtrl.getAll = async ( req , res ) =>
@@ -46,28 +47,30 @@ waypointCtrl.createAll = async ( req , res ) =>
     return res.status(400).json({msg:'File type must be .CSV'});
   }
   
-  await  Waypoint.deleteMany({}); // Reset database
 
   //Cleaning waypoints
 
   var waypoints = toolsCtrl.getWaypointsFromFile(req.files.file) // Data pre-processing
   
+  waypoints.forEach((waypoint)=>{
+    waypoint.stage = req.body.stage;
+  })
+
   //Send to database
   try
   {
-    await Waypoint.insertMany(waypoints,async (err,savedData)=>{
-      if ( err ) return err;
+    await Waypoint.insertMany(waypoints).then(async(waypoints)=>{
+    
+      
       try
       {
         //Save Waypoints in Stage
-        var stage =  await  Stage.findById({"_id":req.body.stage_id } );
-        stage.waypoints =[] //reset waypoints 
-        savedData.forEach((wp)=>{
-            stage.waypoints.push(wp._id);
-          })
-
-        await Stage.findByIdAndUpdate(stage._id,stage);
+        var stage =  await  Stage.findById(req.body.stage );
+        stage.waypoints =waypoints.map(waypoint=>waypoint._id);
+        await stage.save();
+        
         res.status(201).json({msg:' Waypoints uploaded'});
+        
       }
       catch(err)
       {
