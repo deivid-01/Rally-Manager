@@ -37,8 +37,7 @@ trackpointCtrl.createAll = async ( req , res ) =>
 
   var trackpoints =  toolsCtrl.getTrackPointsFromFile(req.files.file);  
   trackpoints.forEach((point)=>{
-    point.competitor = parseInt(req.body.competitor_id);
-    point.stage = req.body.stage_id;
+    point.partialresult = req.body.partialresult;
   })
   console.log(trackpoints[0]);
   try

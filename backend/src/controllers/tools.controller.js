@@ -61,20 +61,66 @@ const toolsCtrl = {};
    
    return waypointsPRE;
  }
+
+toolsCtrl.getPartialResultsFromFile = (file) => {
+  var data = file.data.toString('utf8');
+  var result = parse.parse(data,{header:true});
+  
+
+ 
+
+
+
+  result.data.forEach((partialResult)=>{
+      partialResult.number = parseInt(partialResult.number);
+      partialResult.start_time = toolsCtrl.HHMMSSToHours(partialResult.start_time);
+      partialResult.arrival_time = toolsCtrl.HHMMSSToHours(partialResult.arrival_time);
+      partialResult.neutralization = toolsCtrl.HHMMSSToHours(partialResult.neutralization);
+      partialResult.discount = toolsCtrl.HHMMSSToHours(partialResult.discount);
+  })
+
+  
+ 
+  return result.data;
+
+}
+
+toolsCtrl.getConvertedPartialResult = (result) =>{
+    
+
+  result.start_time = toolsCtrl.HHMMSSToHours(result.start_time);
+  result.arrival_time = toolsCtrl.HHMMSSToHours(result.arrival_time);
+  result.neutralization = toolsCtrl.HHMMSSToHours(result.neutralization);
+
+  return result;
+}
+
+toolsCtrl.HHMMSSToHours = (str)=>{
+  
+  var total = 0;
+  var units = str.split(':')
+  if( units.length == 3 )
+  {
+    units.forEach((unit,i)=>
+    {
+      total+=parseFloat(unit)/Math.pow(60,i);
+    })
+  }
+  
+  
+  return total;
+}
+
+
 toolsCtrl.getCompetitorsFromFile = (file) =>{
   var data = file.data.toString('utf8');// Convert to string 
   var result = parse.parse( data,{header:true}); //CSV to JSON
-  var i;
-
+ 
+ 
 
 
   return result.data;
 
-}
-toolsCtrl.getPartialResultsFromFile = ( file )=>{
-  var data = file.data.toString('utf8');// Convert to string 
-  var result = parse.parse( data,{header:true}); //CSV to JSON
-  console.log(result.data[0]);
 }
 
 

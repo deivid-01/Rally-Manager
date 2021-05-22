@@ -13,9 +13,8 @@ const  TrackpointSchema = new Schema({
         coordinates: {type: [Number], default: [0, 0]}
     },
     elevation: {type:Number, required: false},
-    time: { type: String, required:false},
-    competitor: { type: Schema.Types.Number, ref: 'Competitor',required: true },
-    stage: { type: Schema.Types.ObjectId, ref: 'Stage',required: true },
+    time: { type: String, required:false},  
+    partialresult: { type: Schema.Types.ObjectId, ref: 'PartialResult',required: true },
 
 }
 );

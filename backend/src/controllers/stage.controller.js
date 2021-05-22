@@ -2,6 +2,17 @@ const Stage = require('../models/stage.js');
 const Category = require('../models/category.js');
 const stageCtrl = {};
 
+stageCtrl.getOne= async ( req , res ) =>
+{
+  await Stage.findById(req.params.id). 
+  populate({
+    path:"categories",select:"categorytype",
+    populate:{path:"categorytype",select:"name"}})
+    .exec((err,stage)=>{
+    res.json(stage);
+  });
+}
+
 stageCtrl.getAll= async ( req , res ) =>
 {
   await Stage.find(). populate({
