@@ -23,8 +23,8 @@ raceCtrl.getOne= async ( req , res ) =>
   {
     await Race.findById(req.params.id).
     populate({
-      path:"categories",select:"categoryType",
-      populate:{path:"categoryType",select:"name"}}).
+      path:"categories",select:"categorytype",
+      populate:{path:"categorytype",select:"name"}}).
     populate("competitors","name").
     populate("admin","name").
       exec((err,race)=>{

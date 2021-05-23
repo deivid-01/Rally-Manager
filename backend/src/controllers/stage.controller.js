@@ -4,10 +4,13 @@ const stageCtrl = {};
 
 stageCtrl.getOne= async ( req , res ) =>
 {
-  await Stage.findById(req.params.id). 
+  await Stage.findById(req.params.id).
   populate({
     path:"categories",select:"categorytype",
-    populate:{path:"categorytype",select:"name"}})
+    populate:{path:"categorytype",select:"name"}}).
+    populate({
+      path:"partialresults",select:"competitor",
+      populate:{path:"competitor",select:"name"}})
     .exec((err,stage)=>{
     res.json(stage);
   });
@@ -15,12 +18,16 @@ stageCtrl.getOne= async ( req , res ) =>
 
 stageCtrl.getAll= async ( req , res ) =>
 {
-  await Stage.find(). populate({
-    path:"categories",select:"categorytype",
-    populate:{path:"categorytype",select:"name"}})
-    .exec((err,stages)=>{
-    res.json(stages);
-  });
+  await Stage.find(). 
+    populate({
+      path:"categories",select:"categorytype",
+      populate:{path:"categorytype",select:"name"}}).
+    populate({
+        path:"partialresults",select:"competitor",
+        populate:{path:"competitor",select:"name"}})
+      .exec((err,stages)=>{
+      res.json(stages);
+    });
 }
 stageCtrl.createOne = async ( req , res ) =>
 {

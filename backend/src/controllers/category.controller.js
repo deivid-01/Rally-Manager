@@ -9,6 +9,7 @@ categoryCtrl.getOne= async ( req , res ) =>
   await Category.findById(req.params.id).
   populate("race","name").
   populate("categorytype","name").
+  populate("stages","name").
   populate("competitors","name").exec((err,category)=>
   {
     res.json(category);

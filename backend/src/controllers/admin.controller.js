@@ -81,7 +81,7 @@ adminCtrl.deleteAll = async ( req, res )=>{
   
   
   await Admin.deleteMany({});
-    res.status(200).json({"msg":"Admin Deleted"});
+    res.status(200).json({"msg":"All Admins Deleted"});
 
 
 }

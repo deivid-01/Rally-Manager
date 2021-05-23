@@ -5,6 +5,16 @@ const toolsCtrl = require('../controllers/tools.controller');
 
 const competitorCtrl = {}
 
+competitorCtrl.getOne= async ( req , res ) =>
+{
+  await Competitor.findById(req.params.id)
+  .populate("races","name")
+  .populate("categorytype","name")
+  .exec((err,competitor)=>{
+    res.json(competitor);
+  });
+ 
+}
 
 competitorCtrl.getAll= async ( req , res ) =>
 {
