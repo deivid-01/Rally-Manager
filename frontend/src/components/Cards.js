@@ -3,8 +3,8 @@ import axios from 'axios';
 import Card from './Card'
 import PropTypes from 'prop-types'
 
-function Cards({type,url,next_URL}){
-
+function Cards({datas,type,url,next_URL}){
+    console.log(datas)
     const [data, setData] = useState([{id:900,title:'Title'}]);
     const getData = ()=>{
      
@@ -39,9 +39,26 @@ function Cards({type,url,next_URL}){
   
           
 }
+    const setFetchData = ()=>{
+
+        var cardss = []
+        datas.forEach((item)=>{
+            var card =  {}
+            card.id = item._id
+            card.title = item.name
+            cardss.push(card)
+        })  
+        setData(cardss)
+
+    }
 
     useEffect(()=>{
-       getData();
+        if (datas== null)
+            getData();
+        else
+        {
+            setFetchData(datas)
+        }
     },[])
  
 

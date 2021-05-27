@@ -9,6 +9,7 @@ import {
 import Races from './components/Races';
 import Categories from './components/Categories';
 import Stages from './components/Stages';
+import Login from './components/Login';
 
 function App(){
     
@@ -21,6 +22,7 @@ function App(){
         <Route path="/races" render={ (props) => <Races { ...props } /> } />
         <Route path="/categories" render={ (props) => <Categories { ...props } /> } />
         <Route path="/stages" render={ (props) => <Stages { ...props } /> } />
+        <Route path="/login" render={ (props) => <Login { ...props } /> } />
         <Route path="/gpxupload" render={ (props) => <UploadGPX /> }/> 
         {/* Redirect unhandled routes */}
         <Route>

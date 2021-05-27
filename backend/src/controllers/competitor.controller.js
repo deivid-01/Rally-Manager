@@ -37,7 +37,7 @@ competitorCtrl.createOne = async ( req , res ) =>
 
 competitorCtrl.createAll = async ( req , res ) =>
 {
-
+  console.log(req.files.file)
 
   if (req.files === null) {
     return res.status(400).json({msg:'No file uploaded'});

@@ -6,6 +6,7 @@ router.get('/:id', adminCtrl.getOne);
 router.get('/', adminCtrl.getAll);
 
 router.post('/', adminCtrl.createOne);
+router.post('/login', adminCtrl.login);
 
 router.put('/', adminCtrl.updateOne);
 

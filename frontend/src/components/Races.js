@@ -3,7 +3,8 @@ import React from "react";
 
 import Cards from './Cards'
 
-function Races(){
+function Races(props){
+
 
     const type="Race"
     const next_URL = "/categories"
@@ -14,7 +15,7 @@ function Races(){
             <br></br>
             <div><h1 className="text-center">Races</h1> </div>
             <br></br>
-            <Cards type={type} url={url} next_URL={next_URL}></Cards>
+            <Cards datas={props.location.races}type={type} url={url} next_URL={next_URL}></Cards>
         </div>
     )
 }
