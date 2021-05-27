@@ -11,7 +11,8 @@ function Alert(props) {
 
 function Login(props){
 
-   const next_URL = "/races"
+   const home_URL = "/races"
+   const signup_URL = "/signup"
     
     const [loginData,setLoginData] = useState({
         username:'',
@@ -42,12 +43,17 @@ function Login(props){
         await checkCredentials();
     }
 
+    const handlerSignUp = async(e) => {
+      console.log("loading sign up page...")
+      history.push(signup_URL)
+  }
+
     const loadNextPage = () =>{  
         if ( user != null)
         {
           console.log("Loading next page");
           history.push({
-            pathname: next_URL,
+            pathname: home_URL,
             races: user.races
             //state: { detail: response.data }
           })
@@ -100,8 +106,16 @@ function Login(props){
                         className="btn btn-primary"
                         type = "submit"
                     >Login</button>
+                    
                   </div>
               </form>
+              <div className="col-md-3">
+                    <button onClick = {handlerSignUp}
+                        className="btn btn-secondary"
+                        type = "submit"
+                    >Sign up</button>
+                    
+                  </div>
 
         </Fragment>
 

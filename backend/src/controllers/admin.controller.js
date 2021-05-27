@@ -47,11 +47,20 @@ adminCtrl.getAll= async ( req , res ) =>
 }
 adminCtrl.createOne = async ( req , res ) =>
 { 
-  var admin =  new Admin(req.body);
-   await admin.save();
-  res.json({
-      'status': 'Admin saved'
-  });
+  try
+  {
+    var admin =  new Admin(req.body);
+    await admin.save();
+   res.json({
+       'status': 'Admin saved'
+   });
+  }
+  catch(err)
+  {
+    
+    res.status(400).json({msg:"Sign up failed"})
+  }
+  
 }
 adminCtrl.updateOne = async ( req, res ) =>{
 
