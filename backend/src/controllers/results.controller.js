@@ -30,7 +30,10 @@ resultCtrl.getStageResult=async(/*req,res*/)=>{
     var competidor = await Competitors.find({category:categoriasName[0].name});    
     var idCompetidor = competidor[2]._id;    
     var trackpoints = await Trackpoints.find({competitor:idCompetidor});
-    analysisCtrl.checkWaypoints(waypointList,trackpoints);
+    resultados  = analysisCtrl.checkWaypoints(waypointList,trackpoints);
+    
+    competidor[2].results.penalization = resultados[1];
+    console.log(competidor[2].results.penalization);//problemas aqui
 
     /**
      * 1. Hacer query pa obtener la etapa
