@@ -3,7 +3,7 @@ import React from "react";
 
 import Cards from './Cards'
 
-function Stages(){
+function Stages(props){
 
     const type='Stage'
     const next_URL = "/options"
@@ -14,7 +14,7 @@ function Stages(){
             <br></br>
             <div><h1 className="text-center">Stages</h1> </div>
             <br></br>
-            <Cards type={type}url={url} next_URL={next_URL}></Cards>
+            <Cards datas={props.location.data}type={type}url={url} next_URL={next_URL}></Cards>
         </div>
     )
 }

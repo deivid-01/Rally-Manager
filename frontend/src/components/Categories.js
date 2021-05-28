@@ -1,9 +1,10 @@
+import { checkPropTypes } from "prop-types";
 import React from "react";
 
 
 import Cards from './Cards'
 
-function Categories(){
+function Categories(props){
 
     const type='Category'
     const next_URL = "/stages"
@@ -14,7 +15,7 @@ function Categories(){
             <br></br>
             <div><h1 className="text-center">Categories</h1> </div>
             <br></br>
-            <Cards type={type}url={url} next_URL={next_URL}></Cards>
+            <Cards datas = {props.location.data} type={type}url={url} next_URL={next_URL}></Cards>
         </div>
     )
 }

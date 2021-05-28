@@ -11,6 +11,7 @@ function Alert(props) {
 
 function Login(props){
 
+  console.log("hola?")
    const home_URL = "/races"
    const signup_URL = "/signup"
     
@@ -51,12 +52,15 @@ function Login(props){
     const loadNextPage = () =>{  
         if ( user != null)
         {
-          console.log("Loading next page");
+
+  
           history.push({
             pathname: home_URL,
-            races: user.races
+            data: user.races
             //state: { detail: response.data }
           })
+          
+   
           
         }
      }
