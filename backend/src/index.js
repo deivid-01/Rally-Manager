@@ -39,7 +39,7 @@ app.use('/api/partialresults',require('./routes/partialresult.routes'));
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
     
-    resultsCtrl.getStageResult();
+ 
 
  
 });
