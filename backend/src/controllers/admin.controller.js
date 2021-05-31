@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+require('dotenv').config({path:'variables.env'});
+const bcrypt = require('bcrypt')
 const Admin = require("../models/admin");
 
 const adminCtrl = {}
@@ -6,12 +9,31 @@ adminCtrl.login = async ( req , res)  => {
   try
   {
     var admin = await Admin.findOne({
-                        username:req.body.username,
-                        password:req.body.password}).
+                        username:req.body.username}).
                         populate('races','name')
-    if ( admin != null)
-      return res.status(200).json(admin)
-    return res.status(400).json({"msg":"User don't found"})
+    const passCorrect = ( admin == null) ? false:
+                                          await  bcrypt.compare(req.body.password,admin.password)
+    if ( !passCorrect)
+    {
+      return res.status(401).json({"error":"Invalid user or password"})
+
+    }
+
+    const adminForToken = {
+      id : admin._id,
+      username: admin.username,
+      name: admin.name,
+      lastname: admin.lastname,
+      races: admin.races
+    }
+
+    const token = jwt.sign(adminForToken,process.env.SECRET || 123)
+
+    
+    return res.status(200).json({
+      admin:admin,
+      token:token
+    })
     
   }
   catch(err)
@@ -49,6 +71,7 @@ adminCtrl.createOne = async ( req , res ) =>
 { 
   try
   {
+    req.body.password = await bcrypt.hash(req.body.password,10)
     var admin =  new Admin(req.body);
     await admin.save();
    res.json({

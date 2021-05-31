@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Race = require('../models/race.js');
 const Admin = require('../models/admin.js');
 const Category = require('../models/category.js');
@@ -40,9 +41,26 @@ raceCtrl.getOne= async ( req , res ) =>
 raceCtrl.createOne = async ( req , res ) =>
 {
 
-  
+  const authorization = req.get('authorization')
+  let token = null
+  let decodedToken = null
+  if ( authorization && authorization.toLowerCase().startsWith('bearer'))
+  {
+    token = authorization.split(' ')[1]
+    decodedToken = jwt.verify(token,process.env.SECRET || '123')
+  }
+
+  if ( !token || !decodedToken.id)
+  {
+    return res.status(401).json({error:"Token missing or invalid"})
+  }
+
+  const {id: admin_id} = decodedToken
+
+
   try
   {
+    req.body.admin = admin_id
     var race =  new Race(req.body);
     await race.save().then(async (race)=>{
       

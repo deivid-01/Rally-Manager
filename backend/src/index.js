@@ -6,6 +6,9 @@ const cors = require('cors');
 const { mongoose} = require('./database');
 const resultsCtrl = require('./controllers/results.controller');
 
+
+
+require('dotenv').config({path:'variables.env'});
 //Initialization
 const app = express();
 

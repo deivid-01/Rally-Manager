@@ -54,6 +54,11 @@ function Cards({datas,type,url,next_URL}){
             setFetchData(datas)
         
     },[])
+
+    useEffect(()=>{
+        const loggedAdmin = window.localStorage.getItem('loggedAdmin')
+        
+    })
  
 
     

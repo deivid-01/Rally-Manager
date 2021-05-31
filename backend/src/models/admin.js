@@ -10,4 +10,13 @@ const AdminSchema = new Schema({
     races : [ {type: Schema.Types.ObjectId, ref :'Race'} ]
 });
 
+AdminSchema.set('toJSON',{
+    transform: (document,returnedObject) => {
+        delete  returnedObject.__v
+        delete returnedObject.password
+    }
+})
+
+
+
 module.exports = moongose.model('Admin',AdminSchema);

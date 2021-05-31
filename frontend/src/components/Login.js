@@ -11,7 +11,7 @@ function Alert(props) {
 
 function Login(props){
 
-  console.log("hola?")
+
    const home_URL = "/races"
    const signup_URL = "/signup"
     
@@ -68,12 +68,19 @@ function Login(props){
     useEffect(()=>{
       loadNextPage()
     },[user])
+    useEffect(()=>{
+      window.localStorage.clear()
+    },[])
 
     const checkCredentials =async () => {
       try{
         const res = await axios.post(
                             'http://localhost:5000/api/admins/login',
                             loginData)
+        
+        window.localStorage.setItem(
+          'loggedAdmin', JSON.stringify(res.data)
+        )
         setUser(res.data)
       }
       catch(err)
