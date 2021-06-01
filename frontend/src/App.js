@@ -11,6 +11,7 @@ import Categories from './components/Categories';
 import Stages from './components/Stages';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Results from './components/Results';
 
 function App(){
     
@@ -26,6 +27,7 @@ function App(){
         <Route path="/login" render={ (props) => <Login { ...props } /> } />
         <Route path="/signup" render={ (props) => <Signup { ...props } /> } />
         <Route path="/gpxupload" render={ (props) => <UploadGPX /> }/> 
+        <Route path="/results" render={ (props) => <Results /> }/> 
         {/* Redirect unhandled routes */}
         <Route>
           <Redirect to="/main" />
