@@ -19,7 +19,6 @@ function Login(props){
         username:'',
         password:''
     })
-    const [user,setUser] = useState();
     const [openError, setOpenError] = useState(false);
     const history   = useHistory();
 
@@ -50,24 +49,10 @@ function Login(props){
   }
 
     const loadNextPage = () =>{  
-        if ( user != null)
-        {
-
-  
-          history.push({
-            pathname: home_URL,
-            data: user.races
-            //state: { detail: response.data }
-          })
-          
-   
-          
-        }
+          history.push(home_URL) 
+        
      }
 
-    useEffect(()=>{
-      loadNextPage()
-    },[user])
     useEffect(()=>{
       window.localStorage.clear()
     },[])
@@ -79,9 +64,13 @@ function Login(props){
                             loginData)
         
         window.localStorage.setItem(
-          'loggedAdmin', JSON.stringify(res.data)
+          'user', JSON.stringify(res.data.admin)
         )
-        setUser(res.data)
+        window.localStorage.setItem(
+          'token', JSON.stringify(res.data.token)
+        )
+        loadNextPage()
+
       }
       catch(err)
       {

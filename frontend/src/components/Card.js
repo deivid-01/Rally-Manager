@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
-function Card({type,title,url,next_URL}){
+function Card({type,title,url,id,next_URL}){
     
 
     
@@ -10,51 +10,37 @@ function Card({type,title,url,next_URL}){
     const [itemData,setItemData] = useState();
     const history = useHistory();
 
-    const fetchItem = async ( ) => {
+    const handleClick = async ( ) => {
      
-        var res = await axios.get(url)
-        var resData = res.data
         
-        if (!type.localeCompare("Race"))
-        {
-            var dataO = []
-            resData.categories.forEach((itemD)=>{
-                var subItemData = {}
-                subItemData._id = itemD._id;
-                subItemData.name = itemD.categorytype.name
-    
-                dataO.push(subItemData)
-            })
-        }
-        else if (!type.localeCompare("Category"))
-        {
-            var dataO = []
-            res.data.stages.forEach((item)=>{
-                var subItem = {}
-                subItem._id = item._id
-                subItem.name = item.name
-                dataO.push ( subItem )
-            })
+        const token = window.localStorage.getItem('token')
+        
 
-        }
-   
-        setItemData(dataO)
+        console.log(url)
+        var res = await axios.get(url+"/"+id)
+        var resData = res.data
+
+        window.localStorage.setItem(
+            type.toLowerCase(), JSON.stringify(resData)
+            )
+
+        loadNextPage()
         
     }
 
+    const loadNextPage = () =>{
+
+        history.push(next_URL)
+    }
+
+
 
     useEffect(()=>{
-        if(itemData != null)
-        {
-  
-       
-            history.push({
-                pathname: next_URL,
-                data: itemData 
-            })
-            
-        }
-    }, [itemData])
+       setItemData({
+           id:id,
+           name:title
+       })
+    },[])
 
 
 
@@ -63,7 +49,7 @@ function Card({type,title,url,next_URL}){
            <div className="card-body"> 
            
             <h4 className="overflow">{title}</h4>
-            <button onClick={fetchItem}
+            <button onClick={handleClick}
              className="btn btn-primary" >
                 Watch {type}
             </button>
