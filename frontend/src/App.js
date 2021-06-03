@@ -12,6 +12,7 @@ import Stages from './components/Stages';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Results from './components/Results';
+import CreateRace from './components/CreateRace';
 
 function App(){
     
@@ -28,9 +29,10 @@ function App(){
         <Route path="/signup" render={ (props) => <Signup { ...props } /> } />
         <Route path="/gpxupload" render={ (props) => <UploadGPX /> }/> 
         <Route path="/results" render={ (props) => <Results /> }/> 
+        <Route path="/createrace" render={ (props) => <CreateRace /> }/> 
         {/* Redirect unhandled routes */}
         <Route>
-          <Redirect to="/main" />
+          <Redirect to="/login" />
         </Route>
       </Switch>
     </BrowserRouter>

@@ -7,6 +7,7 @@ function Races(props){
 
     const type="Race"
     const next_URL = "/categories"
+    const add_URL = "/createrace"
     
     const url = "http://localhost:5000/api/races"
 
@@ -16,9 +17,9 @@ function Races(props){
         <div>
             <br></br>
             <div><h1 className="text-center">Races</h1> </div>
-            <IconBreadcrumbs actualPage = {type}> </IconBreadcrumbs>
+            {/*<IconBreadcrumbs actualPage = {type}> </IconBreadcrumbs>*/}
             <br></br>
-            <Cards type={type} url={url} next_URL={next_URL}></Cards>
+            <Cards type={type} url={url} next_URL={next_URL} add_URL = {add_URL}></Cards>
         </div>
     )
 }

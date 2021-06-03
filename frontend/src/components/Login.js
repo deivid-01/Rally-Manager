@@ -79,11 +79,17 @@ function Login(props){
     }
     
     return (
-      <div className="container mt-5">
-          <Fragment>
-              <h1>GPX Analyzer</h1>
-              <form className="row" onSubmit={handlerSubmit}>
-                  <div className="col-md-3">
+      <div >
+        <br></br>
+        <br></br>
+        <br></br>
+        <div className="custom-align">
+        <h1>GPX Analyzer</h1>
+        </div>
+            
+          <div className="container mt-8   custom-align">
+              <form onSubmit={handlerSubmit}>
+                  <div className="row" >
                     <input
                         type="text"
                         placeholder="Enter username"
@@ -92,7 +98,7 @@ function Login(props){
                         onChange = {handleInputChange}
                     ></input>
                   </div>
-                  <div className="col-md-3">
+                  <div className="row" >
                     <input
                         type = "password"
                         placeholder="Enter password"
@@ -101,7 +107,7 @@ function Login(props){
                         onChange = {handleInputChange}
                     ></input>
                   </div>
-                  <div className="col-md-3">
+                  <div className="row">
                     <button
                         className="btn btn-primary"
                         type = "submit"
@@ -109,22 +115,23 @@ function Login(props){
                     
                   </div>
               </form>
-              <div className="col-md-3">
-                    <button onClick = {handlerSignUp}
-                        className="btn btn-secondary"
-                        type = "submit"
-                    >Sign up</button>
-                    
-                  </div>
 
-        </Fragment>
+         </div>
+
+         <div className="container mt-5  custom-align" >
+                  <button onClick = {handlerSignUp}
+                      className="btn btn-secondary"
+                      type = "submit"
+                  >Sign up</button>
+                  
+                </div>
 
         <Snackbar open={openError} autoHideDuration={2000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error">
             Login fail
           </Alert>
         </Snackbar>
-
+        
         </div>
     )
 }

@@ -1,0 +1,19 @@
+.svg_icons {
+    transform: scale(2);
+    display: flex;
+    align-items: center;
+  }
+
+.custom-align {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.big-title {
+    font-size: 300%;
+}
+
+.no-border{
+    outline: 0;
+}

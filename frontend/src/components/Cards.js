@@ -2,11 +2,28 @@ import React ,{ useEffect, useState}from "react";
 import axios from 'axios';
 import Card from './Card'
 import PropTypes from 'prop-types'
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import '../../src/styles.css'
+import {useHistory} from 'react-router-dom'
 
-function Cards({type,url,next_URL}){
+const styles = {
+
+    largeIcon: {
+      width: 100,
+      height: 100,
+    },
+  
+  };
+  
+
+function Cards({type,url,next_URL,add_URL}){
  
 
     const [data, setData] = useState([]);
+    const history   = useHistory();
+
 
     useEffect(()=>{
         if (! type.localeCompare("Race"))
@@ -68,9 +85,14 @@ function Cards({type,url,next_URL}){
     },[])
 
 
+    const loadAddPage = () =>{
 
+        history.push(add_URL)
+    }
 
- 
+    const handleAdd = () =>{
+        loadAddPage()
+    }
 
     
     return (
@@ -88,7 +110,14 @@ function Cards({type,url,next_URL}){
                     :
                     <h1></h1>
 
-                }                      
+                } 
+                <div className="col-md-4 text-center custom-align">      
+                <IconButton 
+                onClick = {handleAdd}
+                aria-label="delete" className="svg_icons" >
+                <AddBoxIcon fontSize="large" />
+                </IconButton>
+                </div>                     
             </div>
         </div>
     )

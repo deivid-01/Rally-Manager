@@ -65,11 +65,16 @@ function Signup (props){
     }
 
     return(
-        <div className="container mt-5">
+        <div>
+            <br></br>
+            <br></br>
+            <br></br>
+              <h1 className="text-center">GPX Analyzer</h1>
+        <div className="container mt-5 custom-align">
 
-              <h1 className="text-center">Sign Up</h1>
-              <form  className="col align-self-center" onSubmit={handlerSubmit}>
-               <div class="form-group row col-4" >
+            
+              <form  className="align-self-center" onSubmit={handlerSubmit}>
+               <div class="form-group row col-15" >
                     <input
                         type="text"
                         placeholder="Enter name"
@@ -79,7 +84,7 @@ function Signup (props){
                     >
                     </input>
                 </div>
-                <div class="form-group row col-4" >
+                <div class="form-group row col-15" >
                     <input
                         type="text"
                         placeholder="Enter username"
@@ -89,7 +94,7 @@ function Signup (props){
                     >
                     </input>
                 </div>  
-                <div class="form-group row col-4" >
+                <div class="form-group row col-15" >
                     <input
                         type = "password"
                         placeholder="Enter password"
@@ -100,7 +105,7 @@ function Signup (props){
 
                     </input>
                 </div>
-                    <div class="form-group row col-2 " >
+                    <div class="form-group row col-15 " >
                     <button
                         className="btn btn-primary"
                         type = "submit"
@@ -110,6 +115,7 @@ function Signup (props){
                     
             
               </form>
+        
 
         <Snackbar open={openError} autoHideDuration={1500} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error">
@@ -117,6 +123,7 @@ function Signup (props){
           </Alert>
         </Snackbar>
 
+        </div>
         </div>
     )
 }
