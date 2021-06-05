@@ -50,7 +50,7 @@ stageCtrl.createOne = async ( req , res ) =>
 
         }
 
-        res.status(200).json({"msg":"Stage created"});
+        res.status(200).json({msg:"Stage created",id:stage._id});
       
 
     });

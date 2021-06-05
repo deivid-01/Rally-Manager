@@ -16,7 +16,7 @@ function Card({type,title,url,id,next_URL}){
         const token = window.localStorage.getItem('token')
         
 
-        console.log(url)
+        
         var res = await axios.get(url+"/"+id)
         var resData = res.data
 

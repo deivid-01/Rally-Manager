@@ -68,7 +68,7 @@ function Cards({updateData,type,url,next_URL,add_URL}){
                 item.title = cd.categorytype.name
                 dataF.push(item)                
             })
-            console.log(categoriesData)
+            
             setData(dataF)
         }
         else if (! type.localeCompare("Stage"))
@@ -86,7 +86,7 @@ function Cards({updateData,type,url,next_URL,add_URL}){
                 item.title = stg.name
                 dataF.push(item)                
             })
-            console.log(stagesData)
+           
             setData(dataF)
         }
         
@@ -142,14 +142,19 @@ function Cards({updateData,type,url,next_URL,add_URL}){
                     <h1></h1>
 
                 } 
+           {(!type.localeCompare("Race")) ?
                 <div className="col-md-4 text-center custom-align">      
                 <IconButton 
                 onClick = {handleAdd}
                 aria-label="delete" className="svg_icons" >
                 <AddBoxIcon fontSize="large" />
                 </IconButton>
-                </div>                     
+                </div>   :
+                <p></p>    
+                }             
             </div>
+            
+
         </div>
     )
 }

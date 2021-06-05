@@ -22,7 +22,7 @@ function UploadWayPoints(props) {
   const [errorMsg, SetErrorMsg] = useState('Error');
   const [successMsg, SetSuccessMsg] = useState('Success');
   const history   = useHistory();
-  const nextRoute= "/gpxupload";
+  const nextRoute= "/categories";
  
  
 
@@ -62,6 +62,7 @@ function UploadWayPoints(props) {
     const formData = new FormData();
 
     formData.append('file',file)   
+    formData.append('stage',props.location.stageInfo.id)   
     try{
       
       const res = await axios.post('http://localhost:5000/api/waypoints/file',
@@ -137,7 +138,7 @@ function UploadWayPoints(props) {
   return (
     <div>
       <br></br>
-      <h1 className="text-center text-4xl">GPX Analyser </h1>   
+      <h1 className="text-center text-4xl">{(props.location.stageInfo)?props.location.stageInfo.name:"Stage name"} </h1>   
       <br></br>   
       <div className="center2"> Upload waypoints: </div>
       <br></br>        
