@@ -4,7 +4,7 @@ const raceCtrl = require('../controllers/race.controller');
 const race = require('../models/race');
 
 router.get('/:id', raceCtrl.getOne);
-router.get('/', raceCtrl.getAll);
+router.get('/', raceCtrl.getByAdmin);
 
 router.post('/', raceCtrl.createOne);
 

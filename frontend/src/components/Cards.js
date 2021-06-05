@@ -18,9 +18,9 @@ const styles = {
   };
   
 
-function Cards({type,url,next_URL,add_URL}){
+function Cards({updateData,type,url,next_URL,add_URL}){
  
-
+   
     const [data, setData] = useState([]);
     const history   = useHistory();
 
@@ -28,21 +28,29 @@ function Cards({type,url,next_URL,add_URL}){
     useEffect(()=>{
         if (! type.localeCompare("Race"))
         {
+
             const loggedAdmin = window.localStorage.getItem('user')
-            var racesData = []
-            if(loggedAdmin)
+
+            if ( !updateData)
             {
-                racesData =  JSON.parse(loggedAdmin).races 
-            }
-            racesData.forEach((rd)=>{
-                setData([... data,
-                    {
-                        id : rd._id,
-                        title:rd.name
-                    }])
+                var racesData = []
+                if(loggedAdmin)
+                {
+                    racesData =  JSON.parse(loggedAdmin).races 
+                }
                 
-              
-               })
+                setData(racesData.map(rd=>({
+                            id : rd._id,
+                            title:rd.name
+                        })))
+                     
+            }
+            else
+            {
+                var token = window.localStorage.getItem('token');
+                fetchRaces( token );
+            }
+           
                 
         } 
         else  if (! type.localeCompare("Category"))
@@ -84,6 +92,27 @@ function Cards({type,url,next_URL,add_URL}){
         
     },[])
 
+    const fetchRaces =async (token) =>{
+
+        try
+        {
+            const config = {
+                headers:{
+                 Authorization: `Bearer ${token}`
+                }
+              }
+            var res = await  axios.get(url,config)
+            setData(res.data.map(race=>({
+                id : race._id,
+                title:race.name
+            })))
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+
+    }
 
     const loadAddPage = () =>{
 
@@ -93,6 +122,8 @@ function Cards({type,url,next_URL,add_URL}){
     const handleAdd = () =>{
         loadAddPage()
     }
+
+
 
     
     return (

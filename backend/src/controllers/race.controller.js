@@ -5,6 +5,42 @@ const Category = require('../models/category.js');
 const Competitor = require('../models/competitor.js');
 const raceCtrl = {};
 
+
+raceCtrl.getByAdmin = async (req, res ) =>{
+
+  const authorization = req.get('authorization')
+ 
+  let token = null
+  let decodedToken = null
+  if ( authorization && authorization.toLowerCase().startsWith('bearer'))
+  {
+    token = authorization.split(' ')[1]
+    decodedToken = jwt.verify(token,process.env.SECRET || '123')
+  }
+
+  if ( !token || !decodedToken.id)
+  {
+    return res.status(401).json({error:"Token missing or invalid"})
+  }
+  
+  const {id: admin_id} = decodedToken
+  
+  try
+  {
+  
+    var races =  await Race.find({admin:admin_id})
+    console.log(races)
+
+    return res.status(200).json(races)
+  }
+  catch(err)
+  {
+   
+    return res.status(400).json(err)
+  }
+
+}
+
 raceCtrl.getAll= async ( req , res ) =>
 {
   await Race.find().
@@ -40,8 +76,8 @@ raceCtrl.getOne= async ( req , res ) =>
 }
 raceCtrl.createOne = async ( req , res ) =>
 {
-
   const authorization = req.get('authorization')
+ 
   let token = null
   let decodedToken = null
   if ( authorization && authorization.toLowerCase().startsWith('bearer'))
@@ -54,12 +90,14 @@ raceCtrl.createOne = async ( req , res ) =>
   {
     return res.status(401).json({error:"Token missing or invalid"})
   }
-
+  console.log("Decoded Token")
+  
   const {id: admin_id} = decodedToken
-
-
+  
+  
   try
   {
+
     req.body.admin = admin_id
     var race =  new Race(req.body);
     await race.save().then(async (race)=>{
@@ -123,7 +161,7 @@ raceCtrl.createOne = async ( req , res ) =>
       catch(err){
         console.log(err)
         //await Race.findByIdAndDelete(race._id);
-        return res.status(400).json({msg : " user_id don't founded",solution:"check user_id in body request"});
+        return res.status(500).json(err);
      
       }
      }

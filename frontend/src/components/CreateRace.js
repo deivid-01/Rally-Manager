@@ -5,22 +5,58 @@ import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CancelIcon from "@material-ui/icons/Cancel";
 import LinearProgressWithLabel from './LinearProgressWithLabel';
+import {useHistory} from 'react-router-dom'
 function CreateRace(props){
 
+    const postURL = "http://localhost:5000/api/races";
+    const nextPage = "/races";
     const [highlighted,setHighlighted] = React.useState();
     const [ filename, setFilename] = useState('');
+    const [ raceData, setRaceData] = useState({
+      name:'',
+      competitors:[]
+    });
     const [ progress, setProgress] = useState(0);
     const [openError, setOpenError] = useState(false);
     const [errorMsg, SetErrorMsg] = useState('Error');
     const [successMsg, SetSuccessMsg] = useState('Trackpoints uploaded');
+    const history   = useHistory();
+
   
-  
+    const loadNextPage = () =>{
+      history.push({
+        pathname: nextPage,
+        updateData: true
+      })
+    }
+
+    const createRace = async (token) =>{
+      try
+      {
+        const config = {
+          headers:{
+           Authorization: `Bearer ${token}`
+          }
+        }
+        console.log(config.headers.Authorization)
+        const res = await axios.post(postURL,raceData,config)
+
+        loadNextPage();
+
+      }
+      catch(err)
+      {
+          console.log(err)
+      }
+
+    }
+
     const uploadCompetitors = async(files) => {
 
         setFilename(files[0].name);
     
         const formData = new FormData();
-    
+        
         formData.append('file',files[0]);
     
         try
@@ -34,7 +70,10 @@ function CreateRace(props){
             }  
           });
 
-          console.log(res.data.ids)
+          setRaceData({
+            ...raceData,
+            competitors: res.data.ids
+          })
           SetSuccessMsg(res.data.msg);
     
         }
@@ -53,6 +92,13 @@ function CreateRace(props){
         }
      
     
+      }
+
+      const handleInputChange = (e) =>{
+        setRaceData({
+          ...raceData,
+          [e.target.name]:e.target.value
+        })
       }
       const onDropHandler = (e) => {
         e.preventDefault();
@@ -92,7 +138,11 @@ function CreateRace(props){
       } 
 
       const onCeateRaceHandler = () => {
-            console.log("Creating race")        
+        
+    var token = window.localStorage.getItem("token")
+
+        createRace(token);
+        
       }
 
 
@@ -101,10 +151,11 @@ function CreateRace(props){
             <br></br>
             <div className="custom-align">
             <input
+                        onChange= {handleInputChange}
                         type="text"
                         placeholder="Enter race name"
                         className="text-center  big-title no-border"
-                        name="username"
+                        name="name"
                     ></input>
             </div>
             <br></br>

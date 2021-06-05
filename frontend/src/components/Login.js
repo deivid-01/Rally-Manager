@@ -67,7 +67,7 @@ function Login(props){
           'user', JSON.stringify(res.data.admin)
         )
         window.localStorage.setItem(
-          'token', JSON.stringify(res.data.token)
+          'token', res.data.token
         )
         loadNextPage()
 
