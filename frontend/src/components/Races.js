@@ -7,6 +7,7 @@ function Races(props){
     const [races,setRaces]= useState([])
 
     const type="Race"
+    const next_type="Categories"
     const next_URL = "/categories"
     const add_URL = "/createrace"
     
@@ -21,7 +22,15 @@ function Races(props){
             <div><h1 className="text-center">Races</h1> </div>
             {/*<IconBreadcrumbs actualPage = {type}> </IconBreadcrumbs>*/}
             <br></br>
-            <Cards updateData={(props.location.updateData)? true: true} type={type} url={url} next_URL={next_URL} add_URL = {add_URL}></Cards>
+            <Cards  
+                next_type = {next_type}
+                updateData={(props.location.updateData)? true: true} 
+                type={type} url={url} 
+                next_URL={next_URL} 
+                add_URL = {add_URL}>
+            </Cards>
+
+
         </div>
     )
 }

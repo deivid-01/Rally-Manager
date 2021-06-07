@@ -18,7 +18,7 @@ const styles = {
   };
   
 
-function Cards({updateData,type,url,next_URL,add_URL}){
+function Cards({next_type,updateData,type,url,next_URL,add_URL}){
  
    
     const [data, setData] = useState([]);
@@ -128,13 +128,21 @@ function Cards({updateData,type,url,next_URL,add_URL}){
     
     return (
         <div className="container">
+            
+      
             <div className="row">
                 {
                         
                         (data.length>  0 )?
                         data.map(card =>(
                         <div className="col-md-4" key={card.id}>      
-                            <Card type={type} title={card.title} url={url} id ={card.id} next_URL={next_URL}></Card>
+                            <Card 
+                            next_type = {next_type}
+                            type={type} 
+                            title={card.title} 
+                            url={url}
+                            id ={card.id}
+                            next_URL={next_URL}></Card>
                             </div>
                        
                     ))

@@ -2,7 +2,9 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
-function Card({type,title,url,id,next_URL}){
+import Button from '@material-ui/core/Button';
+
+function Card({next_type,type,title,url,id,next_URL}){
     
 
     
@@ -45,15 +47,16 @@ function Card({type,title,url,id,next_URL}){
 
 
     return (
-        <div className='card text-center'>
-           <div className="card-body"> 
+        <div className='card text-center bg-warning'>
+           <div className="card-body text-dark"> 
            
             <h4 className="overflow">{title}</h4>
-            <button onClick={handleClick}
-             className="btn btn-primary" >
+            <Button onClick={handleClick}
+                className="text-light bg-dark"
+                variant="contained" 
+                >
                 Watch {type}
-            </button>
-    
+            </Button>
            </div>
 
 
