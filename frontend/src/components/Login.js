@@ -2,6 +2,11 @@ import React, { Fragment , useEffect, useState }from 'react'
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from "@material-ui/core/Snackbar";
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Button from '@material-ui/core/Button';
+import BookIcon from '@material-ui/icons/Book';
 import {useHistory} from 'react-router-dom'
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -83,35 +88,58 @@ function Login(props){
         <br></br>
         <br></br>
         <br></br>
+        
+     
         <div className="custom-align">
-        <h1>GPX Analyzer</h1>
+        <h1>Race Manager</h1>
         </div>
-            
+   
           <div className="container mt-8   custom-align">
               <form onSubmit={handlerSubmit}>
-                  <div className="row" >
-                    <input
-                        type="text"
-                        placeholder="Enter username"
-                        className="form-control"
-                        name="username"
-                        onChange = {handleInputChange}
-                    ></input>
-                  </div>
-                  <div className="row" >
-                    <input
-                        type = "password"
-                        placeholder="Enter password"
-                        className="form-control"
-                        name="password"
-                        onChange = {handleInputChange}
-                    ></input>
-                  </div>
+                  
+            
+
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="flex-end"
+                  >
+
+                  <Grid  item container spacing={1} alignItems="flex-end">
+                    <Grid item>
+                      <AccountCircle />
+                    </Grid>
+                    <Grid item>
+                      <TextField id="input-with-icon-grid" 
+                      label="Username" 
+                      onChange = {handleInputChange}
+                      name="username"
+                      />
+                    </Grid>
+                                    
+                  </Grid>
+                <TextField
+                  id="standard-password-input"
+                  label="Password"
+                  type="password"
+                  name="password"
+                  onChange = {handleInputChange}
+                  autoComplete="current-password"
+                  />
+
+                </Grid>
+                <br></br>
                   <div className="row">
-                    <button
-                        className="btn btn-primary"
-                        type = "submit"
-                    >Login</button>
+                  <Button variant="contained"
+                  style={{textTransform: 'none'}}
+                  color="primary"
+                  type="submit"
+                  className="text-dark bg-warning"
+                  >
+                      Log in
+                    </Button>
+     
                     
                   </div>
               </form>
@@ -119,10 +147,16 @@ function Login(props){
          </div>
 
          <div className="container mt-5  custom-align" >
-                  <button onClick = {handlerSignUp}
-                      className="btn btn-secondary"
-                      type = "submit"
-                  >Sign up</button>
+                        <Button 
+                        style={{textTransform: 'none'}}
+                        variant="contained"
+                        onClick = {handlerSignUp}
+                        color="secondary"
+                        type="submit"
+                        className="text-light bg-dark"
+                  >
+                      Sign up
+                    </Button>
                   
                 </div>
 

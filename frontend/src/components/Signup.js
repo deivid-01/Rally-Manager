@@ -3,6 +3,9 @@ import React, { Fragment , useEffect, useState }from 'react'
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from "@material-ui/core/Snackbar";
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import {useHistory} from 'react-router-dom'
 
 function Alert(props) {
@@ -69,51 +72,50 @@ function Signup (props){
             <br></br>
             <br></br>
             <br></br>
-              <h1 className="text-center">GPX Analyzer</h1>
+              <h1 className="text-center">Race Manager</h1>
         <div className="container mt-5 custom-align">
 
             
               <form  className="align-self-center" onSubmit={handlerSubmit}>
-               <div class="form-group row col-15" >
-                    <input
-                        type="text"
-                        placeholder="Enter name"
-                        className="form-control"
-                        name="name"
-                        onChange = {handleInputChange}
+                <Grid container direction="column"
+                    justify="center"
+                    alignItems="center"
                     >
-                    </input>
-                </div>
-                <div class="form-group row col-15" >
-                    <input
-                        type="text"
-                        placeholder="Enter username"
-                        className="form-control"
-                        name="username"
-                        onChange = {handleInputChange}
-                    >
-                    </input>
-                </div>  
-                <div class="form-group row col-15" >
-                    <input
-                        type = "password"
-                        placeholder="Enter password"
-                        className="form-control"
-                        name="password"
-                        onChange = {handleInputChange}
-                    >
-
-                    </input>
-                </div>
-                    <div class="form-group row col-15 " >
-                    <button
-                        className="btn btn-primary"
-                        type = "submit"
-                    >Sin up
-                    </button>
-                    </div>
-                    
-            
+                    <Grid item>
+                        <TextField
+                            label="Name"
+                            name="name"
+                            onChange = {handleInputChange}
+                            />
+                            </Grid>
+                        
+            <Grid item >
+                <TextField
+                  label="Username"
+                  name="username"
+                  onChange = {handleInputChange}
+                  />
+                  </Grid>
+                  <Grid item>
+                <TextField
+                  id="standard-password-input"
+                  label="Password"
+                  name="password"
+                  onChange = {handleInputChange}
+                  autoComplete="current-password"
+                  />
+                  </Grid>
+                  <br></br>
+                <Button variant="contained"
+                  style={{textTransform: 'none'}}
+                  color="primary"
+                  type="submit"
+                  className="text-dark bg-warning"
+                  >
+                      Sign up
+                    </Button>    
+                  
+                    </Grid>      
               </form>
         
 

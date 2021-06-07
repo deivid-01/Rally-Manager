@@ -2,6 +2,7 @@ import React ,{ useEffect, useState}from "react";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
 import axios from "axios";
 import {useHistory} from 'react-router-dom'
 function CreateStage(props){
@@ -120,13 +121,13 @@ function CreateStage(props){
         <div>
             <br></br>
             <div className="custom-align">
-            <input
-                        onChange= {handleInputChange}
-                        type="text"
-                        placeholder="Enter stage name"
-                        className="text-center  big-title no-border"
-                        name="name"
-                    ></input>
+            <TextField 
+
+                id="standard-basic" 
+                label="Stage name" 
+                onChange= {handleInputChange}
+                color="primary"
+                />
             </div>
             <br></br>
                 <p>Select categories for this stage</p>
