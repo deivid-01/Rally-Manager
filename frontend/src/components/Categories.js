@@ -6,17 +6,17 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import {useHistory} from 'react-router-dom'
 import Cards from './Cards'
 import Competitors from './Competitors'
-import CreateStage from './CreateStage'
 import Results from './Results'
+import CreateStage from "./CreateStage";
 
 function Categories(props){
-
+   
     const [raceData,setRaceData] = useState()
     const [options,setOptions] = useState([
         {
             id : 1,
             name:'Categories',
-            active: true
+            active: false
         },
         {
             id : 2,
@@ -62,7 +62,7 @@ function Categories(props){
     }
 
     const handleActiveOption = index => e => {
-        console.log(index)
+        
         var newOptions =[...options]
         newOptions.forEach((option)=>{
             option.active = false
@@ -70,18 +70,28 @@ function Categories(props){
 
         newOptions[index].active =true
         setSelectedOption(newOptions[index])
-        console.log(options)
+        
         setOptions(newOptions)
 
     }
 
+    const updateOptions = () => {
+        var newOptions =[...options]
+        var option= localStorage.getItem('option');
+        localStorage.removeItem('option');
+
+        newOptions[(option)?option:0].active = true;
+        setOptions(newOptions);
+    }
 
     useEffect(()=>{
         var race = window.localStorage.getItem('race')
         if ( race )
             setRaceData (JSON.parse(race))
-            setSelectedOption(options[0])
-          
+            var option= localStorage.getItem('option');
+            console.log(option)
+            setSelectedOption( (option)?options[option]:options[0])
+            updateOptions()
     },[])
 
     return (
@@ -119,7 +129,7 @@ function Categories(props){
                 </ButtonGroup>
             </div>
             <br></br>
-            <br></br>
+            
 
             <br></br>
             {

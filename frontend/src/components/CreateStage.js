@@ -2,7 +2,8 @@ import React ,{ useEffect, useState}from "react";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import TextField from '@material-ui/core/TextField';
+import UploadWaypoints from './UploadWaypoints'
+import Button from '@material-ui/core/Button';
 import axios from "axios";
 import {useHistory} from 'react-router-dom'
 function CreateStage(props){
@@ -15,16 +16,31 @@ function CreateStage(props){
         categories:[]
       });
 
+    const [showStage,setShowStage] = useState(true)
+    const [showWaypoints,setShowWaypoints] = useState(false)
+    const [btnconfig,setBtnconfig] = useState([
+        {
+            text : 'Continue',
+            style: 'text-dark bg-warning'
+        },
+        {
+            text : 'Cancel',
+            style: 'text-light bg-danger'
+        },
+    ])
+    const [stageInfo,setStageInfo] = useState(null)
+    
+    const [indexConfigEnabled,setindexConfigEnabled]= useState(0)
+
     const history   = useHistory();
     
     const loadNextPage = (stage_id) => {
-        history.push({
-            pathname : '/waypointsupload',
-            stageInfo:{
-                name: stageData.name,
-                id:stage_id
-            }
-        })
+      
+              setStageInfo({
+                  name: stageData.name,
+                  id:stage_id
+              })
+        
     }
     
     const handleChange = index => event => {
@@ -42,22 +58,54 @@ function CreateStage(props){
         })
       }
 
+    const fetchingData = () => {
+      var raceData = window.localStorage.getItem('race');
+      if (raceData)
+      {
+          raceData =  JSON.parse(raceData)
+          loadOptions(raceData.categories)
+      }
+    }
 
       useEffect(()=>{
-        var raceData = window.localStorage.getItem('race');
-        if (raceData)
-        {
-            raceData =  JSON.parse(raceData)
-            loadOptions(raceData.categories)
-        }
+        fetchingData()
       
       }
 
     
       ,[])
+
+      useEffect(()=>{
+        if (stageInfo)
+        {
+          setShowStage(false)
+          setShowWaypoints(true)
+          setindexConfigEnabled(1)
+        }
+       
+
+      },[stageInfo])
       const handleContinue = () => {
-          //Create Stage
+        if (indexConfigEnabled==1)
+        {
+           
+           //deleteStage() 
+           setStageData({ name:'',
+           categories:[]
+            })
+          setStageInfo(null)
+          setOptions([])
+          setShowStage(true)
+          setShowWaypoints(false)
+          setindexConfigEnabled(0)
+          fetchingData()
+        }
+        else //Cancel
+        {
           setActiveCategories()
+        }
+
+         
       }
 
       const setActiveCategories = () => {
@@ -119,51 +167,70 @@ function CreateStage(props){
 
     return (
         <div>
-            <br></br>
-            <div className="custom-align">
-            <TextField 
+          {
+            (showStage)?
+          
+                <div>
+                  <br></br>
+                  <div className="custom-align">
+                    <input
+                                onChange= {handleInputChange}
+                                type="text"
+                                placeholder="Enter stage  name"
+                                className="text-center  big-title border-bottom no-border"
+                                name="name"
+                            ></input>
+                
+                  </div>
+                  <br></br>
+                  <div className="custom-align">
+                  <p>Select categories for this stage</p>
+                  </div>
+                      <br></br>
+                  <div className="custom-align">
+                
+                    <FormGroup row>
+                      
+                        {
+                        options.map((opt,i) =>
+                            <FormControlLabel
+                            key = {opt.id}
+                            control={
+                            <Checkbox
+                                checked={opt.active}
+                                onChange={handleChange(i)}
+                                name={opt.name}
+                                color="default"
+                            />
+                            }
+                            label={opt.name}
+                        />
+                        )
+                      
+                        }
+                      
+                    </FormGroup>
+                  </div>
 
-                id="standard-basic" 
-                label="Stage name" 
-                onChange= {handleInputChange}
-                color="primary"
-                />
-            </div>
+
+                  <br></br>
+                  </div>
+                  :
+                  <UploadWaypoints stageInfo={stageInfo} ></UploadWaypoints>
+            }
             <br></br>
-                <p>Select categories for this stage</p>
             <div className="custom-align">
-           
-            <FormGroup row>
-                {
-                options.map((opt,i) =>
-                    <FormControlLabel
-                    key = {opt.id}
-                    control={
-                    <Checkbox
-                        checked={opt.active}
-                        onChange={handleChange(i)}
-                        name={opt.name}
-                        color="primary"
-                    />
-                    }
-                    label={opt.name}
-                />
-                )
-               
-}
-               
-    </FormGroup>
-            </div>
-            <br></br>
-            <br></br>
-            <br></br>
-            <div className="custom-align" >
-                <button
-                onClick = {handleContinue}
-                className="btn btn-secondary "
-                >Continue</button>
-            </div>
-         
+            <Button  
+            variant="contained"
+                  style={{textTransform: 'none'}}
+                  onClick = {handleContinue}
+                  color="primary"
+                  type="submit"
+                  className={btnconfig[indexConfigEnabled].style}
+                  >
+                     {btnconfig[indexConfigEnabled].text}
+                    </Button> 
+                    </div>
         </div>
     )
 }

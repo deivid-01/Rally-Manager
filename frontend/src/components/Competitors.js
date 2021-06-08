@@ -8,7 +8,7 @@ function Competitors(props){
     return (
         <div>
       
-            <div><h1 className="text-center">Competitors</h1> </div>
+            <div><h1 className="text-center">Table with competitors</h1> </div>
            
 
         </div>

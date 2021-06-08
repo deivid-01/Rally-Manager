@@ -150,11 +150,12 @@ function CreateRace(props){
         <div>
             <br></br>
             <div className="custom-align">
+              
             <input
                         onChange= {handleInputChange}
                         type="text"
                         placeholder="Enter race name"
-                        className="text-center  big-title no-border"
+                        className="text-center  big-title border-bottom no-border"
                         name="name"
                     ></input>
             </div>

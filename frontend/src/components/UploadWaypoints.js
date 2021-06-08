@@ -10,7 +10,7 @@ import {useHistory} from 'react-router-dom'
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box";
 
-function UploadWayPoints(props) {
+function UploadWayPoints({stageInfo}) {
 
   const [highlighted,setHighlighted] = React.useState();
   const [ filename, setFilename] = useState('');
@@ -28,8 +28,15 @@ function UploadWayPoints(props) {
 
   const loadNextPage = () =>{  
    SetTimeNextPage( setTimeout(() =>{
-      clearInterval(interTimeLeft)  
-       history.push(nextRoute)
+      clearInterval(interTimeLeft) 
+      localStorage.setItem('option',2)
+      window.location.reload(); 
+       //history.replace(nextRoute)
+         //pathname:nextRoute,
+         //location:{option:2}
+
+     //  })
+       history.replace()
        },3000))
 
   }
@@ -62,7 +69,7 @@ function UploadWayPoints(props) {
     const formData = new FormData();
 
     formData.append('file',file)   
-    formData.append('stage',props.location.stageInfo.id)   
+    formData.append('stage',stageInfo.id)   
     try{
       
       const res = await axios.post('http://localhost:5000/api/waypoints/file',
@@ -137,8 +144,8 @@ function UploadWayPoints(props) {
   
   return (
     <div>
-      <br></br>
-      <h1 className="text-center text-4xl">{(props.location.stageInfo)?props.location.stageInfo.name:"Stage name"} </h1>   
+   
+      <h1 className="text-center text-4xl">{(stageInfo)?stageInfo.name:"Stage name"} </h1>   
       <br></br>   
       <div className="center2"> Upload waypoints: </div>
       <br></br>        
