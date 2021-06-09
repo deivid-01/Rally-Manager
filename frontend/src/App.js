@@ -14,6 +14,7 @@ import Signup from './components/Signup';
 import Results from './components/Results';
 import CreateRace from './components/CreateRace';
 import CreateStage from './components/CreateStage';
+import MapView from './components/MapView'
 
 function App(){
     
@@ -32,6 +33,7 @@ function App(){
         <Route path="/results" render={ (props) => <Results /> }/> 
         <Route path="/createrace" render={ (props) => <CreateRace /> }/> 
         <Route path="/createstage" render={ (props) => <CreateStage /> }/> 
+        <Route path="/map" render={ (props) => <MapView /> }/> 
         {/* Redirect unhandled routes */}
         <Route>
           <Redirect to="/login" />
