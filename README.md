@@ -1,4 +1,4 @@
-# Race Manager
+# Rally Manager
 
 - Run *frontend* with
 ```python
