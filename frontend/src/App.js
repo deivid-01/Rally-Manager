@@ -15,6 +15,7 @@ import Results from './components/Results';
 import CreateRace from './components/CreateRace';
 import CreateStage from './components/CreateStage';
 import MapView from './components/MapView'
+import Stage from './components/Stage';
 
 function App(){
     
@@ -23,7 +24,6 @@ function App(){
     <BrowserRouter>
       <Switch>
         <Redirect exact path="/" to="/login" />
-        <Route path="/waypointsupload" render={ (props) => <UploadWayPoints { ...props } /> } />
         <Route path="/races" render={ (props) => <Races { ...props } /> } />
         <Route path="/categories" render={ (props) => <Categories { ...props } /> } />
         <Route path="/stages" render={ (props) => <Stages { ...props } /> } />
@@ -32,8 +32,8 @@ function App(){
         <Route path="/gpxupload" render={ (props) => <UploadGPX /> }/> 
         <Route path="/results" render={ (props) => <Results /> }/> 
         <Route path="/createrace" render={ (props) => <CreateRace /> }/> 
-        <Route path="/createstage" render={ (props) => <CreateStage /> }/> 
         <Route path="/map" render={ (props) => <MapView /> }/> 
+        <Route path="/stage" render={ (props) => <Stage /> }/> 
         {/* Redirect unhandled routes */}
         <Route>
           <Redirect to="/login" />

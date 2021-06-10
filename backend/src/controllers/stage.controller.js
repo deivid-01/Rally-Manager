@@ -10,7 +10,8 @@ stageCtrl.getOne= async ( req , res ) =>
     populate:{path:"categorytype",select:"name"}}).
     populate({
       path:"partialresults",select:"competitor",
-      populate:{path:"competitor",select:"name"}})
+      populate:{path:"competitor",select:"name"}}).
+    populate('waypoints')
     .exec((err,stage)=>{
     res.json(stage);
   });
@@ -24,7 +25,8 @@ stageCtrl.getAll= async ( req , res ) =>
       populate:{path:"categorytype",select:"name"}}).
     populate({
         path:"partialresults",select:"competitor",
-        populate:{path:"competitor",select:"name"}})
+        populate:{path:"competitor",select:"name"}}).
+    populate('waypoints')
       .exec((err,stages)=>{
       res.json(stages);
     });

@@ -10,7 +10,7 @@ import Cards from './Cards'
 function Stages(props){
 
     const type='Stage'
-    const next_URL = "/options"
+    const next_URL = "/stage"
     
     const url = "http://localhost:5000/api/stages"
     const [categoryData, setCategoryData] = useState()
