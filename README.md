@@ -1,4 +1,4 @@
-# GPX Analyzer
+# Race Manager
 
 - Run *frontend* with
 ```python
