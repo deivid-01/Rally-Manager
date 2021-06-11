@@ -1,7 +1,7 @@
 import React, {useState,useEffect} from 'react'
 import 'leaflet/dist/leaflet.css'
 
-import { Map, TileLayer,Circle} from 'react-leaflet'
+import { Map, TileLayer} from 'react-leaflet'
 import Materialtable,{MTableToolbar} from 'material-table'
 import Markers from './Markers'
 function MapView ()
@@ -137,10 +137,10 @@ function MapView ()
             }}   
         columns={columns}
         data = {data}
-        title = 'Waypoints Table'
         options ={{
             tableLayout: "fixed",
             maxBodyHeight: 600,
+            showTitle:false,
             search:false,
             paging:false,
             filtering:true,

@@ -1,8 +1,8 @@
 import React, {useState,useEffect} from "react";
-import {useTable} from 'react-table';
 import axios from 'axios';
 
-import './table.css'
+
+import Materialtable,{MTableToolbar}from 'material-table'
 
 
 export const ResultsTable = ({stageID}) => {
@@ -33,77 +33,96 @@ export const ResultsTable = ({stageID}) => {
 
   const [columns,setColumns] = useState([
     {
-      Header: 'Id',
-      accessor: 'id',
+      title: 'Id',
+      field: 'id',
     },
     {
-      Header: 'Start time',
-      accessor: 'start_time'
+      title: 'Name',
+      field: 'competitor_name',
     },
     {
-      Header: 'Arrival Time',
-      accessor: 'arrival_time'
+      title: 'Lastname',
+      field: 'competitor_lastname',
     },
     {
-      Header: 'Neutralization',
-      accessor: 'neutralization'
+      title: 'Category',
+      field: 'competitor_category',
     },
     {
-      Header: 'Penalization',
-      accessor: 'penalization'
+      title: 'Start time',
+      field: 'start_time'
+    },
+    {
+      title: 'Arrival Time',
+      field: 'arrival_time'
+    },
+    {
+      title: 'Total time',
+      field: 'total_time',
+    },
+    {
+      title: 'Neutralization',
+      field: 'neutralization'
+    },
+    {
+      title: 'Penalization',
+      field: 'penalization'
+    },
+    {
+      title: 'Total',
+      field: 'total'
     },
   ])
-  const [data,setData]=useState([{
-    id: 1,
-    first_name: "Dena",
-    last_name: "Keeble",
-    category: "Cruze",
-    time: "3:43:45.000",
-    penalization: "1:12:43.000",
-    waypoint_Missed: 1
-  }])
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({
-    columns,
-    data
-  })
+  const [data,setData]=useState([])
   
   useEffect(()=>{
     getResults();
   },[])
 
   return (
-    <>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </>
+    <div>   
+      <div className="custom-align">
+      <div className=" custom-container-80">
+      <Materialtable
+          components={{
+          Toolbar: props => (
+              <div  
+              style={{ backgroundColor: '#fcba03' }}>
+                  <MTableToolbar 
+                  
+                  {...props} />
+              </div>
+          )
+      }}
+        columns={columns}
+        data = {data}
+        
+        options ={{
+            tableLayout: "fixed",
+            maxBodyHeight: 600,
+            showTitle:false,
+            search:false,
+            paging:false,
+            filtering:true,
+            exportButton:true,
+            
+                headerStyle: {
+                    background: '#fcba03',
+                    color: '#000',
+                    textAlign:'center',
+                    fontSize:'1'
+                },
+                cellStyle: {
+                    textAlign:'center', 
+                    fontSize:'1'}}}
+        
+        
+       >
+
+       </Materialtable>
+       </div>
+       </div>
+       </div>  
   )
 }
     

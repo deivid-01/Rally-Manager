@@ -8,7 +8,6 @@ function Results(props){
 
         <div>
             <br></br>
-            <div><h1 className="text-center">Results</h1> </div>
             <div>
                 <ResultsTable stageID={stageID}/>
             </div>
