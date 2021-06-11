@@ -19,6 +19,10 @@
 }
 
 .leaflet-container {
-    width:80vw;
+    width:40vw;
     height:70vh;
+}
+.custom-container {
+    
+    width:45vw;
 }
