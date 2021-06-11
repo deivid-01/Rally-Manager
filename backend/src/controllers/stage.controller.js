@@ -8,10 +8,8 @@ stageCtrl.getOne= async ( req , res ) =>
   populate({
     path:"categories",select:"categorytype",
     populate:{path:"categorytype",select:"name"}}).
-    populate({
-      path:"partialresults",select:"competitor",
-      populate:{path:"competitor",select:"name"}}).
-    populate('waypoints')
+    populate('waypoints').
+    populate('partialresults')
     .exec((err,stage)=>{
     res.json(stage);
   });
