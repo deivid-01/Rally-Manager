@@ -124,7 +124,8 @@ function MapView ()
        <br></br>
        <div className="custom-container">
        <Materialtable
-            components={{
+        
+        components={{
                 Toolbar: props => (
                     <div  
                     variant='dense'
@@ -138,6 +139,7 @@ function MapView ()
         columns={columns}
         data = {data}
         options ={{
+            actionsColumnIndex:-1,
             tableLayout: "fixed",
             maxBodyHeight: 600,
             showTitle:false,

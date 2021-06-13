@@ -3,14 +3,16 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import MapView from './MapView'
 import Results from './Results'
+
 function Stage(props){
 
+    const [prevIndex,setPrevIndex] = useState(-1)
     const [stageData, setStageData] = useState()
     const [options,setOptions] = useState([
         {
             id : 1,
             name:'Waypoints',
-            active: true
+            active: false
         },
         {
             id : 2,
@@ -40,11 +42,29 @@ function Stage(props){
             option.active = false
         })
 
+
+        if(prevIndex==index)
+        {
+            localStorage.removeItem('option_')
+            localStorage.setItem('option_',index)
+            window.location.reload()
+        }
+
         newOptions[index].active =true
         setSelectedOption(newOptions[index])
         
         setOptions(newOptions)
+        setPrevIndex(index)
 
+    }
+
+    const updateOptions = () => {
+        var newOptions =[...options]
+        var option= localStorage.getItem('option_');
+        localStorage.removeItem('option_');
+
+        newOptions[(option)?option:0].active = true;
+        setOptions(newOptions);
     }
 
     useEffect(()=>{
@@ -53,7 +73,9 @@ function Stage(props){
         if (stage)
         {
             setStageData(JSON.parse(stage));
-            setSelectedOption(options[0])
+            var option= localStorage.getItem('option_');
+            setSelectedOption((option)?options[option]:options[0])
+            updateOptions()
         }
     },[])
 
@@ -97,7 +119,7 @@ function Stage(props){
                     </div>
                         :(selectedOption.id==2) ? 
                             <Results></Results>
-                            :<Results></Results>
+                            :<Results ></Results>
                 }
 
         </div>
