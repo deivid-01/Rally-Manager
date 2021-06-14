@@ -1,11 +1,14 @@
 import React ,{ useEffect, useState}from "react";
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import MapView from './MapView'
 import Results from './Results'
+import AddPartialResults from './AddPartialResults'
 
 function Stage(props){
 
+    const [waypoints,setWaypoints] = useState([])
     const [prevIndex,setPrevIndex] = useState(-1)
     const [stageData, setStageData] = useState()
     const [options,setOptions] = useState([
@@ -66,13 +69,15 @@ function Stage(props){
         newOptions[(option)?option:0].active = true;
         setOptions(newOptions);
     }
-
     useEffect(()=>{
 
         var stage = window.localStorage.getItem('stage')
         if (stage)
         {
-            setStageData(JSON.parse(stage));
+            stage =JSON.parse(stage) 
+            setStageData(stage);
+            setWaypoints(stage.waypoints)
+
             var option= localStorage.getItem('option_');
             setSelectedOption((option)?options[option]:options[0])
             updateOptions()
@@ -118,8 +123,8 @@ function Stage(props){
                     <MapView></MapView>
                     </div>
                         :(selectedOption.id==2) ? 
-                            <Results></Results>
-                            :<Results ></Results>
+                            <AddPartialResults/>
+                            :<Results waypoints={waypoints} ></Results>
                 }
 
         </div>

@@ -2,10 +2,31 @@ const Trackpoint = require('../models/trackpoint.js');
 const toolsCtrl = require('../controllers/tools.controller');
 const trackpointCtrl = {};
 
+trackpointCtrl.getOneByPartialresult = async ( req, res) => {
+  try
+  {
+    const trackpoints = await Trackpoint.find({partialresult:req.params.id});
+    res.json(trackpoints);
+  }
+  
+  catch (err)
+  {
+    res.json(err)
+  }
+}
+
 trackpointCtrl.getAll= async ( req , res ) =>
 {
-  const trackpoints = await Trackpoint.find();
-  res.json(trackpoints);
+  try
+  {
+    const trackpoints = await Trackpoint.find();
+    res.json(trackpoints);
+  }
+  catch
+  {
+    return res.json(err)
+  }
+
 }
 trackpointCtrl.createOne = async ( req , res ) =>
 {

@@ -1,16 +1,19 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import {ResultsTable} from "./ResultsTable";
 
-function Results(props){
+function Results({waypoints}){
    
-    const stageID = "60a41cb13c14873c684d626f"
+ 
+
     return (
 
         <div>
             <br></br>
             <div>
-                <ResultsTable stageID={stageID} reload={props.reload}/>
+                <ResultsTable waypoints={waypoints} ></ResultsTable>
             </div>
+            <br></br>
+            <br></br>
         </div>
     )
 }

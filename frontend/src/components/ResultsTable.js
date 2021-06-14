@@ -3,85 +3,124 @@ import axios from 'axios';
 
 
 import Materialtable,{MTableToolbar}from 'material-table'
-import Button from '@material-ui/core/Button'
+import {Button,IconButton} from '@material-ui/core'
 import DetailedResults from './DetailedResults'
+import DeleteIcon from '@material-ui/icons/Delete';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 
-export const ResultsTable = ({stageID,reload}) => {
-  
-  const getResults = async ()=>{
-    try {
-      const res = await axios.get('http://localhost:5000/api/stages/'+stageID)
-      configureData(res.data.partialresults)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+export const ResultsTable = ({waypoints}) => {
+ 
 
-  const configureData =(partialresults)=>{
-    var newData = []
-    partialresults.forEach(element => {
-      var item = {}
-      item.id = element._id
-      item.start_time = element.start_time
-      item.arrival_time = element.arrival_time
-      item.neutralization = element.neutralization
-      item.penalization = element.penalization
-      newData.push(item)
-    });
-   
-    setData(newData)
-  }
-  const [showDetailedInfo,setShowDetailedInfo]= useState(reload);
+
+  const [selectedResult,setSelectedResult] = useState(null);
+  const [showDetailedInfo,setShowDetailedInfo]= useState(true);
   const [columns,setColumns] = useState([
     {
-      title: 'Id',
-      field: 'id',
-      width:'10%'
+      title: 'Position',
+      field: 'position',
+      width:'10%',
+      type: 'numeric',
+      cellStyle:{
+        backgroundColor: '#fc9003',
+   
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fc9003',
+ 
+        textAlign:'center', 
+    }
     },
     {
       title: 'Name',
       field: 'competitor_name',
-      width:'10%'
+      width:'10%',
+      cellStyle:{
+
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
     },
     {
       title: 'Lastname',
       field: 'competitor_lastname',
-      width:'10%'
+      width:'10%',
+      cellStyle:{
+   
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
     },
     {
       title: 'Category',
       field: 'competitor_category',
-      width:'10%'
+      width:'15%',
+      cellStyle:{
+  
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
     },
     {
-      title: 'Start time',
-      field: 'start_time',
-      width:'10%'
+      title: 'Partial Time',
+      field: 'partial_time',
+      width:'15%',
+      cellStyle:{
+      
+        textAlign:'center', 
+        fontSize:'1'
     },
-    {
-      title: 'Arrival Time',
-      field: 'arrival_time',
-      width:'10%'
-    },
-    {
-      title: 'Total time',
-      field: 'total_time',
-      width:'10%'
-    },
-    {
-      title: 'Neutralization',
-      field: 'neutralization',
-      width:'10%'
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
+      
     },
     {
       title: 'Penalization',
       field: 'penalization',
-      width:'10%'
+      width:'20%',
+      cellStyle:{
+    
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+   
+        
+        textAlign:'center', 
+    }
     },
     {
-      title: 'Total',
+      title: 'Total Time',
       field: 'total',
-      width:'10%'
+      width:'20%',
+      cellStyle:{
+  
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+   
+        textAlign:'center', 
+    }
     },
   ])
   const [data,setData]=useState([
@@ -99,29 +138,58 @@ export const ResultsTable = ({stageID,reload}) => {
     }
   ])
 
+
+  const configureData =(partialresults)=>{
+    var newData = []
+    partialresults.forEach((element,i) => {
+      var item = {}
+      item.id = element._id
+      item.competitor_category = element.competitor.categorytype.name
+      item.competitor_name = element.competitor.name
+      item.competitor_lastname = element.competitor.lastname
+      item.position = (element.position)?element.position:(i+1)
+      item.start_time = element.start_time
+      item.arrival_time = element.arrival_time
+      item.neutralization = element.neutralization
+      item.penalization = element.penalization
+      newData.push(item)
+    });
+   
+    setData(newData)
+  }
   const changeComponent =  rowData => e => {
   
   }
   function  sayHi(e,rowData)
   {
     setShowDetailedInfo((showDetailedInfo)?false:true);
+    setSelectedResult (rowData)
   }
   
   useEffect(()=>{
-    console.log("Loading")
+ 
     setShowDetailedInfo(true)
-    //getResults();
+ 
+    var stage = localStorage.getItem('stage')
+    if ( stage )
+    {
+      console.log()
+      configureData(JSON.parse(stage).partialresults);
+    }
+    
+
+
   },[])
 
 
   return (
     <div>   
-      {(showDetailedInfo==true)?
+      {(showDetailedInfo)?
       <div className="custom-align">
       <div className=" custom-container-80">
       <Materialtable
           components={{
-          Toolbar: props => (
+            Toolbar: props => (
               <div  
               style={{ backgroundColor: '#fcba03' }}>
                   <MTableToolbar 
@@ -130,15 +198,15 @@ export const ResultsTable = ({stageID,reload}) => {
               </div>
           ),
           Action: props => (
-            <Button
+            <IconButton
               onClick={(event) => props.action.onClick(event, props.data)}
               variant="contained"
-              style={{textTransform: 'none'}}
-                      className="text-light bg-dark"
+              style={{color: '#000'}}
+                      
               size="small"
             >
-              Details
-            </Button>
+             <FindInPageIcon fontSize="large" />
+              </IconButton>
         )
 
         }  
@@ -163,13 +231,12 @@ export const ResultsTable = ({stageID,reload}) => {
             paging:false,
             filtering:true,
             exportButton:true,
-            
-                headerStyle: {
-                    background: '#fcba03',
-                    color: '#000',
-                    textAlign:'center',
-                    fontSize:'1'
-                },
+            headerStyle: {
+              background: '#fcba03',
+              color: '#000',
+              textAlign:'center',
+              fontSize:'1'
+          },
                 cellStyle: {
                     textAlign:'center', 
                     fontSize:'1'}}}
@@ -179,8 +246,11 @@ export const ResultsTable = ({stageID,reload}) => {
 
        </Materialtable>
        </div>
-       </div>:
-       <DetailedResults></DetailedResults>
+       <br></br>
+       <br></br>
+       </div>
+     :
+       <DetailedResults waypoints={waypoints} compInfo={selectedResult}></DetailedResults>
       }
        </div>  
   )

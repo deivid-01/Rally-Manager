@@ -1,5 +1,7 @@
 const Stage = require('../models/stage.js');
 const Category = require('../models/category.js');
+const PartialResult = require('../models/partialresult.js');
+const partialresult = require('../models/partialresult.js');
 const stageCtrl = {};
 
 stageCtrl.getOne= async ( req , res ) =>
@@ -9,7 +11,11 @@ stageCtrl.getOne= async ( req , res ) =>
     path:"categories",select:"categorytype",
     populate:{path:"categorytype",select:"name"}}).
     populate('waypoints').
-    populate('partialresults')
+    populate({
+      path:"partialresults",select:["competitor",'start_time','arrival_time','neutralization','penalization'],
+      populate:{path:"competitor",select:["name",'lastname','categorytype'],
+      populate:{path:'categorytype',select:'name'}}})
+    
     .exec((err,stage)=>{
     res.json(stage);
   });
@@ -43,10 +49,27 @@ stageCtrl.createOne = async ( req , res ) =>
         for ( category_id of stage.categories)
         {
           var category = await Category.findById(category_id);
+          
+          //Create partial results
+          for ( competitor_id of category.competitors )
+          {
+              item = {}
+              item.stage = stage._id
+              item.competitor = competitor_id
+
+              var partialResult = new PartialResult(item)
+
+              await partialResult.save().then(async()=>{
+                stage.partialresults.push(partialResult._id);
+              });
+
+          }
 
           category.stages.push(stage._id);
 
           await category.save();
+
+          await stage.save();
 
         }
 

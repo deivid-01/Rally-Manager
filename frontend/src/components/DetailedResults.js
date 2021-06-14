@@ -1,11 +1,40 @@
 import React , {useEffect,useState}from 'react'
-import { Map, TileLayer} from 'react-leaflet'
+import { Map, TileLayer,Polyline} from 'react-leaflet'
 import Materialtable,{MTableToolbar,MTablePagination} from 'material-table'
 import {TablePagination,Grid} from '@material-ui/core'
 import ElevationGraph from './ElevationGraph'
-function DetailedResults()
+import Markers from './Markers'
+import axios from 'axios'
+import FullscreenControl from 'react-leaflet-fullscreen';
+
+const polyline = [
+    [6.244198, -75.6177781],
+    [7.244198, -76.6177781],
+    [8.244198, -77.6177781],
+  ]
+
+function DetailedResults({waypoints,compInfo})
 {
-    const [waypoints,setWaypoints] = useState([
+
+    const [path,setPath] = useState([])
+    const [elevation,setElevation] = useState([])
+    const [competitorInfo,setCompetitorInfo] = useState([
+        {
+            position: -1,
+            competitor_category: 'Motos Darien',
+            competitor_name: 'Juan',
+            competitor_lastname: 'Portrofilio',
+            start_time:0,
+            arrival_time:0,
+            total_time:0,
+            neutralization:0,
+            penalization:0,
+            total:0
+        }
+    ]
+    )
+    const [trackpoints,setTrackpoints] = useState([])
+    const [waypoints_,setWaypoints] = useState([
 
     ])
     const [data,setData] =useState([
@@ -34,7 +63,7 @@ function DetailedResults()
         {
             title:'Position',
             field:'position',
-            type:'Numeric',
+            type:'numeric',
             width: "15%",
             cellStyle:{
                 backgroundColor: '#000',
@@ -51,12 +80,15 @@ function DetailedResults()
         },
         {
             title:'Category',
-            field:'category',
+            field:'competitor_category',
             width: "15%",
             cellStyle:{
                 textAlign:'center', 
                 fontSize:'1'
             },
+            headerStyle: {
+                textAlign:'center', 
+            }
          
            
         },
@@ -149,7 +181,7 @@ function DetailedResults()
         {
             title:'Number',
             field:'position',
-            type:'Numeric',
+            type:'numeric',
             width: "15%",
             cellStyle:{
 
@@ -180,14 +212,54 @@ function DetailedResults()
         },
     ])
 
+    const fetchTrackpoints = async () =>{
+    
+        try
+        {
+            const res = await axios.get('http://localhost:5000/api/trackpoints/'+competitorInfo[0].id)
+           
+            var path_ = []
+            var elevation_ = []
+            res.data.forEach((trackpoint)=>{
+                path_.push(trackpoint.location.coordinates)
+                elevation_.push(trackpoint.elevation)
+            })
+           setPath(path_)
+           setElevation(elevation_)
+        }
+        catch ( err)
+        {
+            console.log(err)
+        }
+    }
+
+    useEffect(()=>{
+        
+     
+      setWaypoints(waypoints);
+      setCompetitorInfo([compInfo])
+
+    },[])
+
+    useEffect(()=>{
+        if (competitorInfo[0].position!=-1)
+        {
+            fetchTrackpoints()
+        }
+    },[competitorInfo])
+
+    const setNameAsTitle = () => {
+        return competitorInfo[0].competitor_name+' '+competitorInfo[0].competitor_lastname
+    } 
+
     return(
         <div>
             <div className="custom-align">
             <div className="custom-container-80">
          <Materialtable
          columns = {columns}
-         data = {data}
-         title = 'Competitor Name #4'
+         data = {competitorInfo}
+         title = {setNameAsTitle()}
          options = {{
              tableLayout:'fixed',
              search:false,
@@ -209,14 +281,17 @@ function DetailedResults()
            lat:'6.2441988',
            lng:'-75.6177781'
        }}
-       
+      
        zoom={10}
        >
            <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
            />
-          {/** <Markers waypoints ={waypoints}/>*/} 
+           <FullscreenControl position="topleft" />
+             <Markers waypoints ={waypoints_}/>
+            <Polyline pathOptions={{ color: 'lime' }} positions={path} />
+
 
        </Map>
        <div className="custom-container">
@@ -276,7 +351,7 @@ function DetailedResults()
        <br></br>
 
           <div className="custom-align">
-                <ElevationGraph></ElevationGraph>
+                <ElevationGraph elev ={elevation}></ElevationGraph>
                 </div>
  
         <br></br>

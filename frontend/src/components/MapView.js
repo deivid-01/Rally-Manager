@@ -1,9 +1,11 @@
 import React, {useState,useEffect} from 'react'
 import 'leaflet/dist/leaflet.css'
-
+import {Grid} from '@material-ui/core'
 import { Map, TileLayer} from 'react-leaflet'
 import Materialtable,{MTableToolbar} from 'material-table'
 import Markers from './Markers'
+import FullscreenControl from 'react-leaflet-fullscreen';
+
 function MapView ()
 {
     const [waypoints,setWaypoints]  = useState([])
@@ -103,27 +105,31 @@ function MapView ()
 
     return(
         <div>
-        <div className="custom-align">
+
+        <Grid container
+         justify="center"
+      >
+           < Grid item sm={5} >
        <Map
        center = {(waypoints.length>0)?setCenter():
         {
            lat:'6.2441988',
            lng:'-75.6177781'
        }}
-       
+       fuul
        zoom={10}
        >
            <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
            />
+            <FullscreenControl position="topleft" />
            <Markers waypoints ={waypoints}/>
 
        </Map>
-       
-       <br></br>
-       <div className="custom-container">
-       <Materialtable
+            </Grid>
+            <Grid item sm={5}>
+            <Materialtable
         
         components={{
                 Toolbar: props => (
@@ -141,7 +147,7 @@ function MapView ()
         options ={{
             actionsColumnIndex:-1,
             tableLayout: "fixed",
-            maxBodyHeight: 600,
+            maxBodyHeight: 450,
             showTitle:false,
             search:false,
             paging:false,
@@ -195,7 +201,12 @@ function MapView ()
        >
 
        </Materialtable>
-       </div>
+            </Grid>
+       </Grid>
+       <br></br>
+       <div className="custom-container">
+       
+      
        </div>
        <br></br>
        <br></br>
