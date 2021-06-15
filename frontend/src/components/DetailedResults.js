@@ -7,11 +7,6 @@ import Markers from './Markers'
 import axios from 'axios'
 import FullscreenControl from 'react-leaflet-fullscreen';
 
-const polyline = [
-    [6.244198, -75.6177781],
-    [7.244198, -76.6177781],
-    [8.244198, -77.6177781],
-  ]
 
 function DetailedResults({waypoints,compInfo})
 {
