@@ -13,21 +13,8 @@ function DetailedResults({waypoints,compInfo})
 
     const [path,setPath] = useState([])
     const [elevation,setElevation] = useState([])
-    const [competitorInfo,setCompetitorInfo] = useState([
-        {
-            position: -1,
-            competitor_category: 'Motos Darien',
-            competitor_name: 'Juan',
-            competitor_lastname: 'Portrofilio',
-            start_time:0,
-            arrival_time:0,
-            total_time:0,
-            neutralization:0,
-            penalization:0,
-            total:0
-        }
-    ]
-    )
+    const [missedWaypoints,setMissedWaypoints] = useState([])
+    const [competitorInfo,setCompetitorInfo] = useState([    ])
     const [trackpoints,setTrackpoints] = useState([])
     const [waypoints_,setWaypoints] = useState([
 
@@ -90,7 +77,6 @@ function DetailedResults({waypoints,compInfo})
         {
             title:'Start Time',
             field:'start_time',
-            type : 'numeric',
             width: "10%",
             cellStyle:{
                 backgroundColor: '#f2b200',
@@ -107,7 +93,6 @@ function DetailedResults({waypoints,compInfo})
         {
             title:'Arrival Time ',
             field:'arrival_time',
-            type : 'numeric',
             width: "15%",
             cellStyle:{
                 backgroundColor: '#f2b200',
@@ -122,9 +107,8 @@ function DetailedResults({waypoints,compInfo})
           
         },
         {
-            title:'Total Time',
-            field:'total_time',
-            type : 'numeric',
+            title:'¨Partial Time',
+            field:'partial_time',
             width: "15%",
             cellStyle:{
                 backgroundColor: '#f2b200',
@@ -141,8 +125,21 @@ function DetailedResults({waypoints,compInfo})
         {
             title:'Neutralization',
             field:'neutralization',
-            type : 'numeric',
-            width: "20%",
+            width: "10%",
+            cellStyle:{
+                textAlign:'center', 
+                fontSize:'1'
+            },
+            headerStyle: {
+                textAlign:'center', 
+                fontSize:'1'
+            }
+         
+        },
+        {
+            title:'Penalization',
+            field:'penalization',
+            width: "10%",
             cellStyle:{
                 textAlign:'center', 
                 fontSize:'1'
@@ -156,7 +153,6 @@ function DetailedResults({waypoints,compInfo})
         {
             title:'TOTAL',
             field:'total',
-            type : 'numeric',
             width: "10%",
             cellStyle:{
                 backgroundColor: '#000',
@@ -233,11 +229,12 @@ function DetailedResults({waypoints,compInfo})
      
       setWaypoints(waypoints);
       setCompetitorInfo([compInfo])
+      setMissedWaypoints(compInfo.missedWaypoints)
 
     },[])
 
     useEffect(()=>{
-        if (competitorInfo[0].position!=-1)
+        if (competitorInfo.length > 0 )
         {
             fetchTrackpoints()
         }
@@ -254,7 +251,7 @@ function DetailedResults({waypoints,compInfo})
          <Materialtable
          columns = {columns}
          data = {competitorInfo}
-         title = {setNameAsTitle()}
+         title = {( competitorInfo.length>0)?setNameAsTitle():'Competitor Name'}
          options = {{
              tableLayout:'fixed',
              search:false,
@@ -294,7 +291,7 @@ function DetailedResults({waypoints,compInfo})
        <Materialtable
         
          columns = {columns2}
-         data = {data}
+         data = {missedWaypoints}
          title = 'Waypoints missed'
          options = {{
              tableLayout:'fixed',

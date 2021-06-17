@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import UploadWayPoints from './components/UploadWaypoints';
-import UploadGPX from './components/UploadGPX';
 import reportWebVitals from './reportWebVitals';
 import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'

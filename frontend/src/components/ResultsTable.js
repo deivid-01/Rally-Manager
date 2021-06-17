@@ -11,7 +11,7 @@ import FindInPageIcon from '@material-ui/icons/FindInPage';
 export const ResultsTable = ({waypoints}) => {
  
 
-
+  const [resultsLoaded,setResultsLoaded] = useState(false);
   const [selectedResult,setSelectedResult] = useState(null);
   const [showDetailedInfo,setShowDetailedInfo]= useState(true);
   const [columns,setColumns] = useState([
@@ -124,18 +124,7 @@ export const ResultsTable = ({waypoints}) => {
     },
   ])
   const [data,setData]=useState([
-    {
-      id:'-1',
-      competitor_name:'Name Comp',
-      competitor_lastname:'Lastname Comp',
-      competitor_category:'Category Comp',
-      start_time:0,
-      arrival_time:0,
-      total_time:0,
-      total:0,
-      neutralization:0,
-      penalization:0
-    }
+
   ])
 
 
@@ -165,6 +154,15 @@ export const ResultsTable = ({waypoints}) => {
     setShowDetailedInfo((showDetailedInfo)?false:true);
     setSelectedResult (rowData)
   }
+
+  const fetchResults = async (stage_id) => {
+    const res = await axios.get('http://localhost:5000/api/results/stage/'+stage_id)
+
+    setData(res.data);
+
+    
+
+  }
   
   useEffect(()=>{
  
@@ -173,13 +171,24 @@ export const ResultsTable = ({waypoints}) => {
     var stage = localStorage.getItem('stage')
     if ( stage )
     {
-      console.log()
-      configureData(JSON.parse(stage).partialresults);
+      stage = JSON.parse(stage)
+      //configureData(stage.partialresults);
+      fetchResults(stage._id);
+
     }
     
 
 
   },[])
+
+  useEffect(()=>{
+
+    if ( data.length > 0 )
+    {
+      setResultsLoaded(true);
+    }
+
+  },[data])
 
 
   return (
@@ -222,6 +231,7 @@ export const ResultsTable = ({waypoints}) => {
             } 
           }
         ]}
+        isLoading = {!resultsLoaded}
         options ={{
             actionsColumnIndex:-1,
             tableLayout: "fixed",
