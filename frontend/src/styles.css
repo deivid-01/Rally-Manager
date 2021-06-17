@@ -9,7 +9,40 @@
     justify-content: center;
     align-items: center;
 }
-
+.text-center {
+    text-align: center;
+}
+.text-4xl {
+    font-size: 2.25rem;
+}
+.border-green-400 {
+    --border-opacity: 1;
+    border-color: #68d391;
+    border-color: rgba(104, 211, 145, var(--border-opacity));
+  }
+  .bg-green-100 {
+    --bg-opacity: 1;
+    background-color: #f0fff4;
+    background-color: rgba(240, 255, 244, var(--bg-opacity));
+  }
+  .bg-green-400 {
+    --bg-opacity: 1;
+    background-color: #68d391;
+    background-color: rgba(104, 211, 145, var(--bg-opacity));
+  }
+.messD{
+    text-align: center;
+  
+  }
+  .border-2 {
+    border-width: 2px;
+  }
+.center {
+    margin: auto;
+    width: 30%;
+    height: 50%;
+    padding: 10px;
+  }
 .big-title {
     font-size: 300%;
 }

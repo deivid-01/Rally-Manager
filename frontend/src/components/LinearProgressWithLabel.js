@@ -3,7 +3,6 @@ import {Box,LinearProgress} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types'; 
 
-import '../App.css';
 
 const LinearProgressWithLabel = (props)=> {
     return (
