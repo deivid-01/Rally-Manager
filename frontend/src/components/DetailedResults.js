@@ -6,7 +6,8 @@ import ElevationGraph from './ElevationGraph'
 import Markers from './Markers'
 import axios from 'axios'
 import FullscreenControl from 'react-leaflet-fullscreen';
-
+import {Button,IconButton} from '@material-ui/core'
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
 function DetailedResults({waypoints,compInfo})
 {
@@ -169,6 +170,21 @@ function DetailedResults({waypoints,compInfo})
     ])
 
     const [columns2, setColumns2] =useState([
+        {
+            title:'Id',
+            field:'id',
+            editable:'never',
+            width: "10%",
+            cellStyle:{
+
+                textAlign:'center', 
+                fontSize:'1'
+            },
+            headerStyle: {
+                textAlign:'center', 
+            }
+         
+        },
         {
             title:'Latitude',
             field:'latitude',
@@ -357,7 +373,13 @@ function DetailedResults({waypoints,compInfo})
        <Materialtable
         
          columns = {columns2}
-         data = {[]}
+         data = {[{
+             id:'1',
+             latitude:'23',
+             longitude:'24',
+             ratius:'100',
+             penalization:'00:30:00',
+         }]}
          title = 'Waypoints missed'
          options = {{
              tableLayout:'fixed',
@@ -366,13 +388,34 @@ function DetailedResults({waypoints,compInfo})
              maxBodyHeight: data.length*100
          }}
 
+         actions={[
+            {
+              icon: 'save',
+              tooltip: 'Save User',
+              onClick: (event, rowData) =>{
+                alert("guenas")
+              } 
+            }
+          ]}
+
          components = {{
-             Pagination:(props) => <div>
+             Pagination:(props) => (<div>
                 <Grid container >
                     <Grid item sm={6} align='center'>Total</Grid>
                     <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?0:0}</Grid>
                 </Grid>
-             </div>
+             </div>),
+             Action: props => (
+                <IconButton
+                  onClick={(event) => props.action.onClick(event, props.data)}
+                  variant="contained"
+                  style={{color: '#000'}}
+                          
+                  size="small"
+                >
+                 <ZoomInIcon fontSize="large" />
+                  </IconButton>
+            )
          }}
 
          >
