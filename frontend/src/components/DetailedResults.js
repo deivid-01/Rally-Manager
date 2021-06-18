@@ -170,9 +170,36 @@ function DetailedResults({waypoints,compInfo})
 
     const [columns2, setColumns2] =useState([
         {
-            title:'Number',
-            field:'position',
-            type:'numeric',
+            title:'Latitude',
+            field:'latitude',
+            width: "15%",
+            cellStyle:{
+
+                textAlign:'center', 
+                fontSize:'1'
+            },
+            headerStyle: {
+                textAlign:'center', 
+            }
+         
+        },
+        {
+            title:'Longitude',
+            field:'longitude',
+            width: "15%",
+            cellStyle:{
+
+                textAlign:'center', 
+                fontSize:'1'
+            },
+            headerStyle: {
+                textAlign:'center', 
+            }
+         
+        },
+        {
+            title:'Ratius',
+            field:'ratius',
             width: "15%",
             cellStyle:{
 
@@ -186,7 +213,7 @@ function DetailedResults({waypoints,compInfo})
         },
         {
             title:'Penalization Time',
-            field:'total',
+            field:'penalization',
             type : 'numeric',
             width: "10%",
             cellStyle:{
@@ -229,7 +256,7 @@ function DetailedResults({waypoints,compInfo})
      
       setWaypoints(waypoints);
       setCompetitorInfo([compInfo])
-      setMissedWaypoints(compInfo.missedWaypoints)
+      setMissedWaypoints(compInfo.waypointsMissed)
 
     },[])
 
@@ -243,6 +270,45 @@ function DetailedResults({waypoints,compInfo})
     const setNameAsTitle = () => {
         return competitorInfo[0].competitor_name+' '+competitorInfo[0].competitor_lastname
     } 
+
+    const HHMMSSToHours = (str)=>{
+  
+        var total = 0;
+        var units = str.split(':')
+        if( units.length == 3 )
+        {
+          units.forEach((unit,i)=>
+          {
+            total+=parseFloat(unit)/Math.pow(60,i);
+          })
+        }
+        
+        
+        return total;
+    }
+
+   const hoursToHHMMSS = (hours) => {
+
+        var HH = Math.floor(hours)
+        var num = (hours-HH)*60
+        var MM = Math.floor(num)
+        var SS = Math.floor ((num-MM)*60)
+      
+      
+        return String(HH)+":"+String(MM)+':'+String(SS)
+      
+      
+      
+      }
+
+    const getTotalPenalizationMissedWaypoints = () =>{
+        var sum = 0;
+        missedWaypoints.forEach((waypoint)=>{
+             sum += HHMMSSToHours(waypoint.penalization)
+        })
+        
+        return hoursToHHMMSS(sum)
+    }
 
     return(
         <div>
@@ -281,7 +347,7 @@ function DetailedResults({waypoints,compInfo})
             attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
            />
            <FullscreenControl position="topleft" />
-             <Markers waypoints ={waypoints_}/>
+             <Markers waypoints ={missedWaypoints}/>
             <Polyline pathOptions={{ color: 'lime' }} positions={path} />
 
 
@@ -291,7 +357,7 @@ function DetailedResults({waypoints,compInfo})
        <Materialtable
         
          columns = {columns2}
-         data = {missedWaypoints}
+         data = {[]}
          title = 'Waypoints missed'
          options = {{
              tableLayout:'fixed',
@@ -304,7 +370,7 @@ function DetailedResults({waypoints,compInfo})
              Pagination:(props) => <div>
                 <Grid container >
                     <Grid item sm={6} align='center'>Total</Grid>
-                    <Grid item sm={6} align='center'>7</Grid>
+                    <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?0:0}</Grid>
                 </Grid>
              </div>
          }}
@@ -328,7 +394,7 @@ function DetailedResults({waypoints,compInfo})
             Pagination:(props) => <div>
                <Grid container >
                    <Grid item sm={6} align='center'>Total</Grid>
-                   <Grid item sm={6} align='center'>7</Grid>
+                   <Grid item sm={6} align='center'>{0}</Grid>
                </Grid>
             </div>
         }}

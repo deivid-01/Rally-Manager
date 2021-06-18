@@ -2,6 +2,7 @@ const analysisCtrl = require('./analysis.controller');
 const Stages = require('../models/stage');
 const Trackpoints = require('../models/trackpoint');
 const raceCtrl = require('./race.controller');
+const waypoint = require('../models/waypoint');
 
 
 
@@ -106,6 +107,7 @@ resultCtrl.translateResults = (results) => {
     item.penalization ="+"+raceCtrl.hoursToHHMMSS(result.penalization)
     item.neutralization = raceCtrl.hoursToHHMMSS(result.neutralization)
     item.waypointsMissed = result.waypointsMissed
+  
     item.competitor_name = result.competitor.name
     item.competitor_lastname = result.competitor.lastname
     item.competitor_category = result.competitor.categorytype.name
@@ -115,6 +117,13 @@ resultCtrl.translateResults = (results) => {
   })
    
     return posResults
+}
+raceCtrl.getWaypointsMissed = (waypoints) => {
+  ids = []
+  waypoints.forEach(waypoint =>{
+    ids.push(waypoint._id)
+  })
+  return ids
 }
 
 raceCtrl.hoursToHHMMSS = (hours) => {
