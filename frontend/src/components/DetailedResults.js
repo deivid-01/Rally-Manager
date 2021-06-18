@@ -172,7 +172,7 @@ function DetailedResults({waypoints,compInfo})
     const [columns2, setColumns2] =useState([
         {
             title:'Id',
-            field:'id',
+            field:'index',
             editable:'never',
             width: "10%",
             cellStyle:{
@@ -267,6 +267,17 @@ function DetailedResults({waypoints,compInfo})
         }
     }
 
+    const settleWaypoints = ()=>{
+       return  missedWaypoints.map((waypoint,i) =>({
+            index:i+1,
+            id:waypoint._id,
+            latitude:Math.round(waypoint.location.coordinates[0]*10000)/10000,
+            longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
+            ratius:waypoint.rule.ratius,
+            penalization:waypoint.rule.penalization,
+          }))
+    }
+
     useEffect(()=>{
         
      
@@ -320,7 +331,7 @@ function DetailedResults({waypoints,compInfo})
     const getTotalPenalizationMissedWaypoints = () =>{
         var sum = 0;
         missedWaypoints.forEach((waypoint)=>{
-             sum += HHMMSSToHours(waypoint.penalization)
+             sum += waypoint.rule.penalization/60
         })
         
         return hoursToHHMMSS(sum)
@@ -373,13 +384,7 @@ function DetailedResults({waypoints,compInfo})
        <Materialtable
         
          columns = {columns2}
-         data = {[{
-             id:'1',
-             latitude:'23',
-             longitude:'24',
-             ratius:'100',
-             penalization:'00:30:00',
-         }]}
+         data = {(missedWaypoints.length> 0)?settleWaypoints():[]}
          title = 'Waypoints missed'
          options = {{
              tableLayout:'fixed',
@@ -402,7 +407,7 @@ function DetailedResults({waypoints,compInfo})
              Pagination:(props) => (<div>
                 <Grid container >
                     <Grid item sm={6} align='center'>Total</Grid>
-                    <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?0:0}</Grid>
+                    <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?getTotalPenalizationMissedWaypoints():0}</Grid>
                 </Grid>
              </div>),
              Action: props => (
@@ -437,7 +442,7 @@ function DetailedResults({waypoints,compInfo})
             Pagination:(props) => <div>
                <Grid container >
                    <Grid item sm={6} align='center'>Total</Grid>
-                   <Grid item sm={6} align='center'>{0}</Grid>
+                   <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?0:0}</Grid>
                </Grid>
             </div>
         }}
