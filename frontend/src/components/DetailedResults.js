@@ -1,7 +1,8 @@
-import React , {useEffect,useState}from 'react'
-import { Map, TileLayer,Polyline} from 'react-leaflet'
-import Materialtable,{MTableToolbar,MTablePagination} from 'material-table'
-import {TablePagination,Grid} from '@material-ui/core'
+import React , {useEffect,useRef,useState}from 'react'
+
+import { Map, TileLayer,Polyline } from 'react-leaflet'
+import Materialtable,{MTableToolbar,MTablePagination,} from 'material-table'
+import {TablePagination,Grid,Typography,Divider} from '@material-ui/core'
 import ElevationGraph from './ElevationGraph'
 import Markers from './Markers'
 import axios from 'axios'
@@ -11,7 +12,13 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
 function DetailedResults({waypoints,compInfo})
 {
+    const mapRef = useRef();
+    const [map,setMap] = useState(null)
 
+
+   
+
+ 
     const [path,setPath] = useState([])
     const [elevation,setElevation] = useState([])
     const [missedWaypoints,setMissedWaypoints] = useState([])
@@ -230,7 +237,6 @@ function DetailedResults({waypoints,compInfo})
         {
             title:'Penalization Time',
             field:'penalization',
-            type : 'numeric',
             width: "10%",
             cellStyle:{
                 backgroundColor: '#000',
@@ -268,14 +274,16 @@ function DetailedResults({waypoints,compInfo})
     }
 
     const settleWaypoints = ()=>{
-       return  missedWaypoints.map((waypoint,i) =>({
+       var dd =  missedWaypoints.map((waypoint,i) =>({
             index:i+1,
             id:waypoint._id,
             latitude:Math.round(waypoint.location.coordinates[0]*10000)/10000,
             longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
-            ratius:waypoint.rule.ratius,
-            penalization:waypoint.rule.penalization,
+            ratius:String(waypoint.rule.ratius)+"m",
+            penalization:"+"+hoursToHHMMSS(waypoint.rule.penalization/60),
           }))
+        console.log(dd)
+        return dd
     }
 
     useEffect(()=>{
@@ -283,8 +291,12 @@ function DetailedResults({waypoints,compInfo})
      
       setWaypoints(waypoints);
       setCompetitorInfo([compInfo])
+    
       setMissedWaypoints(compInfo.waypointsMissed)
 
+       setMap(mapRef.current.leafletElement)
+     
+       // map.setView([0, 0], 0);
     },[])
 
     useEffect(()=>{
@@ -337,6 +349,12 @@ function DetailedResults({waypoints,compInfo})
         return hoursToHHMMSS(sum)
     }
 
+
+    const updateMapCenter = (rowData) => {
+
+        map.flyTo([rowData.latitude,rowData.longitude], 16);
+
+    }
     return(
         <div>
             <div className="custom-align">
@@ -346,6 +364,7 @@ function DetailedResults({waypoints,compInfo})
          data = {competitorInfo}
          title = {( competitorInfo.length>0)?setNameAsTitle():'Competitor Name'}
          options = {{
+          
              tableLayout:'fixed',
              search:false,
              paging:false,
@@ -360,13 +379,13 @@ function DetailedResults({waypoints,compInfo})
             <br></br>
 
                    <div className="custom-align">
-       <Map
-       center = {
-        {
-           lat:'6.2441988',
-           lng:'-75.6177781'
-       }}
-      
+       <Map 
+       
+       center = {  [
+        '6.2441988',
+        '-75.6177781'
+       ]}
+       ref = {mapRef}
        zoom={10}
        >
            <TileLayer
@@ -390,7 +409,7 @@ function DetailedResults({waypoints,compInfo})
              tableLayout:'fixed',
              search:false,
              sorting:false,
-             maxBodyHeight: data.length*100
+             
          }}
 
          actions={[
@@ -398,17 +417,19 @@ function DetailedResults({waypoints,compInfo})
               icon: 'save',
               tooltip: 'Save User',
               onClick: (event, rowData) =>{
-                alert("guenas")
+                updateMapCenter(rowData)
               } 
             }
           ]}
 
          components = {{
              Pagination:(props) => (<div>
-                <Grid container >
-                    <Grid item sm={6} align='center'>Total</Grid>
-                    <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?getTotalPenalizationMissedWaypoints():0}</Grid>
+                <Grid container style = {{padding:15, background:"#f5f5f5"}}>
+                    <Grid item sm={6} align='center'><Typography variant="subtitle2">Total</Typography></Grid>
+                    <Grid item sm={6} align='center'><Typography variant="subtitle2">{(missedWaypoints.length>0)?"+"+getTotalPenalizationMissedWaypoints():0}</Typography></Grid>
                 </Grid>
+                <Divider></Divider>
+                <TablePagination {...props}/>
              </div>),
              Action: props => (
                 <IconButton

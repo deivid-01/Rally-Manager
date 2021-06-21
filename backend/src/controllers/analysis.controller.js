@@ -54,7 +54,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                 listNoPassedWaypoints.push(waypoints[i])
             }
         }else if(typeWaypoint=='DZ'){
-            listCircle = analysisCtrl.createCircle(latitudeWayPoint,longitudeWayPoint,10);//waypoints[i].rule.ratius);                
+            listCircle = analysisCtrl.createCircle(latitudeWayPoint,longitudeWayPoint,waypoints[i].rule.ratius);//waypoints[i].rule.ratius);                
             dzCheckerId = analysisCtrl.checkDZFZ(listCircle,trackpoints,[latitudeWayPoint,longitudeWayPoint])
             
             if(dzCheckerId!=0){
@@ -76,7 +76,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                 passedByDZ=false;
             }
         }else if(typeWaypoint=='FZ'){
-                listCircle = analysisCtrl.createCircle(latitudeWayPoint,longitudeWayPoint,10);//,waypoints[i].rule.ratius);
+                listCircle = analysisCtrl.createCircle(latitudeWayPoint,longitudeWayPoint,waypoints[i].rule.ratius);//,waypoints[i].rule.ratius);
                 fzChecker=analysisCtrl.checkDZFZ(listCircle,trackpoints,[latitudeWayPoint,longitudeWayPoint]);
                 
                 if(fzChecker!=0){
