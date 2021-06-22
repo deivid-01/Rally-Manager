@@ -12,7 +12,7 @@ const  WaypointSchema = new Schema(
         // validation.
         coordinates: {type: [Number], default: [0, 0]}
     },
-    distance: { type: String, required: true},
+    distance: { type: Number, required: true},
     speed: { type: String},
     rule:{
         penalization: {type:Number},

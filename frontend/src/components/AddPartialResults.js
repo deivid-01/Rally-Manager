@@ -1,12 +1,14 @@
 import React, {useEffect,useState} from 'react'
 import axios from 'axios';
 import Materialtable,{MTableToolbar} from 'material-table'
-import {Button,IconButton,Typography,Tooltip, TextField } from '@material-ui/core'
+import {Button,IconButton,Typography,Tooltip, TextField,Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import BackupIcon from '@material-ui/icons/Backup';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
-//import TimePicker from "@material-ui/lab/TimePicker";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import CancelIcon from "@material-ui/icons/Cancel";
+
 const useStyles = makeStyles((theme) => ({
   input: {
     display: 'none',
@@ -15,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
 function AddPartialResults()
 {
   const classes = useStyles();
+
+    const partialResults_URL= 'http://localhost:5000/api/partialresults/stage/'
     const [ filename, setFilename] = useState('');
     const [ progress, setProgress] = useState(0);
     const [openError, setOpenError] = useState(false);
@@ -25,15 +29,7 @@ function AddPartialResults()
     
 
     const [data,setData]  = useState([
-        {
-            full_name:'Juan Ortiz',
-            category:'Motos Darien 300',
-            start_time:"00:00:00",
-            arrival_time:"00:00:00",
-            neutralization:"00:00:00",
-            gpx_uploaded:true
-
-        }
+   
     ])
 
     const validateTime = (t) => {
@@ -72,14 +68,14 @@ function AddPartialResults()
     const [columns, setColumns] =useState([
         {
             title:'Full Name',
-            field:'full_name',
+            field:'competitor_fullname',
             editable:'never',
             width: "10%"
          
         },
         {
             title:'Category',
-            field:'category',
+            field:'competitor_category',
             width: "20%",
             editable:'never',
             
@@ -147,41 +143,54 @@ function AddPartialResults()
             </div>),
             editComponent: (rowData) =>
             rowData && (
+              <div>
+                {
+                  (progress==0)?
+                
                 <div >
-                        <input
-                        className={classes.input}
-                        accept=".gpx"
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={onFileUploadHandler}
-                         /> 
-                         <label htmlFor="contained-button-file">
-                 
-                                     <Tooltip title="Upload GPX">
-                                 <IconButton component="span">
-                           < BackupIcon  fontSize="large"   style={{fill: "black"}}></BackupIcon>
-                           </IconButton>
-                           </Tooltip>
-                          
-                         </label>
-            
+                      <input
+                      className={classes.input}
+                      accept=".gpx"
+                      id="contained-button-file"
+                      multiple
+                      type="file"
+                      onChange={(e)=>onFileUploadHandler(rowData.rowData.id,e)}
+                        /> 
+                        <label htmlFor="contained-button-file">
+                
+                                    <Tooltip title="Upload GPX">
+                                <IconButton component="span">
+                          < BackupIcon  fontSize="large"   style={{fill: "black"}}></BackupIcon>
+                          </IconButton>
+                          </Tooltip>
+                        
+                        </label>
+          
+            </div>
+            :
+            <div>
+            <Box position="relative" display="inline-flex">
+            < CircularProgress  variant="determinate" value={progress} />
+              
+          </Box>
+          </div>
+            }
               </div>
+               
     )
         },
 
     ])
 
 
-    const uploadTrackpoints = async(files) => {
+    const uploadTrackpoints = async(partialResult_id,file) => {
 
-        setFilename(files[0].name);
-    
+        setFilename(file.name);
+      
         const formData = new FormData();
     
-        formData.append('file',files[0]);
-        formData.append('partialresult',files[0]);
-    
+        formData.append('file',file);
+        formData.append('partialresult',partialResult_id);
         try
         {
           const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
@@ -213,14 +222,39 @@ function AddPartialResults()
     
       }
 
-    const onFileUploadHandler =async e =>{
+    const fetchPartialResults = async(stage_id) => {
+
+      console.log(partialResults_URL+stage_id)
+      try
+      {
+        const  res =await  axios.get(partialResults_URL+stage_id,)
+        setData(res.data)
+      }
+      catch(err)
+      {
+        console.log(err)
+      }
+    }
+    
+
+    const onFileUploadHandler =async (partialResult_id,e) =>{
  
+      
         if ( e.target.files.length  >0) 
         {      
-            uploadTrackpoints(e.target.files[0]);
+            uploadTrackpoints(partialResult_id,e.target.files[0]);
           e.target.value = null;
         }
       }
+
+      useEffect(()=>{
+
+        var stage = localStorage.getItem('stage')
+        if ( stage)
+          stage = JSON.parse(stage)
+          console.log(stage)
+          fetchPartialResults(stage._id);
+      },[])
 
     return ( <div >
        <div className="custom-align">

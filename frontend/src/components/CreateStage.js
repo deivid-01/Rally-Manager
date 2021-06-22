@@ -177,7 +177,8 @@ function CreateStage(props){
                                 onChange= {handleInputChange}
                                 type="text"
                                 placeholder="Enter stage  name"
-                                className="text-center  big-title border-bottom no-border"
+                                style={{outline:0}}
+                                className="text-center  big-title border-0 border-bottom"
                                 name="name"
                             ></input>
                 

@@ -155,7 +155,11 @@ function UploadWayPoints({stageInfo}) {
         <Collapse in={progress==0}> 
           <form>
             <div>
-              <input id="file-upload" type="file" onChange={onChange}/>
+              <input id="file-upload" 
+              type="file"
+              accept=".csv"
+              style={{display:'none'}}
+               onChange={onChange}/>
               <label htmlFor="file-upload" className="custom-file-upload"> Select File</label>       
             </div>      
           </form>     

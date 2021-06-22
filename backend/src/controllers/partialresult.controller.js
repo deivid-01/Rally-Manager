@@ -7,9 +7,21 @@ partialResultCtrl = {}
 
 partialResultCtrl.getAll = async ( req, res) =>{
     await PartialResult.find().
-    populate("competitor","name").
-    populate("stage","name").exec((err,partialResults)=>{
+    populate('competitor','name')
+    .exec((err,partialResults)=>{
         res.status(200).json(partialResults);
+    });
+
+}
+
+partialResultCtrl.getByStage = async (req, res) => {
+    var categoryType_id=req.body.categorytype
+    var stage_id = req.params.id
+    await PartialResult.find({stage:stage_id}).
+    populate({path:"competitor",select:["name",'lastname','categorytype'],
+    populate:{path:'categorytype',select:'name'}})
+    .exec((err,partialResults)=>{
+        res.status(200).json(toolsCtrl.translateResults_Add(partialResults));
     });
 
 }

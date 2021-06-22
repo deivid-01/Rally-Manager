@@ -29,7 +29,7 @@ raceCtrl.getByAdmin = async (req, res ) =>{
   {
   
     var races =  await Race.find({admin:admin_id})
-    console.log(races)
+   
 
     return res.status(200).json(races)
   }
@@ -90,7 +90,7 @@ raceCtrl.createOne = async ( req , res ) =>
   {
     return res.status(401).json({error:"Token missing or invalid"})
   }
-  console.log("Decoded Token")
+ 
   
   const {id: admin_id} = decodedToken
   

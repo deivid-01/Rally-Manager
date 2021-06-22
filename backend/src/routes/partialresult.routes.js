@@ -5,6 +5,7 @@ const race = require('../models/race');
 
 //router.get('/:id', partialResultCtrl.getOne);
 router.get('/', partialResultCtrl.getAll);
+router.get('/stage/:id', partialResultCtrl.getByStage);
 
 router.post('/file', partialResultCtrl.createMany);
 router.post('/', partialResultCtrl.createOne);

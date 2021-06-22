@@ -10,7 +10,7 @@ function CreateRace(props){
 
     const postURL = "http://localhost:5000/api/races";
     const nextPage = "/races";
-    const [highlighted,setHighlighted] = React.useState();
+    const [highlighted,setHighlighted] = useState(false);
     const [ filename, setFilename] = useState('');
     const [ raceData, setRaceData] = useState({
       name:'',
@@ -152,10 +152,12 @@ function CreateRace(props){
             <div className="custom-align">
               
             <input
+           
                         onChange= {handleInputChange}
+                        style={{outline:0}}
                         type="text"
                         placeholder="Enter race name"
-                        className="text-center  big-title border-bottom no-border"
+                        className="text-center  big-title  border-0 border-bottom"
                         name="name"
                     ></input>
             </div>
@@ -170,7 +172,10 @@ function CreateRace(props){
         <Collapse in={progress==0}> 
           <form>
             <div>
-              <input id="file-upload" type="file" onChange={onChange}/>
+              <input 
+               accept=".csv"
+               style={{display:'none'}}
+              id="file-upload" type="file" onChange={onChange}/>
               <label htmlFor="file-upload" className="custom-file-upload">Select File</label>       
             </div>      
           </form>     
