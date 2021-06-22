@@ -63,4 +63,13 @@
     
     width:80vw;
 }
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.custom-file-uploadx2 {
+  display:'none'
+}
 
