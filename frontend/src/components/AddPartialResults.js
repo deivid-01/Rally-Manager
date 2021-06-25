@@ -41,9 +41,7 @@ function AddPartialResults()
     
     
 
-    const [data,setData]  = useState([
-   
-    ])
+    const [data,setData]  = useState([])
 
     const validateTime = (t) => {
     
@@ -299,6 +297,7 @@ function AddPartialResults()
       {
         const  res =await  axios.get(partialResults_URL+stage_id,)
         setData(res.data)
+        console.log(res.data[0])
         SetFetchingData(false)
       }
       catch(err)

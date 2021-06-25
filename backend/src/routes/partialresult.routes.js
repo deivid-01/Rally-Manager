@@ -13,6 +13,7 @@ router.post('/', partialResultCtrl.createOne);
 
 router.put('/:id',partialResultCtrl.updateOne);
 
+router.delete('/:id',partialResultCtrl.deleteOne);
 router.delete('/',partialResultCtrl.deleteAll);
 
 module.exports = router;

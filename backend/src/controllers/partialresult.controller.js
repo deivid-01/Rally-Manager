@@ -1,4 +1,5 @@
 const PartialResult = require("../models/partialresult");
+const Trackpoints = require('../models/trackpoint');
 const Competitor = require("../models/competitor");
 const Stage = require("../models/stage");
 const toolsCtrl = require("./tools.controller");
@@ -90,6 +91,34 @@ partialResultCtrl.createMany = async (req,res) =>{
 
     await PartialResult.insertMany(partialResults);
     res.status(200).json({"msg":"Partial results created"});
+
+}
+
+partialResultCtrl.deleteOne = async ( req , res ) => {
+
+    var partialRes_id = req.params.id; 
+    try
+    {
+        //Delete from Stage
+        var partialResult =  await PartialResult.findById(partialRes_id)
+        var stage_id = partialResult.stage
+        
+        if (stage_id)
+            var stage = await Stage.findById(stage_id)
+            stage.partialresults=  stage.partialresults.filter((partRes)=>String(partRes._id).localeCompare(partialRes_id)!=0)
+            stage.save();
+
+        //Delete from trackpoints
+        await Trackpoints.deleteMany({partialresult:partialRes_id})
+
+
+        await PartialResult.findByIdAndDelete(partialRes_id);
+        res.status(200).json({'msg':'Partial result deleted'})
+    }
+    catch( err)
+    {
+        res.status(500).json(err);
+    }
 
 }
 

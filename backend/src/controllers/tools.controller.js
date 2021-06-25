@@ -188,6 +188,7 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
       start_time:toolsCtrl.hoursToHHMMSS(result.start_time),
       arrival_time: toolsCtrl.hoursToHHMMSS(result.arrival_time),
       neutralization:toolsCtrl.hoursToHHMMSS(result.neutralization),
+      gpx_uploaded:result.gpx_uploaded
     })
 
   })
