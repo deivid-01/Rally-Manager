@@ -232,4 +232,12 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
     return posResults
 }
 
+toolsCtrl.reverseTranslation = (data) => {
+ return {
+   start_time: toolsCtrl.HHMMSSToHours(data.start_time),
+   arrival_time: toolsCtrl.HHMMSSToHours(data.arrival_time),
+   neutralization: toolsCtrl.HHMMSSToHours(data.neutralization),
+ } 
+}
+
 module.exports = toolsCtrl;

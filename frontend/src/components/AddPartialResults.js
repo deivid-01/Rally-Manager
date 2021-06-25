@@ -3,11 +3,19 @@ import axios from 'axios';
 import Materialtable,{MTableToolbar} from 'material-table'
 import {Button,IconButton,Typography,Tooltip, TextField,Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from "@material-ui/core/Snackbar";
 import BackupIcon from '@material-ui/icons/Backup';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CancelIcon from "@material-ui/icons/Cancel";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -18,7 +26,12 @@ function AddPartialResults()
 {
   const classes = useStyles();
 
+    const [fetchingData,SetFetchingData]= useState(true)
     const partialResults_URL= 'http://localhost:5000/api/partialresults/stage/'
+    const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);
+    const [startUpload,setStartUpload] = useState(false);
+    const [itemUpdated,setItemUpdated] = useState(false);
+    const [itemDeleted,setItemDeleted] = useState(false);
     const [ filename, setFilename] = useState('');
     const [ progress, setProgress] = useState(0);
     const [openError, setOpenError] = useState(false);
@@ -78,6 +91,7 @@ function AddPartialResults()
             field:'competitor_category',
             width: "20%",
             editable:'never',
+            filtering:false,
             
          
            
@@ -142,11 +156,7 @@ function AddPartialResults()
            
             </div>),
             editComponent: (rowData) =>
-            rowData && (
-              <div>
-                {
-                  (progress==0)?
-                
+            rowData && (                
                 <div >
                       <input
                       className={classes.input}
@@ -165,16 +175,6 @@ function AddPartialResults()
                           </Tooltip>
                         
                         </label>
-          
-            </div>
-            :
-            <div>
-            <Box position="relative" display="inline-flex">
-            < CircularProgress  variant="determinate" value={progress} />
-              
-          </Box>
-          </div>
-            }
               </div>
                
     )
@@ -182,6 +182,72 @@ function AddPartialResults()
 
     ])
 
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setUploadGPXSuccess(false);
+    
+
+    };
+
+    const handleClose2 = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setStartUpload(false);
+    }
+  
+    const handleClose3 = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setItemUpdated(false);
+    }
+
+    const handleClose4 = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setItemDeleted(false);
+    }
+
+    const updateGPXState = (partialResult_id) => 
+    {
+      var newData = [...data]
+      var i;
+      for( i = 0; i<=newData.length;i++)
+      {
+        if ( newData[i].id.localeCompare(partialResult_id) == 0)
+        {
+          newData[i].gpx_uploaded = true;
+          
+          break;
+        }
+      }
+
+
+      setData(newData)
+    } 
+
+    const deletePartialResult = async (partialResult_id) => {
+
+      try
+      {
+        const res = await  axios.delete('http://localhost:5000/api/partialresults/'+partialResult_id);
+        setItemDeleted(true);
+
+      }
+      catch(err)
+      {
+        console.log(err);
+      }
+
+    }
 
     const uploadTrackpoints = async(partialResult_id,file) => {
 
@@ -193,16 +259,20 @@ function AddPartialResults()
         formData.append('partialresult',partialResult_id);
         try
         {
+          setStartUpload(true)
           const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
             headers: {
               'Content-Type': 'multipart/form-data'
             },
             onUploadProgress: progressEvent =>{
               setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
+              console.log(progress)
             }  
           });
-          console.log("Trackpoint Uploaded")
-          SetSuccessMsg(res.data.msg);
+          setUploadGPXSuccess(true)
+          setStartUpload(false);
+          updateGPXState(partialResult_id);
+
     
         }
         catch(err)
@@ -229,13 +299,30 @@ function AddPartialResults()
       {
         const  res =await  axios.get(partialResults_URL+stage_id,)
         setData(res.data)
+        SetFetchingData(false)
       }
       catch(err)
       {
         console.log(err)
       }
     }
-    
+    const updatePartialResult = async (partialResult) => {
+
+      try
+      {
+        const res = await axios.put('http://localhost:5000/api/partialresults/'+partialResult.id,
+                                    partialResult);
+        console.log('Partial results updated');
+
+      }
+      catch(err)
+      {
+   
+          console.log(err);
+       
+      }
+      
+    }
 
     const onFileUploadHandler =async (partialResult_id,e) =>{
  
@@ -258,9 +345,11 @@ function AddPartialResults()
 
     return ( <div >
        <div className="custom-align">
+     
+
       <div className=" custom-container-80">
         <Materialtable
-        
+        isLoading={fetchingData}
         components={{
                 Toolbar: props => (
                     <div  
@@ -304,6 +393,12 @@ function AddPartialResults()
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
+                
+                //Update data in database
+                updatePartialResult(newData);
+                //Show message
+                setItemUpdated(true);
+                //Update local data
                 const dataUpdate = [...data];
                 const index = oldData.tableData.id;
                 dataUpdate[index] = newData;
@@ -314,6 +409,9 @@ function AddPartialResults()
             }),
             onRowDelete: oldData =>
                 new Promise((resolve, reject) => {
+                    //Delete from database
+                    
+                    deletePartialResult(oldData.id)
                     setTimeout(() => {
                     const dataDelete = [...data];
                     const index = oldData.tableData.id;
@@ -331,7 +429,29 @@ function AddPartialResults()
 
        </Materialtable>
        </div>  
-       </div>  
+       </div>
+   
+         <Snackbar open={startUpload}   onClose={handleClose2}>
+          <Alert onClose={handleClose2} severity="info">
+            Uploading GPX...
+          </Alert>
+        </Snackbar>
+          <Snackbar open={uploadGPXSuccess} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success">
+              GPX Uploaded
+            </Alert>
+        </Snackbar>
+
+        <Snackbar open={itemUpdated} autoHideDuration={2000} onClose={handleClose3}>
+            <Alert onClose={handleClose3} severity="success">
+              Data Updated
+            </Alert>
+        </Snackbar>
+        <Snackbar open={itemDeleted} autoHideDuration={2000} onClose={handleClose4}>
+            <Alert onClose={handleClose4} severity="success">
+              Result Deleted
+            </Alert>
+        </Snackbar>
     </div>)
 }
 

@@ -13,6 +13,7 @@ const PartialResultSchema = new Schema({
     discount      : { type: Number, required: false,default:0},
     waypointsMissed      : [{type: Schema.Types.ObjectId, ref :'Waypoint'} ],
     speedingZones      : { type: Number, required: false},
+    gpx_uploaded      : { type: Boolean, required: false, default:false},
     
     stage:{type: Schema.Types.ObjectId, ref :'Stage', required:true}  
 

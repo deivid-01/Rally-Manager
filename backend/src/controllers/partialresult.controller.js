@@ -5,6 +5,12 @@ const toolsCtrl = require("./tools.controller");
 
 partialResultCtrl = {}
 
+partialResultCtrl.getOne = async (req,res) => {
+    var partialResult= await PartialResult.findById(req.params.id);
+    return res.status(200).json(partialResult);
+}
+
+
 partialResultCtrl.getAll = async ( req, res) =>{
     await PartialResult.find().
     populate('competitor','name')
@@ -25,6 +31,24 @@ partialResultCtrl.getByStage = async (req, res) => {
     });
 
 }
+
+partialResultCtrl.updateOne = async( req, res ) => {
+
+    var data = req.body
+    data = toolsCtrl.reverseTranslation(data)
+    
+    try{
+        await PartialResult.findByIdAndUpdate(req.params.id,data);
+        res.status(200).json({"msg":"Partial Result Updated"});
+    
+      }
+      catch(err)
+      {
+        res.status(400).json(err);
+      }
+}
+
+
 
 partialResultCtrl.createOne = async ( req, res ) => {
 
