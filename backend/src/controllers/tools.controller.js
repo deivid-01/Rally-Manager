@@ -238,6 +238,7 @@ toolsCtrl.reverseTranslation = (data) => {
    start_time: toolsCtrl.HHMMSSToHours(data.start_time),
    arrival_time: toolsCtrl.HHMMSSToHours(data.arrival_time),
    neutralization: toolsCtrl.HHMMSSToHours(data.neutralization),
+   gpx_uploaded:data.gpx_uploaded
  } 
 }
 

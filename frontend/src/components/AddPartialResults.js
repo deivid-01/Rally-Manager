@@ -10,7 +10,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CancelIcon from "@material-ui/icons/Cancel";
-
+import LinearProgress from "@material-ui/core/LinearProgress";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -37,7 +37,9 @@ function AddPartialResults()
     const [openError, setOpenError] = useState(false);
     const [errorMsg, SetErrorMsg] = useState('Error');
     const [successMsg, SetSuccessMsg] = useState('Trackpoints uploaded');
-  
+
+    const [gpxUploaded,setGPXUpload] = useState(false);
+   
     
     
 
@@ -102,9 +104,7 @@ function AddPartialResults()
             filtering:false,
             validate: rowData => (!validateTime(rowData.start_time))?{isValid: false, helperText: 'Format must be hh:mm:ss'}:true,
 
-        }
-          
-        ,
+        } ,
         {
             title:'Arrival Time',
             field:'arrival_time',
@@ -133,9 +133,12 @@ function AddPartialResults()
             filtering:false,
             render: (rowData) =>
             rowData && (
+              
             <div >
+         
                 {(rowData.gpx_uploaded)?
                 <div >
+                 
                             <Tooltip title="Gpx uploaded">
                             <CheckCircleIcon fontSize="large" style={{fill: "#00ba35"}}></CheckCircleIcon>
                             </Tooltip>
@@ -214,23 +217,7 @@ function AddPartialResults()
       setItemDeleted(false);
     }
 
-    const updateGPXState = (partialResult_id) => 
-    {
-      var newData = [...data]
-      var i;
-      for( i = 0; i<=newData.length;i++)
-      {
-        if ( newData[i].id.localeCompare(partialResult_id) == 0)
-        {
-          newData[i].gpx_uploaded = true;
-          
-          break;
-        }
-      }
-
-
-      setData(newData)
-    } 
+  
 
     const deletePartialResult = async (partialResult_id) => {
 
@@ -258,33 +245,31 @@ function AddPartialResults()
         try
         {
           setStartUpload(true)
+      
+
           const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
             headers: {
               'Content-Type': 'multipart/form-data'
             },
             onUploadProgress: progressEvent =>{
               setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
-              console.log(progress)
+             
             }  
           });
+          setGPXUpload(true);
           setUploadGPXSuccess(true)
           setStartUpload(false);
-          updateGPXState(partialResult_id);
+      
 
     
         }
         catch(err)
         {
-          if ( err.response.status == 500)
-          {
-            console.log("Problem with the server");
-          }
-          else
-          {
-            SetErrorMsg(err.response.data.msg);
-            setProgress(0);
-            setOpenError(true);
-          }
+          
+          
+           console.log(err)
+          
+         
         }
      
     
@@ -292,12 +277,12 @@ function AddPartialResults()
 
     const fetchPartialResults = async(stage_id) => {
 
-      console.log(partialResults_URL+stage_id)
+      
       try
       {
         const  res =await  axios.get(partialResults_URL+stage_id,)
         setData(res.data)
-        console.log(res.data[0])
+     
         SetFetchingData(false)
       }
       catch(err)
@@ -307,6 +292,7 @@ function AddPartialResults()
     }
     const updatePartialResult = async (partialResult) => {
 
+      console.log(partialResult);
       try
       {
         const res = await axios.put('http://localhost:5000/api/partialresults/'+partialResult.id,
@@ -324,7 +310,8 @@ function AddPartialResults()
     }
 
     const onFileUploadHandler =async (partialResult_id,e) =>{
- 
+      console.log(data);
+
       
         if ( e.target.files.length  >0) 
         {      
@@ -338,7 +325,7 @@ function AddPartialResults()
         var stage = localStorage.getItem('stage')
         if ( stage)
           stage = JSON.parse(stage)
-          console.log(stage)
+        
           fetchPartialResults(stage._id);
       },[])
 
@@ -385,14 +372,20 @@ function AddPartialResults()
             new Promise((resolve,reject)=>{
                 setTimeout(()=>{
                     setData([...data,newData]);
-
                     resolve();
                 },1000)
             }),
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
-                
+                console.log(gpxUploaded)
+
+                if (gpxUploaded)
+                    {
+                      newData.gpx_uploaded = true
+                      setGPXUpload(false)
+                    }
+
                 //Update data in database
                 updatePartialResult(newData);
                 //Show message
@@ -410,6 +403,7 @@ function AddPartialResults()
                 new Promise((resolve, reject) => {
                     //Delete from database
                     
+
                     deletePartialResult(oldData.id)
                     setTimeout(() => {
                     const dataDelete = [...data];
@@ -432,7 +426,8 @@ function AddPartialResults()
    
          <Snackbar open={startUpload}   onClose={handleClose2}>
           <Alert onClose={handleClose2} severity="info">
-            Uploading GPX...
+            Uploading competitor trackpoints...
+            <LinearProgress variant="indeterminate"/>
           </Alert>
         </Snackbar>
           <Snackbar open={uploadGPXSuccess} autoHideDuration={2000} onClose={handleClose}>
@@ -449,7 +444,9 @@ function AddPartialResults()
         <Snackbar open={itemDeleted} autoHideDuration={2000} onClose={handleClose4}>
             <Alert onClose={handleClose4} severity="success">
               Result Deleted
+             
             </Alert>
+       
         </Snackbar>
     </div>)
 }
