@@ -6,7 +6,7 @@ const Category = require("../models/category");
 const Stage = require("../models/stage");
 const Waypoint = require("../models/waypoint");
 const Trackpoint = require("../models/trackpoint");
-
+const PartialResult = require('../models/partialresult.js');
 testingCtrl = {}
 
 
@@ -19,6 +19,7 @@ testingCtrl.reset = async( req, res) =>{
     await Stage.deleteMany({});
     await Waypoint.deleteMany({});
     await Trackpoint.deleteMany({});
+    await PartialResult.deleteMany({});
     res.status(200).json({"msg":"Database reseted"});
 }
 

@@ -15,8 +15,8 @@ const  WaypointSchema = new Schema(
     distance: { type: Number, required: true},
     speed: { type: String},
     rule:{
-        penalization: {type:Number},
-        ratius: {type:Number},
+        penalization: {type:String},//HH:MM:SS
+        ratius: {type:Number}, //METERS
     },
     stage : {type: Schema.Types.ObjectId, ref :'Stage'}
 

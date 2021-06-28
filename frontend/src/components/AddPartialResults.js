@@ -404,8 +404,8 @@ function AddPartialResults()
                     //Delete from database
                     
 
-                    deletePartialResult(oldData.id)
                     setTimeout(() => {
+                      deletePartialResult(oldData.id)
                     const dataDelete = [...data];
                     const index = oldData.tableData.id;
                     dataDelete.splice(index, 1);

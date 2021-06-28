@@ -36,7 +36,6 @@ partialResultCtrl.getByStage = async (req, res) => {
 partialResultCtrl.updateOne = async( req, res ) => {
 
     var data = req.body
-    data = toolsCtrl.reverseTranslation(data)
     
     try{
         await PartialResult.findByIdAndUpdate(req.params.id,data);
@@ -53,9 +52,8 @@ partialResultCtrl.updateOne = async( req, res ) => {
 
 partialResultCtrl.createOne = async ( req, res ) => {
 
-    var partialResult = toolsCtrl.getConvertedPartialResult(req.body);
-    
-    partialResult = new PartialResult(partialResult);
+
+    partialResult = new PartialResult(req.body);
     await partialResult.save().then(async(partialResult)=>
     {
        var stage = await Stage.findById(partialResult.stage);

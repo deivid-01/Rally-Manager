@@ -1,7 +1,7 @@
 var Polycircle = require('./Polycircle.js');
 const WayPoints = require('../models/waypoint');
 const Trackpoint = require('../models/trackpoint.js');
-
+const toolsCtrl = require('./tools.controller');
 
 const analysisCtrl = {};
 
@@ -50,7 +50,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
         if(typeWaypoint=='WPM'){             
             listCircle = analysisCtrl.createCircle(latitudeWayPoint,longitudeWayPoint,waypoints[i].rule.ratius);   
             if(!analysisCtrl.checkWPM(listCircle,trackpoints,[latitudeWayPoint,longitudeWayPoint])){
-                penalization = penalization + waypoints[i].rule.penalization;
+                penalization = penalization + toolsCtrl.HHMMSSToHours(waypoints[i].rule.penalization)*60;
                 listNoPassedWaypoints.push(waypoints[i])
             }
         }else if(typeWaypoint=='DZ'){
@@ -72,7 +72,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                 passedByDZ = true;
             }else{
                 listNoPassedWaypoints.push(waypoints[i]);
-                penalization = penalization + parseInt(waypoints[i].rule.penalization);
+                penalization = penalization + toolsCtrl.HHMMSSToHours(waypoints[i].rule.penalization)*60;
                 passedByDZ=false;
             }
         }else if(typeWaypoint=='FZ'){
@@ -93,7 +93,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                         averageSpeed = analysisCtrl.calculateSpeed(distanceDZ,startTime,distanceFZ,finishTime);                
                         penalization = penalization + analysisCtrl.calculateSpeedPenalization(averageSpeed,speedMax);
                     }else{
-                        penalization = penalization + parseInt(waypoints[i].rule.penalization);//Si no pasa por FZ NI DZ QUE SE HACE?
+                        penalization = penalization + toolsCtrl.HHMMSSToHours(waypoints[i].rule.penalization)*60;//Si no pasa por FZ NI DZ QUE SE HACE?
                     }      
                 }else{
                     listNoPassedWaypoints.push(waypoints[i]);

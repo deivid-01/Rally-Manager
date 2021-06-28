@@ -6,11 +6,11 @@ const {Schema} = moongose;
 const PartialResultSchema = new Schema({
 
     competitor:{type: Schema.Types.ObjectId, ref :'Competitor',required:true} ,
-    start_time     : { type: Number, required: false,default:0},
-    arrival_time     : { type: Number, required: false,default:0},
-    neutralization     : { type: Number, required: false,default:0},
-    penalization     : { type: Number, required: false,default:0},
-    discount      : { type: Number, required: false,default:0},
+    start_time     : { type: String, required: false,default:'00:00:00'},
+    arrival_time     : { type: String, required: false,default:'00:00:00'},
+    neutralization     : { type: String, required: false,default:'00:00:00'},
+    penalization     : { type: String, required: false,default:'00:00:00'},
+    discount      : { type: String, required: false,default:'00:00:00'},
     waypointsMissed      : [{type: Schema.Types.ObjectId, ref :'Waypoint'} ],
     speedingZones      : { type: Number, required: false},
     gpx_uploaded      : { type: Boolean, required: false, default:false},

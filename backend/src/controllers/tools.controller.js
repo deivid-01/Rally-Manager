@@ -33,7 +33,7 @@ const toolsCtrl = {};
    var data = file.data.toString('utf8');// Convert to string 
    var result = parse.parse( data,{header:true}); //CSV to JSON
    //result.data.forEach(waypoint=>delete waypoint.wpnumber) // Delete wpNumber column
-   result.data=result.data.filter(waypoint=> waypoint.type.length>0); //Filter type column with empty values;
+   result.data=result.data.filter(waypoint=> waypoint.type.length>0 && waypoint.type.localeCompare('DAN')!=0); //Filter type column with empty values;
    waypointsPRE = result.data
    var i;
    for(  i = 0;  i < waypointsPRE.length;i++) 
@@ -44,7 +44,7 @@ const toolsCtrl = {};
           coordinates:[]
         },
         rule:{
-          penalization:0,
+          penalization:'00:00:00',
           ratius:0
         }
       };
@@ -53,7 +53,7 @@ const toolsCtrl = {};
       waypoint.location.coordinates[1]  =toolsCtrl.DDM2DD( waypointsPRE[i].longitude,typeAD = 2);
       waypoint.distance = parseFloat (waypointsPRE[i].distance);
       waypoint.speed= waypointsPRE[i].speed;
-      waypoint.rule.penalization= parseFloat(waypointsPRE[i].penalization);
+      waypoint.rule.penalization= waypointsPRE[i].penalization;
       waypoint.rule.ratius =  parseFloat(waypointsPRE[i].ratius);
       waypointsPRE[i] = waypoint;
     
@@ -85,15 +85,6 @@ toolsCtrl.getPartialResultsFromFile = (file) => {
 
 }
 
-toolsCtrl.getConvertedPartialResult = (result) =>{
-    
-
-  result.start_time = toolsCtrl.HHMMSSToHours(result.start_time);
-  result.arrival_time = toolsCtrl.HHMMSSToHours(result.arrival_time);
-  result.neutralization = toolsCtrl.HHMMSSToHours(result.neutralization);
-
-  return result;
-}
 
 toolsCtrl.HHMMSSToHours = (str)=>{
   
@@ -185,9 +176,9 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
       id:result._id,
       competitor_fullname:result.competitor.name+" "+result.competitor.lastname,
       competitor_category:result.competitor.categorytype.name,
-      start_time:toolsCtrl.hoursToHHMMSS(result.start_time),
-      arrival_time: toolsCtrl.hoursToHHMMSS(result.arrival_time),
-      neutralization:toolsCtrl.hoursToHHMMSS(result.neutralization),
+      start_time:result.start_time,
+      arrival_time: result.arrival_time,
+      neutralization:result.neutralization,
       gpx_uploaded:result.gpx_uploaded
     })
 
@@ -233,13 +224,5 @@ toolsCtrl.getCompetitorsFromFile = (file) =>{
     return posResults
 }
 
-toolsCtrl.reverseTranslation = (data) => {
- return {
-   start_time: toolsCtrl.HHMMSSToHours(data.start_time),
-   arrival_time: toolsCtrl.HHMMSSToHours(data.arrival_time),
-   neutralization: toolsCtrl.HHMMSSToHours(data.neutralization),
-   gpx_uploaded:data.gpx_uploaded
- } 
-}
 
 module.exports = toolsCtrl;

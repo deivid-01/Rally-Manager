@@ -3,6 +3,7 @@ const Stages = require('../models/stage');
 const Trackpoints = require('../models/trackpoint');
 const raceCtrl = require('./race.controller');
 const waypoint = require('../models/waypoint');
+const toolsCtrl = require('./tools.controller');
 
 
 
@@ -43,14 +44,14 @@ resultCtrl.getStageResult=async(req,res)=>{
           {
             var analysisRes  = analysisCtrl.checkWaypoints(waypoints,trackpoints);
    
-            partialR.penalization = analysisRes[1]/60 //WARNING : Convert to hours
-     
+            partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes[1]/60) //WARNING : Convert to hours
+            console.log(penalization)
             partialR.waypointsMissed = analysisRes[0]
      
           }
           else
           {
-            partialR.penalization = 0
+            partialR.penalization = '00:00:00'
      
             partialR.waypointsMissed = []
      
@@ -101,17 +102,19 @@ resultCtrl.translateResults = (results) => {
       waypointsMissed:[]
     }
     item.id = result._id
-    item.start_time = raceCtrl.hoursToHHMMSS(result.start_time)
-    item.arrival_time = raceCtrl.hoursToHHMMSS(result.arrival_time)
-    item.partial_time = raceCtrl.hoursToHHMMSS(result.arrival_time-result.start_time)
-    item.penalization ="+"+raceCtrl.hoursToHHMMSS(result.penalization)
-    item.neutralization = raceCtrl.hoursToHHMMSS(result.neutralization)
+    item.start_time = result.start_time
+    item.arrival_time = result.arrival_time
+    item.partial_time = toolsCtrl.hoursToHHMMSS(toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time))
+    
+    item.penalization ="+"+result.penalization
+    item.neutralization = result.neutralization
     item.waypointsMissed = result.waypointsMissed
   
     item.competitor_name = result.competitor.name
     item.competitor_lastname = result.competitor.lastname
     item.competitor_category = result.competitor.categorytype.name
-    item.total = raceCtrl.hoursToHHMMSS((result.arrival_time-result.start_time) + result.penalization - result.neutralization)
+    var totalHours = toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)
+    item.total = toolsCtrl.hoursToHHMMSS(totalHours + toolsCtrl.HHMMSSToHours(result.penalization) - toolsCtrl.HHMMSSToHours(result.neutralization))
    
     posResults.push(item)
   })
