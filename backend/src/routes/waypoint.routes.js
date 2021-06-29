@@ -6,6 +6,8 @@ router.get('/:id', waypointCtrl.getOne);
 router.get('/', waypointCtrl.getAll);
 router.put('/:id', waypointCtrl.updateOne);
 router.post('/file', waypointCtrl.createAll);
+
+router.delete('/:id',waypointCtrl.deleteOne)
 router.delete('/', waypointCtrl.deleteAll);
 
 

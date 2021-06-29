@@ -202,8 +202,8 @@ function DetailedResults({waypoints,compInfo})
          
         },
         {
-            title:'Ratius',
-            field:'ratius',
+            title:'Radius (m)',
+            field:'radius',
             width: "15%",
             cellStyle:{
 
@@ -273,12 +273,42 @@ function DetailedResults({waypoints,compInfo})
       setWaypoints(waypoints);
       setCompetitorInfo([compInfo])
     
-      setMissedWaypoints(compInfo.waypointsMissed)
+      setMissedWaypoints(prepareData(compInfo.waypointsMissed))
 
        setMap(mapRef.current.leafletElement)
      
        // map.setView([0, 0], 0);
     },[])
+
+    const prepareData = (wps) => {
+        if (wps.length > 0)
+        {
+            console.log(wps[0])
+            var d=  wps.map((waypoint,i)=>({
+                
+                id:waypoint._id,
+                index: i+1,
+                type: waypoint.location.type,
+                latitude: Math.round(waypoint.location.coordinates[0]*10000)/10000,
+                longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
+                radius: waypoint.rule.ratius,
+                penalization: waypoint.rule.penalization,
+            }))
+         
+            return d
+        }
+         
+
+        return [{
+            id: '',
+            type: '',
+            latitude:0,
+            longitude:0,
+            radius: 0,
+            penalization: 0
+        }]
+    }
+
 
     useEffect(()=>{
         if (competitorInfo.length > 0 )
@@ -329,7 +359,7 @@ function DetailedResults({waypoints,compInfo})
     const getTotalPenalizationMissedWaypoints = () =>{
         var sum = 0;
         missedWaypoints.forEach((waypoint)=>{
-             sum += HHMMSSToHours(waypoint.rule.penalization)/60
+             sum += HHMMSSToHours(waypoint.penalization)/60
         })
         
         return hoursToHHMMSS(sum)
@@ -379,7 +409,7 @@ function DetailedResults({waypoints,compInfo})
             attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
            />
            <FullscreenControl position="topleft" />
-             <Markers waypoints ={missedWaypoints}/>
+             <Markers points ={missedWaypoints}/>
             <Polyline pathOptions={{ color: 'lime' }} positions={path} />
 
 
@@ -389,7 +419,7 @@ function DetailedResults({waypoints,compInfo})
        <Materialtable
         
          columns = {columns2}
-         data = {(missedWaypoints.length> 0)?settleWaypoints():[]}
+         data = {(missedWaypoints.length> 0)?missedWaypoints:[]}
          title = 'Waypoints missed'
          options = {{
              tableLayout:'fixed',

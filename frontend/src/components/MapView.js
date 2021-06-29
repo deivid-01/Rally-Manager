@@ -6,11 +6,10 @@ import Materialtable,{MTableToolbar} from 'material-table'
 import Markers from './Markers'
 import FullscreenControl from 'react-leaflet-fullscreen';
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import axios from 'axios'
 function MapView ()
 {
+    const baseURL = 'http://localhost:5000/api/waypoints/'
     const mapRef = useRef();
     const [map,setMap] = useState(null)
     const [data,setData]  = useState([])
@@ -18,7 +17,7 @@ function MapView ()
     const [columns, setColumns] =useState([
         {
             title:'Id',
-            field:'id',
+            field:'index',
             editable:'never',
             width: "5%"
          
@@ -143,11 +142,68 @@ function MapView ()
         }
     }
 
+    const prepareWaypoint = (wpt) => {
+        return {
+
+            location: {
+                type: wpt.type,
+                coordinates:  [wpt.latitude, wpt.longitude]
+                        },
+            
+            rule:{
+                penalization: wpt.penalization,
+                ratius: wpt.radius 
+                 }    
+
+            }
+    }
+
+    
+    const deleteWaypoint = async (wpt)=>{
+        try
+        {
+            const res = await  axios.delete(baseURL+wpt.id);
+            //Show success message
+            console.log("Waypoint deleted");
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+     } 
+
+    const updateWaypoint = async (wpt)=>{
+        try
+        {
+            const res = await  axios.put(baseURL+wpt.id,prepareWaypoint(wpt));
+            //Show success message
+            console.log("Waypoint updated");
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+     } 
+
+    const createWaypoint = async (wpt)=>{
+       try
+       {
+           const res = await  axios.post(baseURL+wpt.id,prepareWaypoint(wpt));
+           //Show success message
+           console.log("Waypoint created");
+       }
+       catch(err)
+       {
+           console.log(err);
+       }
+    }
+
     const prepareData = (wps) => {
         if (wps.length > 0)
         {
             var d=  wps.map((waypoint,i)=>({
-                id: i+1,
+                id:waypoint._id,
+                index: i+1,
                 type: waypoint.location.type,
                 latitude: Math.round(waypoint.location.coordinates[0]*10000)/10000,
                 longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
@@ -236,6 +292,8 @@ function MapView ()
             onRowAdd: newData=>
             new Promise((resolve,reject)=>{
                 setTimeout(()=>{
+                    //Create in database
+                    createWaypoint(newData);
                     setData([...data,newData]);
 
                     resolve();
@@ -244,6 +302,7 @@ function MapView ()
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
+                updateWaypoint(newData)
                 const dataUpdate = [...data];
                 const index = oldData.tableData.id;
                 dataUpdate[index] = newData;
@@ -255,6 +314,9 @@ function MapView ()
             onRowDelete: oldData =>
                 new Promise((resolve, reject) => {
                     setTimeout(() => {
+
+                    deleteWaypoint(oldData);
+
                     const dataDelete = [...data];
                     const index = oldData.tableData.id;
                     dataDelete.splice(index, 1);

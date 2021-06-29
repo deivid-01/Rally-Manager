@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 const  Markers = ({points}) =>
 {
   const markers = points.map(point => (
-    <div key = {point.id}>
+    <div key = {point.index}>
     <Marker
         
         position={[point.latitude,point.longitude]}
@@ -19,7 +19,7 @@ const  Markers = ({points}) =>
     >
       <Popup>
       <Typography variant="subtitle2" gutterBottom>
-      Id: {point.id}
+      Id: {point.index}
       </Typography>
       <Typography variant="body2" gutterBottom>
       Type: {point.type}
