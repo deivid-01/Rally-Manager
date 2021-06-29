@@ -33,7 +33,10 @@ const toolsCtrl = {};
    var data = file.data.toString('utf8');// Convert to string 
    var result = parse.parse( data,{header:true}); //CSV to JSON
    //result.data.forEach(waypoint=>delete waypoint.wpnumber) // Delete wpNumber column
-   result.data=result.data.filter(waypoint=> waypoint.type.length>0 && waypoint.type.localeCompare('DAN')!=0); //Filter type column with empty values;
+   result.data=result.data.filter(waypoint=> waypoint.type.length>0 && 
+                                            waypoint.type.localeCompare('DAN')!=0 &&
+                                            waypoint.type.localeCompare('WPS')!=0
+                                            ); //Filter type column with empty values;
    waypointsPRE = result.data
    var i;
    for(  i = 0;  i < waypointsPRE.length;i++) 

@@ -1,49 +1,60 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState,useEffect,useRef} from 'react'
 import 'leaflet/dist/leaflet.css'
 import {Grid} from '@material-ui/core'
 import { Map, TileLayer} from 'react-leaflet'
 import Materialtable,{MTableToolbar} from 'material-table'
 import Markers from './Markers'
 import FullscreenControl from 'react-leaflet-fullscreen';
-
+import ZoomInIcon from '@material-ui/icons/ZoomIn'
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 function MapView ()
 {
-    const [waypoints,setWaypoints]  = useState([])
+    const mapRef = useRef();
+    const [map,setMap] = useState(null)
     const [data,setData]  = useState([])
+    const [partialType,setPartialType] = useState('WPM')
     const [columns, setColumns] =useState([
         {
             title:'Id',
             field:'id',
             editable:'never',
-            width: "10%"
+            width: "5%"
          
         },
         {
             title:'Type',
             field:'type',
-            width: "20%"
-         
+            width: "10%",
+            lookup: { 'WPM': 'WPM', 'FZ': 'FZ','DZ': 'DZ','START': 'START','FINISH': 'FINISH' } ,
+            sorting:false
+            
            
         },
         {
             title:'Latitude',
             field:'latitude',
             type : 'numeric',
-            width: "20%"
-          
+            width: "20%",
+            sorting:false
         },
+    
         {
             title:'Longitude',
             field:'longitude',
             type : 'numeric',
-            width: "15%"
+            width: "15%",
+            sorting:false
+
           
         },
         {
             title:'Radius (m)',
             field:'radius',
             type : 'numeric',
-            width: "15%"
+            width: "15%",
+            validate: rowData => (!(rowData.radius>=0 && rowData.radius<=1000))?{isValid: false, helperText: 'Number must greater than zero'}:true,
           
         },
         {
@@ -51,10 +62,32 @@ function MapView ()
             field:'penalization',
             width: "20%",
             validate: rowData => (!validateTime(rowData.penalization))?{isValid: false, helperText: 'Format must be hh:mm:ss'}:true,
-         
+            sorting:true
+            
         },
     ])
 
+    const changeComponent =  rowData => e => {
+        rowData=null;
+        console.log(e.target.value)
+    }
+    
+    const onTypeChange = (event) =>{
+
+        console.log(event.target.value)
+        setPartialType(event.target.value)
+    }
+    const updateMapCenter = (rowData) => {
+
+        map.flyTo([rowData.latitude,rowData.longitude], 16);
+        /***
+         * este espacio a la nena no le gusta, le gusta mas el otro pero bueno
+         * habia una vez un barquito chiquitico que no podia naveegar
+         * ahora que me estas prestando atencion, te quiero decir que te amo mucho
+         * nenito emoso de mi corazon, eres mien monito y churosito con eso ojitos color miel
+         * 
+         */
+    }
     const validateTime = (t) => {
     
 
@@ -94,17 +127,19 @@ function MapView ()
         if(stage)
         {
             stage = JSON.parse(stage);
-            setWaypoints(stage.waypoints)
+           
             setData(prepareData(stage.waypoints))
+            setMap(mapRef.current.leafletElement)
         }
+
 
     },[])
 
     const setCenter = () => {
     
         return {
-            lat:(waypoints[0].location.coordinates[0]+waypoints[waypoints.length-1].location.coordinates[0])/2,
-            lng:(waypoints[0].location.coordinates[1]+waypoints[waypoints.length-1].location.coordinates[1])/2
+            lat:(data[0].latitude+data[data.length-1].latitude)/2,
+            lng:(data[0].longitude+data[data.length-1].longitude)/2
         }
     }
 
@@ -144,7 +179,8 @@ function MapView ()
       >
            < Grid item sm={5} >
        <Map
-       center = {(waypoints.length>0)?setCenter():
+       ref = {mapRef}
+       center = {(data.length>0)?setCenter():
         {
            lat:'6.2441988',
            lng:'-75.6177781'
@@ -157,12 +193,12 @@ function MapView ()
             attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
            />
             <FullscreenControl position="topleft" />
-           <Markers waypoints ={waypoints}/>
+           <Markers points ={data}/>
 
        </Map>
             </Grid>
-            <Grid item sm={5}>
-            <Materialtable
+            <Grid item sm={6}>
+        <Materialtable
         
         components={{
                 Toolbar: props => (
@@ -228,12 +264,16 @@ function MapView ()
                     }, 1000)
           })
         }}
+        actions={[
+            {
+              icon: ZoomInIcon,
+              tooltip: 'Show in map',
+              onClick: (event, rowData) => updateMapCenter(rowData)
+            }
+          ]}
+       />
 
-        
-        
-       >
-
-       </Materialtable>
+      
             </Grid>
        </Grid>
        <br></br>

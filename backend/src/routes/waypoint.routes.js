@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const waypointCtrl = require('../controllers/waypoint.controller');
 
+router.get('/:id', waypointCtrl.getOne);
 router.get('/', waypointCtrl.getAll);
-//router.post('/', waypointCtrl.createOne);
+router.put('/:id', waypointCtrl.updateOne);
 router.post('/file', waypointCtrl.createAll);
 router.delete('/', waypointCtrl.deleteAll);
 

@@ -3,28 +3,36 @@ import axios from 'axios'
 import {Marker,Circle,Popup} from 'react-leaflet'
 import {IconLocation,IconLocation2,IconLocation3,IconFlagFinish,IconFlagStart} from './IconLocation'
 import UploadWayPoints from './UploadWaypoints';
-
-const  Markers = ({waypoints}) =>
+import { Typography } from '@material-ui/core';
+const  Markers = ({points}) =>
 {
-  const markers = waypoints.map(waypoint => (
-    <div key = {waypoint._id}>
+  const markers = points.map(point => (
+    <div key = {point.id}>
     <Marker
         
-        position={waypoint.location.coordinates}
-        icon={(waypoint.location.type=='WPM')?IconLocation
-        :(waypoint.location.type=='FZ' || waypoint.location.type=='DZ')?IconLocation2:
-        (waypoint.speed=='META')?IconFlagFinish:
-        (waypoint.speed=='START')?IconFlagStart:
+        position={[point.latitude,point.longitude]}
+        icon={(point.type=='WPM')?IconLocation
+        :(point.type=='FZ' || point.type=='DZ')?IconLocation2:
+        (point.type=='FINISH')?IconFlagFinish:
+        (point.type=='START')?IconFlagStart:
         IconLocation3}
     >
-      <Popup>{waypoint.location.type}</Popup>
+      <Popup>
+      <Typography variant="subtitle2" gutterBottom>
+      Id: {point.id}
+      </Typography>
+      <Typography variant="body2" gutterBottom>
+      Type: {point.type}
+      </Typography>
+     
+        </Popup>
     </Marker>
     
     <Circle
-      center={waypoint.location.coordinates}
-      radius={waypoint.rule.ratius}
-      color={(waypoint.location.type=='WPM')?'blue':
-      (waypoint.location.type=='FZ' || waypoint.location.type=='DZ')?'red':
+      center={[point.latitude,point.longitude]}
+      radius={point.radius}
+      color={(point.type=='WPM')?'blue':
+      (point.type=='FZ' || point.type=='DZ')?'red':
       'black'}
     ></Circle>
     </div>

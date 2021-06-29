@@ -28,26 +28,7 @@ function DetailedResults({waypoints,compInfo})
 
     ])
     const [data,setData] =useState([
-        {
-            position: 1,
-            category: 'Motos Darien',
-            start_time:0,
-            arrival_time:0,
-            total_time:0,
-            neutralization:0,
-            penalization:0,
-            total:0
-        },
-        {
-            position: 1,
-            category: 'Motos Darien',
-            start_time:0,
-            arrival_time:0,
-            total_time:0,
-            neutralization:0,
-            penalization:0,
-            total:0
-        }
+
     ])
     const [columns, setColumns] =useState([
         {
@@ -280,7 +261,7 @@ function DetailedResults({waypoints,compInfo})
             latitude:Math.round(waypoint.location.coordinates[0]*10000)/10000,
             longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
             ratius:String(waypoint.rule.ratius)+"m",
-            penalization:"+"+hoursToHHMMSS(waypoint.rule.penalization/60),
+            penalization:"+"+waypoint.rule.penalization,
           }))
         console.log(dd)
         return dd
@@ -326,6 +307,9 @@ function DetailedResults({waypoints,compInfo})
         return total;
     }
 
+   const ajustUnitFormat = (unit)=>{
+    return (unit<10)?"0"+String(unit):String(unit)
+   } 
    const hoursToHHMMSS = (hours) => {
 
         var HH = Math.floor(hours)
@@ -334,8 +318,10 @@ function DetailedResults({waypoints,compInfo})
         var SS = Math.floor ((num-MM)*60)
       
       
-        return String(HH)+":"+String(MM)+':'+String(SS)
-      
+        return ajustUnitFormat(HH)+":"+
+               ajustUnitFormat(MM)+":"+
+               ajustUnitFormat(SS)
+
       
       
       }
@@ -343,7 +329,7 @@ function DetailedResults({waypoints,compInfo})
     const getTotalPenalizationMissedWaypoints = () =>{
         var sum = 0;
         missedWaypoints.forEach((waypoint)=>{
-             sum += waypoint.rule.penalization/60
+             sum += HHMMSSToHours(waypoint.rule.penalization)/60
         })
         
         return hoursToHHMMSS(sum)

@@ -4,6 +4,14 @@ const toolsCtrl = require('../controllers/tools.controller');
 const waypoint = require('../models/waypoint');
 const waypointCtrl = {};
 
+
+waypointCtrl.getOne = async ( req , res ) =>
+{
+  const waypoint = await Waypoint.findById(req.params.id);
+  res.json(waypoint);
+}
+
+
 waypointCtrl.getAll = async ( req , res ) =>
 {
   const waypoints = await Waypoint.find();
@@ -94,25 +102,31 @@ waypointCtrl.createAll = async ( req , res ) =>
 
  
 }
-waypointCtrl.deleteAll = async (req,res) =>
-{
-  
-  await Waypoint.deleteMany({});
-  res.json({
-    'status': 'All Waypoints deleted'
+waypointCtrl.updateOne = async ( req , res ) =>{
 
-});
+  var data = req.body
+    
+  try{
+      await Waypoint.findByIdAndUpdate(req.params.id,data);
+      res.status(200).json({"msg":"Waypoint Updated"});
   
-  
+    }
+    catch(err)
+    {
+      res.status(400).json(err);
+    }
+
+
 }
+
 
 waypointCtrl.deleteOne = async ( req,res) => {
 
-  //THIS IS NOT HAS BEEN TESTED YET
-  //Delete from Stage
-  var stage = await Stage.findById({"_id":req.body.stage_id});
+  //Delete from stage
+  var waypoint = await Waypoint.findById(req.params.id)
+  var stage = await Stage.findById(waypoint.stage);
   stage.waypoints =stage.waypoints.filter((wp_id)=> (String(wp_id)).localeCompare(req.params.id));
-  await Stage.findByIdAndUpdate(stage._id,stage);
+  stage.save();
 
   //Delete  Waypoints
   await Waypoint.findByIdAndDelete(req.params.id);
@@ -126,7 +140,7 @@ waypointCtrl.deleteAll = async ( req, res ) => {
   //Delete from Stage
   var stage = await Stage.findById({"_id":req.body.stage_id});
   stage.waypoints =[]
-  await Stage.findByIdAndUpdate(stage._id,stage);
+  await stage.save()
 
   //Delete All waypoints
   await Waypoint.deleteMany({});
