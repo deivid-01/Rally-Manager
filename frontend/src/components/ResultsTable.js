@@ -10,7 +10,7 @@ import FindInPageIcon from '@material-ui/icons/FindInPage';
 
 export const ResultsTable = ({waypoints}) => {
  
-
+  const baseURL = 'http://localhost:5000/api/results/stage/';
   const [resultsLoaded,setResultsLoaded] = useState(false);
   const [selectedResult,setSelectedResult] = useState(null);
   const [showDetailedInfo,setShowDetailedInfo]= useState(true);
@@ -155,8 +155,8 @@ export const ResultsTable = ({waypoints}) => {
     setSelectedResult (rowData)
   }
 
-  const fetchResults = async (stage_id) => {
-    const res = await axios.get('http://localhost:5000/api/results/stage/'+stage_id)
+  const fetchResults = async (stage_id,category_id) => {
+    const res = await axios.get(baseURL+stage_id+"/"+category_id)
 
     setData(res.data);
 
@@ -169,11 +169,13 @@ export const ResultsTable = ({waypoints}) => {
     setShowDetailedInfo(true)
  
     var stage = localStorage.getItem('stage')
-    if ( stage )
+    var category = localStorage.getItem('category')
+    if ( stage && category)
     {
       stage = JSON.parse(stage)
+      category = JSON.parse(category)
       //configureData(stage.partialresults);
-      fetchResults(stage._id);
+      fetchResults(stage._id,category.categorytype._id);
 
     }
     

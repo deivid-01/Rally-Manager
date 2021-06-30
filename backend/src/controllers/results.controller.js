@@ -9,14 +9,23 @@ const toolsCtrl = require('./tools.controller');
 
 const resultCtrl = {};
 
+resultCtrl.filterStageByCategoryType = (stage,categorytype_id) => {
+  //Filter categorytype
+  stage.partialresults = stage.partialresults
+                        .filter((partialresult)=>
+                        String(partialresult.competitor.categorytype._id).localeCompare(categorytype_id)==0)
+  
+  return stage
+}
+
 resultCtrl.getStageResult=async(req,res)=>{
     
   //Gets Stage
+  var {id:stage_id, categorytype_id } = req.params
   try
   {
-    await Stages.findById(req.params.id)
+    await Stages.findById(stage_id)
     .populate("waypoints")
-    .populate("categories")
     .populate({
       path:"partialresults",
       select:["competitor",
@@ -29,11 +38,10 @@ resultCtrl.getStageResult=async(req,res)=>{
       populate:{path:"competitor",select:["name",'lastname','categorytype'],
       populate:{path:'categorytype',select:'name'}}})
     .exec(async (err,stage)=>{
-      
+      stage = resultCtrl.filterStageByCategoryType (stage,categorytype_id)
       if ( stage)
       {
         var waypoints = stage.waypoints;
-        var categories = stage.categories
         var partialresults = stage.partialresults;
    
         for ( partialR of partialresults)

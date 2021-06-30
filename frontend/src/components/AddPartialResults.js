@@ -27,7 +27,7 @@ function AddPartialResults()
   const classes = useStyles();
 
     const [fetchingData,SetFetchingData]= useState(true)
-    const partialResults_URL= 'http://localhost:5000/api/partialresults/stage/'
+    const partialResults_URL= 'http://localhost:5000/api/stages/'
     const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);
     const [startUpload,setStartUpload] = useState(false);
     const [itemUpdated,setItemUpdated] = useState(false);
@@ -275,13 +275,38 @@ function AddPartialResults()
     
       }
 
-    const fetchPartialResults = async(stage_id) => {
+    const translateResults_Add = (results) => {
+
+        var posResults=[
+          
+        ]
+      
+        results.forEach((result,i)=>{
+          
+          posResults.push( {
+            id:result._id,
+            competitor_fullname:result.competitor.name+" "+result.competitor.lastname,
+            competitor_category:result.competitor.categorytype.name,
+            start_time:result.start_time,
+            arrival_time: result.arrival_time,
+            neutralization:result.neutralization,
+            gpx_uploaded:result.gpx_uploaded
+          })
+      
+        })
+         
+          return posResults
+     }
+
+    const fetchPartialResults = async(stage_id,categorytype_id) => {
 
       
       try
       {
-        const  res =await  axios.get(partialResults_URL+stage_id,)
-        setData(res.data)
+        const  res =await  axios.get(partialResults_URL+stage_id+"/"+categorytype_id)
+        
+        var stage = res.data
+        setData( translateResults_Add(stage.partialresults))
      
         SetFetchingData(false)
       }
@@ -323,10 +348,16 @@ function AddPartialResults()
       useEffect(()=>{
 
         var stage = localStorage.getItem('stage')
-        if ( stage)
+        var category = localStorage.getItem('category')
+        console.log(category)
+        if ( stage && category)
+        {
           stage = JSON.parse(stage)
+          category = JSON.parse(category)
         
-          fetchPartialResults(stage._id);
+          fetchPartialResults(stage._id,category.categorytype._id);
+        }
+         
       },[])
 
     return ( <div >

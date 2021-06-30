@@ -2,6 +2,7 @@ const Stage = require('../models/stage.js');
 const Category = require('../models/category.js');
 const PartialResult = require('../models/partialresult.js');
 const partialresult = require('../models/partialresult.js');
+const stage = require('../models/stage.js');
 const stageCtrl = {};
 
 stageCtrl.getOne= async ( req , res ) =>
@@ -20,7 +21,42 @@ stageCtrl.getOne= async ( req , res ) =>
     res.json(stage);
   });
 }
+stageCtrl.getOneByCategory = async ( req , res ) => {
+  
+  var {id:stage_id, categorytype_id } = req.params
+  console.log(categorytype_id)
+  try
+  {
+    await Stage.findById(stage_id).
+    populate({
+      path:"categories",select:"categorytype",
+      populate:{path:"categorytype",select:"name"}}).
+      populate('waypoints').
+      populate({
+        path:"partialresults",select:["competitor",'start_time','arrival_time','neutralization','penalization','gpx_uploaded'],
+        populate:{path:"competitor",select:["name",'lastname','categorytype'],
+        populate:{path:'categorytype',select:'name'}}})
+      
+      .exec((err,stage)=>{
+        stage = stageCtrl.filterByCategoryType(stage,categorytype_id)
+        return res.json(stage);
+    });
+  }
+  catch(err)
+  {
+    return res.status(200).json(err)
+  }
 
+}
+stageCtrl.filterByCategoryType = (stage,categorytype_id) => {
+  //Filter categorytype
+  stage.categories = stage.categories.filter((category)=>String(category.categorytype._id).localeCompare(categorytype_id)==0)
+  stage.partialresults = stage.partialresults
+                        .filter((partialresult)=>
+                        String(partialresult.competitor.categorytype._id).localeCompare(categorytype_id)==0)
+  
+  return stage
+}
 stageCtrl.getAll= async ( req , res ) =>
 {
   await Stage.find(). 
