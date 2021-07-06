@@ -2,7 +2,7 @@ import React ,{ useEffect, useState}from "react";
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import MapView from './MapView'
+import Waypoints from './Waypoints/Waypoints'
 import Results from './Results'
 import AddPartialResults from './AddPartialResults'
 
@@ -120,7 +120,7 @@ function Stage(props){
                 {
                     (selectedOption.id==1)?
                     <div className='custom-align'>
-                    <MapView></MapView>
+                    <Waypoints/>
                     </div>
                         :(selectedOption.id==2) ? 
                             <AddPartialResults/>

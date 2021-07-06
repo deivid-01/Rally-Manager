@@ -14,7 +14,7 @@ import Signup from './components/Signup';
 import Results from './components/Results';
 import CreateRace from './components/CreateRace';
 import CreateStage from './components/CreateStage';
-import MapView from './components/MapView'
+import Waypoints from './components/Waypoints/Waypoints'
 import Stage from './components/Stage';
 
 function App(){
@@ -32,7 +32,7 @@ function App(){
         <Route path="/gpxupload" render={ (props) => <UploadGPX /> }/> 
         <Route path="/results" render={ (props) => <Results /> }/> 
         <Route path="/createrace" render={ (props) => <CreateRace /> }/> 
-        <Route path="/map" render={ (props) => <MapView /> }/> 
+        <Route path="/map" render={ (props) => <Waypoints /> }/> 
         <Route path="/stage" render={ (props) => <Stage /> }/> 
         {/* Redirect unhandled routes */}
         <Route>
