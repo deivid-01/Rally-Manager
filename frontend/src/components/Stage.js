@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Waypoints from './Waypoints/Waypoints'
 import Results from './Results'
-import AddPartialResults from './AddPartialResults'
+import AddPartialResults from './AddPartialResults/AddPartialResults'
 
 function Stage(props){
 

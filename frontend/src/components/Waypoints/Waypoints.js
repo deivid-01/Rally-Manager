@@ -56,7 +56,6 @@ function Waypoints ()
    
     return(
         <div>
-
             <Grid container  justify="center">
 
                 < Grid item sm={5} >
