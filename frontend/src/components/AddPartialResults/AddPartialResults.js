@@ -1,17 +1,14 @@
 import React, {useEffect,useState} from 'react'
 
-import Materialtable,{MTableToolbar} from 'material-table'
-import {IconButton,Tooltip,Snackbar } from '@material-ui/core'
+import {IconButton,Tooltip } from '@material-ui/core'
 import BackupIcon from '@material-ui/icons/Backup';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
 import {validateHHMMSSFormat} from '../utils/validationtools'
 import {uploadTrackpoints} from '../../services/trackpoints.services'
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Alert from '../Alert';
 
-
-import {deletePartialResult,fetchPartialResults,updatePartialResult} from '../../services/partialresults.services'
+import PartialResultsTable from '../PartialResultsTable';
+import PopUpAlert from '../PopUpAlert';
 import {getPartialResultsFromStageByCategory} from '../../services/stage.services'
 
 function AddPartialResults()
@@ -133,9 +130,14 @@ function AddPartialResults()
   ])
     
     
+    const onSetData = (newData)=> setData(newData)
+     
 
-
-   
+    const onSetGPXUpload = ()=>   setGPXUpload(true)
+    const onSetItemUpdated = ()=>   setItemUpdated(true)
+    const onSetItemDeleted = ()=> setItemDeleted(true)
+      
+    
     const onFileUploadHandler =async (partialResult_id,e) =>{
      
       if ( e.target.files.length  >0) 
@@ -257,129 +259,42 @@ function AddPartialResults()
      
 
       <div className=" custom-container-80">
-        <Materialtable
-        isLoading={fetchingData}
-        components={{
-                Toolbar: props => (
-                    <div  
-                    variant='dense'
-                    style={{ backgroundColor: '#fcba03' }}>
-                        <MTableToolbar 
-                        
-                        {...props} />
-                    </div>
-                )
-            }}   
-        columns={columns}
-        data = {data}
-        options ={{
-            actionsColumnIndex:-1,
-            tableLayout: "fixed",
-            maxBodyHeight: 450,
-            showTitle:false,
-            search:false,
-            paging:false,
-            filtering:true,
-            
-                headerStyle: {
-                    background: '#fcba03',
-                    color: '#000',
-                    textAlign:'center',
-                    fontSize:'1'
-                },
-                cellStyle: {
-                    textAlign:'center', 
-                    fontSize:'1'}}}
-        editable={{
-            onRowAdd: newData=>
-            new Promise((resolve,reject)=>{
-                setTimeout(()=>{
-                    setData([...data,newData]);
-                    resolve();
-                },1000)
-            }),
-            onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                
-                console.log(gpxUploaded)
-
-                if (gpxUploaded)
-                    {
-                      newData.gpx_uploaded = true
-                      setGPXUpload(false)
-                    }
-
-                //Update data in database
-                updatePartialResult(newData);
-                //Show message
-                setItemUpdated(true);
-                //Update local data
-                const dataUpdate = [...data];
-                const index = oldData.tableData.id;
-                dataUpdate[index] = newData;
-                setData([...dataUpdate]);
-  
-                resolve();
-              }, 1000)
-            }),
-            onRowDelete: oldData =>
-                new Promise((resolve, reject) => {
-                    //Delete from database
-                    
-
-                    setTimeout(async () => {
-                      try
-                      {
-                        await deletePartialResult(oldData.id)
-                        setItemDeleted(true);
-                      }
-                      catch(err)
-                      {
-                        console.log(err)
-                      }
-                    const dataDelete = [...data];
-                    const index = oldData.tableData.id;
-                    dataDelete.splice(index, 1);
-                    setData([...dataDelete]);
-
-                    resolve();
-                    }, 1000)
-          })
-        }}
-
-        
-        
-       >
-
-       </Materialtable>
+        <PartialResultsTable
+            fetchingData = {fetchingData}
+            columns = {columns}
+            data={data}
+            onSetData = {onSetData}
+            gpxUploaded = {gpxUploaded}
+            onSetGPXUpload={onSetGPXUpload}
+            onSetItemUpdated={onSetItemUpdated}
+            onSetItemDeleted={onSetItemDeleted}
+        />
        </div>  
        </div>
-   
-         <Snackbar open={startUpload}   onClose={handleClose2}>
-          <Alert onClose={handleClose2} severity="info">
-            Uploading competitor trackpoints...
-            <LinearProgress variant="indeterminate"/>
-          </Alert>
-        </Snackbar>
-          <Snackbar open={uploadGPXSuccess} autoHideDuration={2000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="success">
-              GPX Uploaded
-            </Alert>
-        </Snackbar>
-
-        <Snackbar open={itemUpdated} autoHideDuration={2000} onClose={handleClose3}>
-            <Alert onClose={handleClose3} severity="success">
-              Data Updated
-            </Alert>
-        </Snackbar>
-        <Snackbar open={itemDeleted} autoHideDuration={2000} onClose={handleClose4}>
-            <Alert onClose={handleClose4} severity="success">
-              Result Deleted
-             
-            </Alert>
-       
-        </Snackbar>
+        <PopUpAlert
+          open={startUpload}
+          onClose={handleClose2}
+          severity="info"
+          msg="Uploading competitor trackpoints..."
+        />
+        <PopUpAlert
+          open={uploadGPXSuccess}
+          onClose={handleClose}
+          severity="success"
+          msg="GPX Uploaded"
+        />
+        <PopUpAlert
+          open={itemUpdated}
+          onClose={handleClose3}
+          severity="success"
+          msg="Data Updated"
+        />
+          <PopUpAlert
+          open={itemDeleted}
+          onClose={handleClose4}
+          severity="success"
+          msg="Partial Result Deleted"
+        />
     </div>)
 }
 
