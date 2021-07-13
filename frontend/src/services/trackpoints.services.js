@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const uploadTrackpoints = async(partialResult_id,file,onSetProgress) => {
+export const uploadTrackpoints = async(partialResult_id,file) => {
 
   
   
@@ -10,13 +10,9 @@ export const uploadTrackpoints = async(partialResult_id,file,onSetProgress) => {
     formData.append('partialresult',partialResult_id);
     try
     {
-      const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
+      await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
         headers: {
           'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: progressEvent =>{
-          onSetProgress(progressEvent.loaded,progressEvent.total)
-         
         }  
       });
 

@@ -6,10 +6,9 @@ import BackupIcon from '@material-ui/icons/Backup';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
 import {validateHHMMSSFormat} from '../utils/validationtools'
-//import {uploadTrackpoints} from '../../services/trackpoints.services'
+import {uploadTrackpoints} from '../../services/trackpoints.services'
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from '../Alert';
-import axios from 'axios'
 
 
 import {deletePartialResult,fetchPartialResults,updatePartialResult} from '../../services/partialresults.services'
@@ -19,15 +18,16 @@ function AddPartialResults()
 {
  
     const [fetchingData,SetFetchingData]= useState(true)
-    const [progress,setProgress] = useState(0)
+
     const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);
     const [startUpload,setStartUpload] = useState(false);
     const [itemUpdated,setItemUpdated] = useState(false);
     const [itemDeleted,setItemDeleted] = useState(false);
-
+    
     const [gpxUploaded,setGPXUpload] = useState(false);
-   
-    const columns =[
+
+    const [data,setData]  = useState([])
+    const [columns, setColumns] =useState([
       {
           title:'Full Name',
           field:'competitor_fullname',
@@ -130,68 +130,29 @@ function AddPartialResults()
   )
   }
   
-  ]
+  ])
+    
     
 
-    const [data,setData]  = useState([])
 
-    const onSetProgress = (loaded,total)=>
-    {
-      setProgress(parseInt(Math.round((loaded*100)/total)))
-    }
-    const uploadTrackpoints = async(partialResult_id,file,onSetProgress) => {
-
-  
-  
-      const formData = new FormData();
-  
-      formData.append('file',file);
-      formData.append('partialresult',partialResult_id);
-      try
-      {
-        setStartUpload(true)  
-
-        const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          onUploadProgress: progressEvent =>{
-            onSetProgress(progressEvent.loaded,progressEvent.total)
-           
-          }  
-        });
-  
-        setGPXUpload(true)
-        setUploadGPXSuccess(true)
-        setStartUpload(false)
-  
-  
-      }
-      catch(err)
-      {
-        
-        
-         console.log(err)
-        
-       
-      }
    
-  
-    }
     const onFileUploadHandler =async (partialResult_id,e) =>{
      
       if ( e.target.files.length  >0) 
       {      
         try
         {
-          await uploadTrackpoints(partialResult_id,e.target.files[0],onSetProgress);
-     
+          setStartUpload(true)  
+          await uploadTrackpoints(partialResult_id,e.target.files[0]);
+          setGPXUpload(true)
+          setUploadGPXSuccess(true)
+          setStartUpload(false)
+
         }
         catch(err)
         {
-          console.log(err);
+          console.log(err)
         }
-    
         e.target.value = null;
       }
     }
@@ -254,10 +215,23 @@ function AddPartialResults()
      }
 
     
-    
+     const fetchPartialResults = async  (stage_id,categorytype_id)=>{
+      try
+      {
+        const results = await getPartialResultsFromStageByCategory(stage_id,categorytype_id);
+        setData( translateResults_Add(results))
+   
+        SetFetchingData(false)
+      }
+      catch(err)
+      {
+        console.log(err);
+      }
+
+    }
   
 
-      useEffect(()=>{
+     useEffect(()=>{
 
         var stage = localStorage.getItem('stage')
         var category = localStorage.getItem('category')
@@ -276,20 +250,7 @@ function AddPartialResults()
          
       },[])
 
-    const fetchPartialResults = async  (stage_id,categorytype_id)=>{
-      try
-      {
-        const results = await getPartialResultsFromStageByCategory(stage_id,categorytype_id);
-        setData( translateResults_Add(results))
-   
-        SetFetchingData(false)
-      }
-      catch(err)
-      {
-        console.log(err);
-      }
-
-    }
+    
 
     return ( <div >
        <div className="custom-align">
