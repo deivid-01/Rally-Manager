@@ -101,12 +101,15 @@ function Stages(props){
                 </div>
                 <br></br>
                 {
-                    (selectedOption.id==1)?
-                    <Cards datas={props.location.data}type={type}url={url} next_URL={next_URL}></Cards>
-                        :(selectedOption.id==2) ? 
-                            <Competitors></Competitors>
-                            :<Results></Results>
+                    selectedOption.id==1 && <Cards datas={props.location.data}type={type}url={url} next_URL={next_URL}/>
                 }
+                {
+                    selectedOption.id==2 &&  <Competitors></Competitors>
+                }
+                {
+                    selectedOption.id==3 &&  <Results></Results>
+                }
+                
 
            
         </div>

@@ -12,6 +12,7 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
 function DetailedResults({waypoints,compInfo})
 {
+    console.log("Hi from DetailedResults")
     const mapRef = useRef();
     const [map,setMap] = useState(null)
 

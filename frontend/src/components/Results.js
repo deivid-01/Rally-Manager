@@ -1,10 +1,22 @@
 import React,{useState,useEffect} from "react";
-import {ResultsTable} from "./ResultsTable";
+import {ResultsTable} from "./ResultsTable/ResultsTable";
 
-function Results({waypoints}){
+function Results(){
    
- 
+    const [waypoints,setWaypoints] = useState([])
 
+    useEffect(()=>{
+
+        var stage = window.localStorage.getItem('stage')
+        if (stage)
+        {
+            stage =JSON.parse(stage) 
+       
+            setWaypoints(stage.waypoints)
+
+          
+        }
+    },[])
     return (
 
         <div>

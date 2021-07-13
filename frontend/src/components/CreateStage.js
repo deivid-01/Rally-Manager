@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import axios from "axios";
 import {useHistory} from 'react-router-dom'
 function CreateStage(props){
-
+    
     const postURL = "http://localhost:5000/api/stages";
     const nextPage = "/waypointsupload";
     const [options, setOptions ] = useState([ ])

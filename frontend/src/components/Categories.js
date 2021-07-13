@@ -89,7 +89,7 @@ function Categories(props){
         if ( race )
             setRaceData (JSON.parse(race))
             var option= localStorage.getItem('option');
-            console.log(option)
+            
             setSelectedOption( (option)?options[option]:options[0])
             updateOptions()
     },[])
@@ -132,16 +132,19 @@ function Categories(props){
             
 
             <br></br>
-            {
-                (selectedOption.id==1)?
-                    <Cards datas = {props.location.data} type={type}url={url} next_URL={next_URL}></Cards>
-                    :(selectedOption.id==2) ? 
-                        <Competitors></Competitors>
-                        :(selectedOption.id==3) ?
-                        <CreateStage></CreateStage>
-                        :<Results></Results>
+            {  
+             selectedOption.id==1 &&  <Cards datas = {props.location.data} type={type}url={url} next_URL={next_URL}></Cards>
             }
-           {/*} */}
+            {  
+             selectedOption.id==2 &&  <Competitors></Competitors>
+            }
+            {  
+             selectedOption.id==3 && <CreateStage></CreateStage>
+            }
+            {  
+             selectedOption.id==4 && <Results></Results>
+            }
+               
         </div>
     )
 }

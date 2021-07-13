@@ -24,7 +24,7 @@ stageCtrl.getOne= async ( req , res ) =>
 stageCtrl.getOneByCategory = async ( req , res ) => {
   
   var {id:stage_id, categorytype_id } = req.params
-  console.log(categorytype_id)
+ 
   try
   {
     await Stage.findById(stage_id).
