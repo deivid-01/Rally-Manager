@@ -2,22 +2,37 @@ import React from 'react'
 import {Snackbar } from '@material-ui/core'
 
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Alert from '../Alert';
+import Alert from './Alert';
 
 function PopUpAlert(
     {
         open,
-        onClose,
         severity,
         msg,
+        displayProgress,
+        onAlertClose,
+        autoHide,
     }
 )
 {
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+          return;
+        }
+        onAlertClose();
+    }
+
+
     return (
-    <Snackbar open={open}   onClose={onClose}>
-        <Alert onClose={onClose} severity={severity}>
+    <Snackbar open={open}  
+    autoHideDuration={(autoHide)?2000:null}  
+    onClose={handleClose}>
+        <Alert onClose={handleClose} severity={severity}>
          {msg}
-          <LinearProgress variant="indeterminate"/>
+         {(displayProgress &&  <LinearProgress variant="indeterminate"/>)
+          
+         }
         </Alert>
     </Snackbar>
       )

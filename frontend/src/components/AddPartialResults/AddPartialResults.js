@@ -159,40 +159,12 @@ function AddPartialResults()
       }
     }
 
-    const handleClose = (event, reason) => {
-      if (reason === "clickaway") {
-        return;
-      }
-  
-      setUploadGPXSuccess(false);
+    const onEndUploadGPXSuccess = () => setUploadGPXSuccess(false);
+    const onEndUpload = () => setStartUpload(false);
+    const onEndItemUpdated = () => setItemUpdated(false);
+    const onEndItemDeleted = () => setItemDeleted(false);
     
-
-    };
-
-    const handleClose2 = (event, reason) => {
-      if (reason === "clickaway") {
-        return;
-      }
   
-      setStartUpload(false);
-    }
-  
-    const handleClose3 = (event, reason) => {
-      if (reason === "clickaway") {
-        return;
-      }
-  
-      setItemUpdated(false);
-    }
-
-    const handleClose4 = (event, reason) => {
-      if (reason === "clickaway") {
-        return;
-      }
-  
-      setItemDeleted(false);
-    }
-
     const translateResults_Add = (results) => {
 
         var posResults=[]
@@ -273,27 +245,40 @@ function AddPartialResults()
        </div>
         <PopUpAlert
           open={startUpload}
-          onClose={handleClose2}
           severity="info"
           msg="Uploading competitor trackpoints..."
+          displayProgress={true}
+          onAlertClose={onEndUpload}
+          autoHide={false}
+
         />
         <PopUpAlert
           open={uploadGPXSuccess}
-          onClose={handleClose}
           severity="success"
           msg="GPX Uploaded"
+          displayProgress={false}
+          onAlertClose={onEndUploadGPXSuccess}
+          autoHide={true}
+
+
         />
         <PopUpAlert
           open={itemUpdated}
-          onClose={handleClose3}
           severity="success"
           msg="Data Updated"
+          displayProgress={false}
+          onAlertClose={onEndItemUpdated}
+          autoHide={true}
+
+
         />
           <PopUpAlert
           open={itemDeleted}
-          onClose={handleClose4}
           severity="success"
           msg="Partial Result Deleted"
+          displayProgress={false}
+          onAlertClose={onEndItemDeleted}
+
         />
     </div>)
 }
