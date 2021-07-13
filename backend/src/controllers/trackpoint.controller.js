@@ -60,7 +60,7 @@ trackpointCtrl.createAll = async ( req , res ) =>
   trackpoints.forEach((point)=>{
     point.partialresult = req.body.partialresult;
   })
-  console.log(trackpoints[0]);
+  
   try
   {
     await Trackpoint.insertMany(trackpoints);

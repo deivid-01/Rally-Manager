@@ -1,6 +1,8 @@
-export const uploadTrackpoints = async(partialResult_id,file) => {
+import axios from 'axios'
 
-    setFilename(file.name);
+export const uploadTrackpoints = async(partialResult_id,file,onSetProgress) => {
+
+  
   
     const formData = new FormData();
 
@@ -8,21 +10,16 @@ export const uploadTrackpoints = async(partialResult_id,file) => {
     formData.append('partialresult',partialResult_id);
     try
     {
-      setStartUpload(true)
-  
-
       const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: progressEvent =>{
-          setProgress(parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total)))
+          onSetProgress(progressEvent.loaded,progressEvent.total)
          
         }  
       });
-      setGPXUpload(true);
-      setUploadGPXSuccess(true)
-      setStartUpload(false);
+
   
 
 
@@ -39,13 +36,3 @@ export const uploadTrackpoints = async(partialResult_id,file) => {
 
   }
 
- export  const onFileUploadHandler =async (partialResult_id,e) =>{
-     
-
-      
-    if ( e.target.files.length  >0) 
-    {      
-        uploadTrackpoints(partialResult_id,e.target.files[0]);
-      e.target.value = null;
-    }
-  }

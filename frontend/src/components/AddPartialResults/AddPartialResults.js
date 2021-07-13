@@ -1,11 +1,16 @@
 import React, {useEffect,useState} from 'react'
 
 import Materialtable,{MTableToolbar} from 'material-table'
-import {Snackbar } from '@material-ui/core'
-
+import {IconButton,Tooltip,Snackbar } from '@material-ui/core'
+import BackupIcon from '@material-ui/icons/Backup';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import ErrorIcon from '@material-ui/icons/Error';
+import {validateHHMMSSFormat} from '../utils/validationtools'
+//import {uploadTrackpoints} from '../../services/trackpoints.services'
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from '../Alert';
-import {columns} from'./columns'
+import axios from 'axios'
+
 
 import {deletePartialResult,fetchPartialResults,updatePartialResult} from '../../services/partialresults.services'
 import {getPartialResultsFromStageByCategory} from '../../services/stage.services'
@@ -14,58 +19,182 @@ function AddPartialResults()
 {
  
     const [fetchingData,SetFetchingData]= useState(true)
-   
+    const [progress,setProgress] = useState(0)
     const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);
     const [startUpload,setStartUpload] = useState(false);
     const [itemUpdated,setItemUpdated] = useState(false);
     const [itemDeleted,setItemDeleted] = useState(false);
-    const [ filename, setFilename] = useState('');
-    const [ progress, setProgress] = useState(0);
-    const [openError, setOpenError] = useState(false);
-    const [errorMsg, SetErrorMsg] = useState('Error');
-    const [successMsg, SetSuccessMsg] = useState('Trackpoints uploaded');
 
     const [gpxUploaded,setGPXUpload] = useState(false);
    
+    const columns =[
+      {
+          title:'Full Name',
+          field:'competitor_fullname',
+          editable:'never',
+          width: "10%"
+       
+      },
+      {
+          title:'Category',
+          field:'competitor_category',
+          width: "20%",
+          editable:'never',
+          filtering:false,
+          
+       
+         
+      },
+      {
+          title:'Start Time',
+          field:'start_time',
+      
+          width: "20%",
+          filtering:false,
+          validate: rowData => (!validateHHMMSSFormat(rowData.start_time))?{isValid: false, helperText: 'Format must be hh:mm:ss'}:true,
+  
+      } ,
+      {
+          title:'Arrival Time',
+          field:'arrival_time',
+     
+          width: "15%",
+          filtering:false,
+          validate: rowData => (!validateHHMMSSFormat(rowData.arrival_time))?{isValid: false, helperText: 'Format must be hh:mm:ss'}:true,
+        
+      },
+      {
+          title:'Neutralization',
+          field:'neutralization',
+          filtering:false,
+          width: "15%",
+          validate: rowData => (!validateHHMMSSFormat(rowData.neutralization))?{isValid: false, helperText: 'Format must be hh:mm:ss'}:true,
     
+        
+      },
+      {
+          title:'GPX',
+          field:'upload_gpx',
+          cellStyle:{
+              textAlign:'center', 
+              fontSize:'1'
+          },
+          filtering:false,
+          render: (rowData) =>
+          rowData && (
+            
+          <div >
+       
+              {(rowData.gpx_uploaded)?
+              <div >
+               
+                          <Tooltip title="Gpx uploaded">
+                          <CheckCircleIcon fontSize="large" style={{fill: "#00ba35"}}></CheckCircleIcon>
+                          </Tooltip>
+                     
+                         </div>
+                        :
+                        <div>
+                            <Tooltip title="No gpx uploaded">
+                            <ErrorIcon  fontSize="large" style={{fill: "red"}}></ErrorIcon>
+                            </Tooltip>
+                        
+                        
+                        </div>
+              }
+  
+         
+          </div>),
+          editComponent: (rowData) =>
+          rowData && (                
+              <div >
+                    <input
+                    style={{display:'none'}}
+                    accept=".gpx"
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                    onChange={(e)=>onFileUploadHandler(rowData.rowData.id,e)}
+                      /> 
+                      <label htmlFor="contained-button-file">
+              
+                                  <Tooltip title="Upload GPX">
+                              <IconButton component="span">
+                        < BackupIcon  fontSize="large"   style={{fill: "black"}}></BackupIcon>
+                        </IconButton>
+                        </Tooltip>
+                      
+                      </label>
+            </div>
+             
+  )
+  }
+  
+  ]
     
 
     const [data,setData]  = useState([])
 
-    const validateTime = (t) => {
-    
+    const onSetProgress = (loaded,total)=>
+    {
+      setProgress(parseInt(Math.round((loaded*100)/total)))
+    }
+    const uploadTrackpoints = async(partialResult_id,file,onSetProgress) => {
 
+  
+  
+      const formData = new FormData();
+  
+      formData.append('file',file);
+      formData.append('partialresult',partialResult_id);
       try
       {
-        var units = t.split(':')
-        if(units.length !=3)
-          return false;
-        var i;
-          for( i = 0;i<units.length;i++)
-        {
-       
-          if (units[i].length!=2)
-            return false
+        setStartUpload(true)  
 
-          if (! /^\d+$/.test(parseInt(units[i])))
-          {
-             
-              return false
-          }
-          
-        }
-
-        return true
+        const res = await axios.post('http://localhost:5000/api/trackpoints/file',formData,{
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: progressEvent =>{
+            onSetProgress(progressEvent.loaded,progressEvent.total)
+           
+          }  
+        });
+  
+        setGPXUpload(true)
+        setUploadGPXSuccess(true)
+        setStartUpload(false)
+  
+  
       }
       catch(err)
       {
-        return false;
+        
+        
+         console.log(err)
+        
+       
       }
-
-     
+   
+  
     }
-
+    const onFileUploadHandler =async (partialResult_id,e) =>{
+     
+      if ( e.target.files.length  >0) 
+      {      
+        try
+        {
+          await uploadTrackpoints(partialResult_id,e.target.files[0],onSetProgress);
+     
+        }
+        catch(err)
+        {
+          console.log(err);
+        }
     
+        e.target.value = null;
+      }
+    }
 
     const handleClose = (event, reason) => {
       if (reason === "clickaway") {
@@ -101,17 +230,11 @@ function AddPartialResults()
       setItemDeleted(false);
     }
 
-  
-
-   
-
-   
-
     const translateResults_Add = (results) => {
 
-        var posResults=[
+        var posResults=[]
           
-        ]
+        
       
         results.forEach((result,i)=>{
           
@@ -217,7 +340,8 @@ function AddPartialResults()
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
-              
+                
+                console.log(gpxUploaded)
 
                 if (gpxUploaded)
                     {
