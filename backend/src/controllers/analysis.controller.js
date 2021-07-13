@@ -101,7 +101,8 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
         }
     }
 
-    return [listNoPassedWaypoints,penalization];
+    return JSON.stringify({noPassedWaypoints:listNoPassedWaypoints,
+        totalPenalization:penalization});
 };
 
 analysisCtrl.calculateSpeedPenalization=(speed,speedLimit)=>{
