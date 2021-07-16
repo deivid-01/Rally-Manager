@@ -1,8 +1,11 @@
 import React ,{ useEffect, useState}from "react";
 
+
+import Collapse from '@material-ui/core/Collapse';
 import Waypoints from './Waypoints/Waypoints'
 import Results from './Results'
 import AddPartialResults from './AddPartialResults/AddPartialResults'
+
 import Options from "./Options";
 function Stage(props){
 
@@ -98,17 +101,20 @@ function Stage(props){
                 />
             </div>
                 <br></br>
-                {
-                selectedOption.id==1 &&  <div className='custom-align'>
-                <Waypoints/>
-                </div>
-                }
-                {
-                    selectedOption.id==2 &&  <AddPartialResults/>
-                }
-                {
-                    selectedOption.id==3 &&  <Results />
-                }
+            <Collapse in ={selectedOption.id==1} >
+                    <div className='custom-align'>
+                        <Waypoints/>
+                    </div>
+            </Collapse>
+            <Collapse in ={selectedOption.id==2} >
+                    <AddPartialResults/>
+            </Collapse>
+            <Collapse in ={selectedOption.id==3} >
+                    <Results/>
+            </Collapse>
+
+   
+
                    
         </div>
     )

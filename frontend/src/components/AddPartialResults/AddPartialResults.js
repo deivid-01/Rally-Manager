@@ -13,7 +13,7 @@ import {getPartialResultsFromStageByCategory} from '../../services/stage.service
 
 function AddPartialResults()
 {
- 
+    console.log("hi from add partial results");
     const [fetchingData,SetFetchingData]= useState(true)
 
     const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);

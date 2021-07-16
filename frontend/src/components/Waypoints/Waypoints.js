@@ -11,7 +11,7 @@ import {columns} from'./columns'
 
 function Waypoints ()
 {
-    
+    console.log("hi from waypoints")
     const mapRef = useRef();
 
     const [map,setMap] = useState(null)
