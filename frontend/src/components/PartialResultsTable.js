@@ -53,13 +53,6 @@ function PartialResultsTable(
                     textAlign:'center', 
                     fontSize:'1'}}}
         editable={{
-            onRowAdd: newData=>
-            new Promise((resolve,reject)=>{
-                setTimeout(()=>{
-                    onSetData([...data,newData]);
-                    resolve();
-                },1000)
-            }),
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {

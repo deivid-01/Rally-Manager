@@ -9,7 +9,7 @@ import { columns } from "../ResultsTable/columns";
 
 export const ResultsTable = ({waypoints}) => {
  
-  console.log("Hi fro Results table");
+  
   const [resultsLoaded,setResultsLoaded] = useState(false);
   const [selectedResult,setSelectedResult] = useState(null);
   const [showDetailedInfo,setShowDetailedInfo]= useState(true);

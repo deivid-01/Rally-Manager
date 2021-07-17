@@ -30,6 +30,7 @@ resultCtrl.getStageResult=async(req,res)=>{
       path:"partialresults",
       select:["competitor",
               'start_time',
+              'gpx_uploaded',
               'arrival_time',
               'neutralization',
               'penalization',
@@ -43,32 +44,33 @@ resultCtrl.getStageResult=async(req,res)=>{
       {
         var waypoints = stage.waypoints;
         var partialresults = stage.partialresults;
-   
+  
         for ( partialR of partialresults)
         {  
-          var trackpoints = await Trackpoints.find({partialresult:partialR._id});
         
-          if(trackpoints.length> 0 )
+          if ( partialR.gpx_uploaded)
           {
-            var analysisRes  = analysisCtrl.checkWaypoints(waypoints,trackpoints);
-   
-            partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes[1]/60) //WARNING : Convert to hours
-            console.log(penalization)
-            partialR.waypointsMissed = analysisRes[0]
+            var trackpoints = await Trackpoints.find({partialresult:partialR._id});
+        
+            if(trackpoints.length> 0 )
+            {
+              var analysisRes  = analysisCtrl.checkWaypoints(waypoints,trackpoints);
      
+              partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes[1]/60) //WARNING : Convert to hours
+             
+              partialR.waypointsMissed = analysisRes[0]
+  
+              partialR.save()
+            }
           }
-          else
-          {
-            partialR.penalization = '00:00:00'
-     
-            partialR.waypointsMissed = []
-     
-          }
+      
 
-          partialR.save()
+          
 
        
         }
+
+        partialresults=partialresults.filter((pRes,err)=> pRes.gpx_uploaded)
         return res.status(200).json(resultCtrl.translateResults(partialresults))
 
       }
@@ -97,38 +99,32 @@ resultCtrl.translateResults = (results) => {
   ]
 
   results.forEach((result,i)=>{
-    var item = {
-      start_time:'',
-      arrival_time:'',
-      partial_time:'',
-      neutralization:'',
-      penalization:'',
-      competitor_name:'',
-      competitor_lastname:'',
-      competitor_category:' ',
-      total:'',
-      waypointsMissed:[]
-    }
-    item.id = result._id
-    item.start_time = result.start_time
-    item.arrival_time = result.arrival_time
-    item.partial_time = toolsCtrl.hoursToHHMMSS(toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time))
-    
-    item.penalization ="+"+result.penalization
-    item.neutralization = result.neutralization
-    item.waypointsMissed = result.waypointsMissed
+ 
+      var item = {
+        id:result._id,
+        start_time:result.start_time,
+        arrival_time:result.arrival_time,
+        partial_time:toolsCtrl.hoursToHHMMSS(toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)),
+        neutralization:result.neutralization,
+        penalization:"+"+result.penalization,
+        competitor_name:result.competitor.name,
+        competitor_lastname:result.competitor.lastname,
+        competitor_category:result.competitor.categorytype.name,
+        total:'',
+        waypointsMissed:result.waypointsMissed
+      }
+      var totalHours = toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)
+      item.total = toolsCtrl.hoursToHHMMSS(totalHours + toolsCtrl.HHMMSSToHours(result.penalization) - toolsCtrl.HHMMSSToHours(result.neutralization))
+     
+      posResults.push(item)
+    })
+
   
-    item.competitor_name = result.competitor.name
-    item.competitor_lastname = result.competitor.lastname
-    item.competitor_category = result.competitor.categorytype.name
-    var totalHours = toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)
-    item.total = toolsCtrl.hoursToHHMMSS(totalHours + toolsCtrl.HHMMSSToHours(result.penalization) - toolsCtrl.HHMMSSToHours(result.neutralization))
-   
-    posResults.push(item)
-  })
-   
     return posResults
 }
+
+
+
 raceCtrl.getWaypointsMissed = (waypoints) => {
   ids = []
   waypoints.forEach(waypoint =>{
