@@ -14,7 +14,7 @@
     "chart.js": "^3.3.2",
     "gpx-parser-builder": "^1.0.2",
     "leaflet": "^1.7.1",
-    "material-table": "^1.69.3",
+    "material-table": "^1.67.1",
     "material-ui": "^0.20.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
