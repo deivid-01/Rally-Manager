@@ -1,30 +1,24 @@
 import React , {useEffect,useRef,useState}from 'react'
 
-import { Map, TileLayer,Polyline } from 'react-leaflet'
+
 import ElevationGraph from '../ElevationGraph'
-import Markers from '../Markers'
-import FullscreenControl from 'react-leaflet-fullscreen';
+
 import CompetitorResultTable from '../CompetitorResultTable/CompetitorResultTable'
 import WaypointsMissedTable from '../WaypointsMissedTable/WaypointsMissedTable'
 import {getTrackpoints} from '../../services/trackpoints.services'
+import {prepareWaypoints} from '../../utils/prepareData'
+import DetailedMap from '../DetailedMap'
 function DetailedResults({waypoints,compInfo})
 {
-
+    console.log(compInfo)
     const mapRef = useRef();
     const [map,setMap] = useState(null) 
     const [path,setPath] = useState([])
     const [elevation,setElevation] = useState([])
     const [missedWaypoints,setMissedWaypoints] = useState([])
     const [competitorInfo,setCompetitorInfo] = useState([    ])
-    const [trackpoints,setTrackpoints] = useState([])
-    const [waypoints_,setWaypoints] = useState([
+ 
 
-    ])
-    const [data,setData] =useState([
-
-    ])
-
-    
 
     const fetchTrackpoints = async () =>{
     
@@ -47,62 +41,21 @@ function DetailedResults({waypoints,compInfo})
         }
     }
 
-    const settleWaypoints = ()=>{
-       var dd =  missedWaypoints.map((waypoint,i) =>({
-            index:i+1,
-            id:waypoint._id,
-            latitude:Math.round(waypoint.location.coordinates[0]*10000)/10000,
-            longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
-            ratius:String(waypoint.rule.ratius)+"m",
-            penalization:"+"+waypoint.rule.penalization,
-          }))
-        console.log(dd)
-        return dd
-    }
 
     useEffect(()=>{
         
      
-      setWaypoints(waypoints);
+   
       setCompetitorInfo([compInfo])
     
-      setMissedWaypoints(prepareData(compInfo.waypointsMissed))
+      setMissedWaypoints(prepareWaypoints(compInfo.waypointsMissed))
 
        setMap(mapRef.current.leafletElement)
      
 
     },[])
 
-    const prepareData = (wps) => {
-        if (wps.length > 0)
-        {
-            console.log(wps[0])
-            var d=  wps.map((waypoint,i)=>({
-                
-                id:waypoint._id,
-                index: i+1,
-                type: waypoint.location.type,
-                latitude: Math.round(waypoint.location.coordinates[0]*10000)/10000,
-                longitude:Math.round(waypoint.location.coordinates[1]*10000)/10000,
-                radius: waypoint.rule.ratius,
-                penalization: waypoint.rule.penalization,
-            }))
-         
-            return d
-        }
-         
-
-        return [{
-            id: '',
-            type: '',
-            latitude:0,
-            longitude:0,
-            radius: 0,
-            penalization: 0
-        }]
-    }
-
-
+  
     useEffect(()=>{
         if (competitorInfo.length > 0 )
         {
@@ -110,53 +63,35 @@ function DetailedResults({waypoints,compInfo})
         }
     },[competitorInfo])
 
-
-
-
-
-
-
-
-
     return(
         <div>
             <div className="custom-align">
-            <div className="custom-container-80">
-            <CompetitorResultTable
-                data= {competitorInfo}
-            />
-        
-         </div>
-         </div>
+
+                <div className="custom-container-80">
+                    <CompetitorResultTable  data= {competitorInfo}   />     
+                </div>
+
+            </div>
+
             <br></br>
             <br></br>
 
-                   <div className="custom-align">
-       <Map 
-       
-       center = {  [
-        '6.2441988',
-        '-75.6177781'
-       ]}
-       ref = {mapRef}
-       zoom={10}
-       >
-           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           />
-           <FullscreenControl position="topleft" />
-             <Markers points ={missedWaypoints}/>
-            <Polyline pathOptions={{ color: 'lime' }} positions={path} />
+            <div className="custom-align">
 
+                <DetailedMap 
+                    mapRef = {mapRef}
+                    zoom = {10}
+                    waypoints = {missedWaypoints}
+                    track = {path} 
+                />
+ 
+                <div className="custom-container">
 
-       </Map>
-       <div className="custom-container">
-      <h1 align='center'>Penalization</h1>
-      <WaypointsMissedTable
-        data = {(missedWaypoints.length> 0)?missedWaypoints:[]} 
-        map = {map}
-        />
+                    <h1 align='center'>Penalization</h1>
+                    <WaypointsMissedTable
+                        data = {(missedWaypoints.length> 0)?missedWaypoints:[]} 
+                        map = {map}
+                        />
         {/*         <Materialtable
         
         columns = {columns2}
@@ -183,18 +118,18 @@ function DetailedResults({waypoints,compInfo})
         </Materialtable>
         */}
 
-         </div>
-         
-       </div>
-       <br></br>
-       <br></br>
-
-          <div className="custom-align">
-                <ElevationGraph elev ={elevation}></ElevationGraph>
                 </div>
+         
+            </div>
+            <br></br>
+            <br></br>
+
+            <div className="custom-align">
+                    <ElevationGraph elev ={elevation}></ElevationGraph>
+            </div>
  
-        <br></br>
-       <br></br>
+            <br></br>
+            <br></br>
         </div>
     )
 }
