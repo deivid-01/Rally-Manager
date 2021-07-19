@@ -30,7 +30,7 @@ analysisCtrl.verifyPoint = (lat,long,pointsCircle,center)=>{
 analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
     var penalization = 0;
     var listNoPassedWaypoints = [];
-   
+    var dzPoints = [];
     for(var i=0; i<= waypoints.length-1;i++){
         latitudeWayPoint = waypoints[i].location.coordinates[0];
         longitudeWayPoint = waypoints[i].location.coordinates[1];
@@ -88,10 +88,15 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                     startTimeHour = fecha.getHours();
                     
                     finishTime = startTimeSeconds + (startTimeMinutes*60) + (startTimeHour*3600)
-                    
+                   
                     if(passedByDZ){
+                        
                         averageSpeed = analysisCtrl.calculateSpeed(distanceDZ,startTime,distanceFZ,finishTime);                
                         penalization = penalization + analysisCtrl.calculateSpeedPenalization(averageSpeed,speedMax);
+                        dzPoint.append({
+                            averageSpeed:averageSpeed,
+                            penalization:penalization
+                        })
                     }else{
                         penalization = penalization + toolsCtrl.HHMMSSToHours(waypoints[i].rule.penalization)*60;//Si no pasa por FZ NI DZ QUE SE HACE?
                     }      
@@ -101,8 +106,9 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
         }
     }
 
-    return JSON.stringify({noPassedWaypoints:listNoPassedWaypoints,
-        totalPenalization:penalization});
+    return {noPassedWaypoints:listNoPassedWaypoints,
+        totalPenalization:penalization,
+        dzPoints: dzPoints};
 };
 
 analysisCtrl.calculateSpeedPenalization=(speed,speedLimit)=>{

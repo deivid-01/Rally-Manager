@@ -51,9 +51,9 @@ resultCtrl.getStageResult=async(req,res)=>{
           if(trackpoints.length> 0 )
           {
             var analysisRes  = analysisCtrl.checkWaypoints(waypoints,trackpoints);
-            converterJson = JSON.parse(analysisRes)
-            partialR.penalization = toolsCtrl.hoursToHHMMSS(converterJson["totalPenalization"]/60) //WARNING : Convert to hours
-            partialR.waypointsMissed = converterJson["noPassedWaypoints"]//analysisRes.noPassedWaypoints
+          
+            partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes.totalPenalization/60) //WARNING : Convert to hours
+            partialR.waypointsMissed = analysisRes.noPassedWaypoints
      
           }
           else
@@ -61,7 +61,6 @@ resultCtrl.getStageResult=async(req,res)=>{
             partialR.penalization = '00:00:00'
      
             partialR.waypointsMissed = []
-     
           }
 
           partialR.save()
