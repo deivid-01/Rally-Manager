@@ -42,8 +42,6 @@ app.use('/api/results',require('./routes/results.routes'));
 // Server is listenning
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
-    
- 
 
  
 });

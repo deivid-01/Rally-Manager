@@ -16,12 +16,14 @@ import CreateRace from './components/CreateRace';
 import CreateStage from './components/CreateStage';
 import Waypoints from './components/Waypoints/Waypoints'
 import Stage from './components/Stage';
+import NavBar from './components/NavBar';
 
 function App(){
     
     
     return (
     <BrowserRouter>
+      <NavBar />
       <Switch>
         <Redirect exact path="/" to="/login" />
         <Route path="/races" render={ (props) => <Races { ...props } /> } />

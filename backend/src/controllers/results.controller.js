@@ -57,14 +57,13 @@ resultCtrl.getStageResult=async(req,res)=>{
             {
               var analysisRes  = analysisCtrl.checkWaypoints(waypoints,trackpoints);
      
-              partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes[1]/60) //WARNING : Convert to hours
-             
-              partialR.waypointsMissed = analysisRes[0]
+              partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes.totalPenalization/60) //WARNING : Convert to hours
+              partialR.waypointsMissed = analysisRes.noPassedWaypoints
   
               partialR.save()
             }
           
-       
+ 
         }
         partialresults=raceCtrl.sortByTotal(partialresults);
 
