@@ -44,12 +44,13 @@ resultCtrl.getStageResult=async(req,res)=>{
       {
         var waypoints = stage.waypoints;
         var partialresults = stage.partialresults;
+
+        partialresults=partialresults.filter((pResult,err)=>pResult.gpx_uploaded)
+      
   
         for ( partialR of partialresults)
         {  
         
-          if ( partialR.gpx_uploaded)
-          {
             var trackpoints = await Trackpoints.find({partialresult:partialR._id});
         
             if(trackpoints.length> 0 )
@@ -62,15 +63,11 @@ resultCtrl.getStageResult=async(req,res)=>{
   
               partialR.save()
             }
-          }
-      
-
           
-
        
         }
+        partialresults=raceCtrl.sortByTotal(partialresults);
 
-        partialresults=partialresults.filter((pRes,err)=> pRes.gpx_uploaded)
         return res.status(200).json(resultCtrl.translateResults(partialresults))
 
       }
@@ -92,6 +89,21 @@ resultCtrl.getStageResult=async(req,res)=>{
  
 };
 
+raceCtrl.sortByTotal = (items) =>// sort by name
+{
+items.sort(function(totalA, totalB) {
+  if (totalA < totalB) {
+    return -1;
+  }
+  if (totalA > totalB) {
+    return 1;
+  }
+  return 0 
+})
+return items;
+}
+
+
 resultCtrl.translateResults = (results) => {
 
   var posResults=[
@@ -102,6 +114,7 @@ resultCtrl.translateResults = (results) => {
  
       var item = {
         id:result._id,
+        position:i+1,
         start_time:result.start_time,
         arrival_time:result.arrival_time,
         partial_time:toolsCtrl.hoursToHHMMSS(toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)),

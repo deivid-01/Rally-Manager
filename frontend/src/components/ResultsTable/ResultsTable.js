@@ -27,6 +27,7 @@ export const ResultsTable = ({waypoints}) => {
     {
       const res = await getResults(stage_id,category_id)
       setData(res);
+      setResultsLoaded(true);
     }
     catch(err)
     {
@@ -52,15 +53,7 @@ export const ResultsTable = ({waypoints}) => {
     
   },[])
 
-  useEffect(()=>{
-    
 
-    if (data &&  data.length > 0 )
-    {
-      setResultsLoaded(true);
-    }
-
-  },[data])
 
 
   return (
