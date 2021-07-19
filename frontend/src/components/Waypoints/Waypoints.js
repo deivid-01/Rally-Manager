@@ -4,7 +4,7 @@ import {Grid} from '@material-ui/core'
 
 import Map_ from '../Map/Map_'
 import MaterialTable_ from '../MaterialTable/MaterialTable_'
-import {prepareWaypoints} from '../utils/prepareData'
+import {prepareWaypoints} from '../../utils/prepareData'
 import {deleteWaypoint,createWaypoint,updateWaypoint} from '../../services/waypoint.services'
 
 import {columns} from'./columns'

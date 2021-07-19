@@ -4,7 +4,7 @@ import { Map,TileLayer} from 'react-leaflet'
 import FullscreenControl from 'react-leaflet-fullscreen';
 import Markers from '../Markers'
 
-import {setMapCenter} from '../utils/maptools'
+import {setMapCenter} from '../../utils/maptools'
 
 function Map_ ({mapRef,zoom,points}){
     return ( <Map

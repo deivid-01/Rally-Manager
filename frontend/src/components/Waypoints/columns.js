@@ -1,4 +1,4 @@
-import {validateHHMMSSFormat} from '../utils/validationtools'
+import {validateHHMMSSFormat} from '../../utils/timetools'
 
 export const columns =[
     {

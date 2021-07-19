@@ -2,7 +2,7 @@ import React, {useState,useEffect} from "react";
 
 import Materialtable,{MTableToolbar}from 'material-table'
 import {IconButton} from '@material-ui/core'
-import DetailedResults from '../DetailedResults'
+import DetailedResults from '../DetailedResults/DetailedResults'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
 import { getResults } from "../../services/results.services";
 import { columns } from "../ResultsTable/columns";

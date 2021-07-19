@@ -1,7 +1,7 @@
 import React from 'react'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import Materialtable,{MTableToolbar} from 'material-table'
-import {updateMapCenter} from '../utils/maptools'
+import {updateMapCenter} from '../../utils/maptools'
 
 function MaterialTable_({columns,data,deleteService,createService,updateService,
                         onUpdateData,map})

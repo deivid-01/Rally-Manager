@@ -26,3 +26,18 @@ export const uploadTrackpoints = async(partialResult_id,file) => {
 
   }
 
+export const getTrackpoints =  async(competitor_id) =>
+{
+  try
+  {
+      const res = await axios.get(`${BASE_URL}/${competitor_id}`)
+     
+      return res.data
+  
+  }
+  catch ( err)
+  {
+      console.log(err)
+  }
+}
+

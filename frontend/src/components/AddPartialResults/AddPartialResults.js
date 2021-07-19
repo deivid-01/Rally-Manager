@@ -4,7 +4,7 @@ import {IconButton,Tooltip } from '@material-ui/core'
 import BackupIcon from '@material-ui/icons/Backup';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error';
-import {validateHHMMSSFormat} from '../utils/validationtools'
+import {validateHHMMSSFormat} from '../../utils/timetools'
 import {uploadTrackpoints} from '../../services/trackpoints.services'
 
 import PartialResultsTable from '../PartialResultsTable';
@@ -13,7 +13,7 @@ import {getPartialResultsFromStageByCategory} from '../../services/stage.service
 
 function AddPartialResults()
 {
-    console.log("hi from add partial results");
+    
     const [fetchingData,SetFetchingData]= useState(true)
 
     const [uploadGPXSuccess,setUploadGPXSuccess] = useState(false);
