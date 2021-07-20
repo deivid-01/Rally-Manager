@@ -2,7 +2,6 @@ const moongose = require("mongoose");
 const {Schema} = moongose;
 
 
-
 const PartialResultSchema = new Schema({
 
     competitor:{type: Schema.Types.ObjectId, ref :'Competitor',required:true} ,
@@ -12,7 +11,7 @@ const PartialResultSchema = new Schema({
     penalization     : { type: String, required: false,default:'00:00:00'},
     discount      : { type: String, required: false,default:'00:00:00'},
     waypointsMissed      : [{type: Schema.Types.ObjectId, ref :'Waypoint'} ],
-    speedingZones      : { type: Number, required: false},
+    speedPoints      : [ {type: Object }],
     gpx_uploaded      : { type: Boolean, required: false, default:false},
     
     stage:{type: Schema.Types.ObjectId, ref :'Stage', required:true}  

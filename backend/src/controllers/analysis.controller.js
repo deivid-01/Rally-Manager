@@ -93,10 +93,17 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                         
                         averageSpeed = analysisCtrl.calculateSpeed(distanceDZ,startTime,distanceFZ,finishTime);                
                         penalization = penalization + analysisCtrl.calculateSpeedPenalization(averageSpeed,speedMax);
-                        dzPoint.append({
-                            averageSpeed:averageSpeed,
-                            penalization:penalization
-                        })
+                        if ( penalization>0 )
+                        {
+                            
+                            dzPoints.push({
+                                id:dzPoints.length+1,
+                                averageSpeed:String(Math.round(averageSpeed*100)/100)+'m/s',
+                                penalization:toolsCtrl.hoursToHHMMSS(penalization/60),
+                                latitude:latitudeWayPoint,
+                                longitude:longitudeWayPoint
+                            })
+                        }
                     }else{
                         penalization = penalization + toolsCtrl.HHMMSSToHours(waypoints[i].rule.penalization)*60;//Si no pasa por FZ NI DZ QUE SE HACE?
                     }      

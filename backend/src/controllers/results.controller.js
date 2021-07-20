@@ -34,6 +34,7 @@ resultCtrl.getStageResult=async(req,res)=>{
               'arrival_time',
               'neutralization',
               'penalization',
+              'speedPoints',
               'discount',
               'waypointsMissed'],
       populate:{path:"competitor",select:["name",'lastname','categorytype'],
@@ -59,12 +60,15 @@ resultCtrl.getStageResult=async(req,res)=>{
      
               partialR.penalization = toolsCtrl.hoursToHHMMSS(analysisRes.totalPenalization/60) //WARNING : Convert to hours
               partialR.waypointsMissed = analysisRes.noPassedWaypoints
-  
+             
+             
+              partialR.speedPoints = analysisRes.dzPoints
               partialR.save()
             }
           
  
         }
+    
         partialresults=raceCtrl.sortByTotal(partialresults);
 
         return res.status(200).json(resultCtrl.translateResults(partialresults))
@@ -88,6 +92,12 @@ resultCtrl.getStageResult=async(req,res)=>{
  
 };
 
+raceCtrl.fixSpeedPoints = (points) =>{
+  dzPoints = []
+  points.forEach((p=>{
+        p.penalization/60
+  }))
+}
 raceCtrl.sortByTotal = (items) =>// sort by name
 {
 items.sort(function(totalA, totalB) {
@@ -123,7 +133,8 @@ resultCtrl.translateResults = (results) => {
         competitor_lastname:result.competitor.lastname,
         competitor_category:result.competitor.categorytype.name,
         total:'',
-        waypointsMissed:result.waypointsMissed
+        waypointsMissed:result.waypointsMissed,
+        speedPoints:result.speedPoints
       }
       var totalHours = toolsCtrl.HHMMSSToHours(result.arrival_time)-toolsCtrl.HHMMSSToHours(result.start_time)
       item.total = toolsCtrl.hoursToHHMMSS(totalHours + toolsCtrl.HHMMSSToHours(result.penalization) - toolsCtrl.HHMMSSToHours(result.neutralization))

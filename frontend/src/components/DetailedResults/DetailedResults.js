@@ -8,14 +8,16 @@ import WaypointsMissedTable from '../WaypointsMissedTable/WaypointsMissedTable'
 import {getTrackpoints} from '../../services/trackpoints.services'
 import {prepareWaypoints} from '../../utils/prepareData'
 import DetailedMap from '../DetailedMap'
+import DetailedSpeedTable from '../DetailedSpeedTable/DetailedSpeedTable'
 function DetailedResults({waypoints,compInfo})
 {
-    console.log(compInfo)
+
     const mapRef = useRef();
     const [map,setMap] = useState(null) 
     const [path,setPath] = useState([])
     const [elevation,setElevation] = useState([])
     const [missedWaypoints,setMissedWaypoints] = useState([])
+    const [speedPoints,setSpeedPoints] = useState([])
     const [competitorInfo,setCompetitorInfo] = useState([    ])
  
 
@@ -33,6 +35,7 @@ function DetailedResults({waypoints,compInfo})
                 elevation_.push(trackpoint.elevation)
             })
            setPath(path_)
+          
            setElevation(elevation_)
         }
         catch ( err)
@@ -49,6 +52,7 @@ function DetailedResults({waypoints,compInfo})
       setCompetitorInfo([compInfo])
     
       setMissedWaypoints(prepareWaypoints(compInfo.waypointsMissed))
+      setSpeedPoints(compInfo.speedPoints)
 
        setMap(mapRef.current.leafletElement)
      
@@ -91,33 +95,13 @@ function DetailedResults({waypoints,compInfo})
                     <WaypointsMissedTable
                         data = {(missedWaypoints.length> 0)?missedWaypoints:[]} 
                         map = {map}
-                        />
-        {/*         <Materialtable
-        
-        columns = {columns2}
-        data = {data}
-        title = 'Speed'
-        options = {{
-            tableLayout:'fixed',
-            search:false,
-            sorting:false,
-            maxBodyHeight: data.length*100
-        }}
+                    />
 
-        components = {{
-            Pagination:(props) => <div>
-               <Grid container >
-                   <Grid item sm={6} align='center'>Total</Grid>
-                   <Grid item sm={6} align='center'>{(missedWaypoints.length>0)?0:0}</Grid>
-               </Grid>
-            </div>
-        }}
-
-        >
-
-        </Materialtable>
-        */}
-
+                    <DetailedSpeedTable
+                    data = {(speedPoints.length> 0)?speedPoints:[]}
+                    map = {map}
+                    />
+                    
                 </div>
          
             </div>

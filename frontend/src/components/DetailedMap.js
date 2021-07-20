@@ -3,16 +3,19 @@ import React from 'react'
 import Markers from './Markers'
 import FullscreenControl from 'react-leaflet-fullscreen';
 import { Map, TileLayer,Polyline } from 'react-leaflet'
+import {setMapCenter} from '../utils/maptools'
 
-function DetailedMap ({mapRef,waypoints,track}) {
+function DetailedMap ({mapRef,waypoints,track,zoom}) {
+    console.log(track[0])
     return (       <Map 
        
-        center = {  [
-         '6.2441988',
-         '-75.6177781'
-        ]}
+        center = {(waypoints.length>0)?setMapCenter(waypoints[0],waypoints[waypoints.length-1]):
+            {
+            lat:'6.2441988',
+            lng:'-75.6177781'
+        }}
         ref = {mapRef}
-        zoom={10}
+        zoom={zoom}
         >
             <TileLayer
              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
