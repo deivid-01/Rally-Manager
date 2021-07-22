@@ -7,7 +7,7 @@ import FindInPageIcon from '@material-ui/icons/FindInPage';
 import { getResults } from "../../services/results.services";
 import { columns } from "../ResultsTable/columns";
 
-export const ResultsTable = ({waypoints}) => {
+export const ResultsTable = () => {
  
   
   const [resultsLoaded,setResultsLoaded] = useState(false);
@@ -124,7 +124,7 @@ export const ResultsTable = ({waypoints}) => {
        <br></br>
        </div>
      :
-       <DetailedResults waypoints={waypoints} compInfo={selectedResult}></DetailedResults>
+       <DetailedResults  compInfo={selectedResult}></DetailedResults>
       }
        </div>  
   )

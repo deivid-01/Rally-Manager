@@ -12,6 +12,7 @@ import CreateStage from "./CreateStage";
 function Categories(props){
    
     const [raceData,setRaceData] = useState()
+    const [categories,setCategories] = useState();
     const [options,setOptions] = useState([
         {
             id : 1,
@@ -86,12 +87,26 @@ function Categories(props){
 
     useEffect(()=>{
         var race = window.localStorage.getItem('race')
+       
         if ( race )
-            setRaceData (JSON.parse(race))
+        {
+            race = JSON.parse(race);
+            setRaceData (race);
+            setCategories(race.categories.map(cd=>({
+                id : cd._id,
+                title : cd.categorytype.name
+                              
+            })))
+
             var option= localStorage.getItem('option');
             
             setSelectedOption( (option)?options[option]:options[0])
             updateOptions()
+        
+        }
+            
+
+          
     },[])
 
     return (
@@ -133,7 +148,7 @@ function Categories(props){
 
             <br></br>
             {  
-             selectedOption.id==1 &&  <Cards datas = {props.location.data} type={type}url={url} next_URL={next_URL}></Cards>
+             selectedOption.id==1 &&  <Cards data = {categories} type={type} next_URL={next_URL}></Cards>
             }
             {  
              selectedOption.id==2 &&  <Competitors></Competitors>

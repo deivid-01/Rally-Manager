@@ -9,7 +9,7 @@ import {getTrackpoints} from '../../services/trackpoints.services'
 import {prepareWaypoints} from '../../utils/prepareData'
 import DetailedMap from '../DetailedMap'
 import DetailedSpeedTable from '../DetailedSpeedTable/DetailedSpeedTable'
-function DetailedResults({waypoints,compInfo})
+function DetailedResults({compInfo})
 {
 
     const mapRef = useRef();

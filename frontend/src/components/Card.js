@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import Button from '@material-ui/core/Button';
+import {getStage} from '../services/stage.services'
+import {getRace} from '../services/race.services'
+import {getCategory} from '../services/categories.services'
 
-function Card({next_type,type,title,url,id,next_URL}){
+function Card({type,title,id,next_URL}){
     
 
     
@@ -16,16 +19,27 @@ function Card({next_type,type,title,url,id,next_URL}){
      
         
         const token = window.localStorage.getItem('token')
+        var data;
+    
+        if ( type.toLowerCase()=='stage')
+        {
+            data = await getStage(id);
+        }
+        else if ( type.toLowerCase()=='category')
+        {
+            data = await getCategory(id);
+        }
+        else if ( type.toLowerCase()=='race')
+        {
+            
+            data = await getRace(id);
+        }
         
-
-        
-        var res = await axios.get(url+"/"+id)
-        var resData = res.data
-
-        window.localStorage.setItem(
-            type.toLowerCase(), JSON.stringify(resData)
-            )
-
+        //Save in localstorage
+        var key =  type.toLowerCase();
+        var value = JSON.stringify(data);
+        window.localStorage.setItem(  key, value )
+           
         loadNextPage()
         
     }

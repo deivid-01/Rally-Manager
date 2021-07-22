@@ -1,32 +1,33 @@
 import React, {useEffect, useState} from "react";
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 
+import Options from "./Options";
 import Competitors from './Competitors'
 import Results from './Results'
+import Collapse from '@material-ui/core/Collapse';
 
 import Cards from './Cards'
 
-function Stages(props){
+function Stages(){
 
     const type='Stage'
     const next_URL = "/stage"
     
-    const url = "http://localhost:5000/api/stages"
     const [categoryData, setCategoryData] = useState()
+    const [stages,setStages] = useState([]);
     const [options,setOptions] = useState([
         {
             id : 1,
             name:'Stages',
             active: true
         },
+        /*
         {
             id : 2,
             name:'Competitors',
             active: false
-        },
+        },*/
         {
-            id : 3,
+            id : 2,
             name:'Results',
             active: false
         },
@@ -63,7 +64,12 @@ function Stages(props){
         var category = window.localStorage.getItem('category')
         if (category)
         {
-            setCategoryData(JSON.parse(category));
+            category = JSON.parse(category);
+            setStages(category.stages.map(({_id,name})=>(
+                {id : _id,
+                title : name})                
+                ))
+            setCategoryData(category);
             setSelectedOption(options[0])
         }
     },[])
@@ -75,42 +81,24 @@ function Stages(props){
             <br></br>
             <div className="custom-align">
 
-                <ButtonGroup  variant="text" aria-label="text primary button group">
-                    {
-                        options.map(option =>(
-                            
-                        <Button key={option.id}
-                            className={(option.active)?
-                                            [(!option.name.localeCompare('Results'))?
-                                                "bg-red text-light"
-                                                :
-                                                "bg-dark text-light"]
-                                            :""}
-                            variant = {(option.active)?'contained':'text'}
-                            color = {(option.name.localeCompare('Results'))?"default":'secondary'}
-                            onClick = {handleActiveOption(option.id-1)}
-                        >{option.name}
-                        </Button>
-                            
-                        ))
-                    }
-                    
-
-
-                </ButtonGroup>
+                <Options
+                    options={options}
+                    handleActiveOption={handleActiveOption}
+                />
                 </div>
                 <br></br>
-                {
-                    selectedOption.id==1 && <Cards datas={props.location.data}type={type}url={url} next_URL={next_URL}/>
-                }
-                {
-                    selectedOption.id==2 &&  <Competitors></Competitors>
-                }
-                {
-                    selectedOption.id==3 &&  <Results></Results>
-                }
-                
 
+                <Collapse in ={selectedOption.id==1} >
+                <Cards data={stages} type={type} next_URL={next_URL}/>
+                </Collapse>
+                {/*
+                <Collapse in ={selectedOption.id==2} >
+                    <Competitors></Competitors>
+                </Collapse>
+                */}
+                <Collapse in ={selectedOption.id==2} >
+                    <Results></Results>
+                </Collapse>
            
         </div>
     )
