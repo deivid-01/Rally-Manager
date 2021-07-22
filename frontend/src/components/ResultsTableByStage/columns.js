@@ -47,8 +47,23 @@ export const columns = [
     }
     },
     {
-      title: 'Stage 1',
-      field: 'stage1',
+      title: 'Category',
+      field: 'competitor_category',
+      width:'15%',
+      cellStyle:{
+  
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
+    },
+    {
+      title: 'Partial Time',
+      field: 'partial_time',
       width:'15%',
       cellStyle:{
       
@@ -61,6 +76,21 @@ export const columns = [
         textAlign:'center', 
     }
       
+    },
+    {
+      title: 'Penalization',
+      field: 'penalization',
+      width:'20%',
+      cellStyle:{
+    
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+   
+        
+        textAlign:'center', 
+    }
     },
     {
       title: 'Total Time',

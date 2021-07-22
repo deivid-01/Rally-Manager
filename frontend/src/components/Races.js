@@ -8,7 +8,7 @@ function Races(props){
     const [races,setRaces]= useState([])
 
     const type="Race"
-    const next_URL = "/categories"
+    const next_URL = "/race"
     const add_URL = "/createrace"
     
 
@@ -37,7 +37,7 @@ function Races(props){
             if(loggedAdmin)
             {
                 var racesData =  JSON.parse(loggedAdmin).races 
-                console.log(racesData)
+               
 
                 setRaces(racesData.map(({_id,name})=>({
                     id : _id,

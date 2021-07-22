@@ -61,7 +61,7 @@ function Card({type,title,id,next_URL}){
 
 
     return (
-        <div className='card text-center border-warning'>
+        <div className='card text-center bg-warning'>
            <div className="card-body text-dark"> 
            
             <h4 className="overflow">{title}</h4>

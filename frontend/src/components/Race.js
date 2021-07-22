@@ -6,11 +6,14 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import {useHistory} from 'react-router-dom'
 import Cards from './Cards'
 import Competitors from './Competitors'
-import Results from './Results'
+import ResultsByStage from './ResultsByStage'
 import CreateStage from "./CreateStage";
 
-function Categories(props){
+function Race(props){
    
+    const next_URL = "/category"
+    const type ="Category"
+
     const [raceData,setRaceData] = useState()
     const [categories,setCategories] = useState();
     const [options,setOptions] = useState([
@@ -43,9 +46,7 @@ function Categories(props){
             active: false
         }
     )
-    const next_URL = "/stages"
-    const url = "http://localhost:5000/api/categories"
-    const type ="Category"
+
 
     const history = useHistory();
 
@@ -157,11 +158,11 @@ function Categories(props){
              selectedOption.id==3 && <CreateStage></CreateStage>
             }
             {  
-             selectedOption.id==4 && <Results></Results>
+             selectedOption.id==4 && <ResultsByStage></ResultsByStage>
             }
                
         </div>
     )
 }
 
-export default Categories;
+export default Race;

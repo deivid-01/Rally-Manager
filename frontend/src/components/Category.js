@@ -2,12 +2,13 @@ import React, {useEffect, useState} from "react";
 
 import Options from "./Options";
 import Competitors from './Competitors'
-import Results from './Results'
+
 import Collapse from '@material-ui/core/Collapse';
 
 import Cards from './Cards'
+import { ResultsTable } from "./ResultsTable/ResultsTable";
 
-function Stages(){
+function Category(){
 
     const type='Stage'
     const next_URL = "/stage"
@@ -97,11 +98,11 @@ function Stages(){
                 </Collapse>
                 */}
                 <Collapse in ={selectedOption.id==2} >
-                    <Results></Results>
+                    <ResultsTable/>
                 </Collapse>
            
         </div>
     )
 }
 
-export default Stages;
+export default Category;

@@ -3,7 +3,7 @@ import React ,{ useEffect, useState}from "react";
 
 import Collapse from '@material-ui/core/Collapse';
 import Waypoints from './Waypoints/Waypoints'
-import Results from './Results'
+import ResultsByStage from './ResultsByStage'
 import AddPartialResults from './AddPartialResults/AddPartialResults'
 
 import Options from "./Options";
@@ -115,7 +115,7 @@ function Stage(props){
                     <AddPartialResults/>
             </Collapse>
             <Collapse in ={selectedOption.id==3} >
-                    <Results/>
+                    <ResultsByStage resultsBy={'stage'}/>
             </Collapse>
 
    
