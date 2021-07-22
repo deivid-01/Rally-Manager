@@ -1,4 +1,5 @@
 const Trackpoint = require('../models/trackpoint.js');
+const PartialResult = require('../models/partialresult');
 const toolsCtrl = require('../controllers/tools.controller');
 const trackpointCtrl = {};
 
@@ -46,6 +47,7 @@ trackpointCtrl.createOne_ = async ( trackpoint ) =>
 
 trackpointCtrl.createAll = async ( req , res ) =>
 {
+  var partialResult_id = req.body.partialresult;
 
   if (req.files === null) {
     return res.status(400).json({msg:'No file uploaded'});
@@ -56,9 +58,31 @@ trackpointCtrl.createAll = async ( req , res ) =>
   }
  
 
+  try
+  {
+  //Check if already upload a GPX File
+     var partialresult =  await PartialResult.findById(partialResult_id)
+     if (partialresult.gpx_uploaded )
+     {
+       //Remove actual trackpoints
+        await Trackpoint.deleteMany({partialresult:partialResult_id});
+     }
+  
+  }
+
+  catch(err)
+  {
+    console.log(err)
+  }
+
+
+  //If already exists
+
+
+
   var trackpoints =  toolsCtrl.getTrackPointsFromFile(req.files.file);  
   trackpoints.forEach((point)=>{
-    point.partialresult = req.body.partialresult;
+    point.partialresult = partialResult_id;
   })
   
   try

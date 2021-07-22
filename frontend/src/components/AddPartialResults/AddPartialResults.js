@@ -103,8 +103,10 @@ function AddPartialResults()
          
           </div>),
           editComponent: (rowData) =>
-          rowData && (                
+          rowData && (
+                         
               <div >
+               
                     <input
                     style={{display:'none'}}
                     accept=".gpx"
@@ -133,7 +135,7 @@ function AddPartialResults()
     const onSetData = (newData)=> setData(newData)
      
 
-    const onSetGPXUpload = ()=>   setGPXUpload(true)
+    const onSetGPXUpload = (active)=>   setGPXUpload(active)
     const onSetItemUpdated = ()=>   setItemUpdated(true)
     const onSetItemDeleted = ()=> setItemDeleted(true)
       

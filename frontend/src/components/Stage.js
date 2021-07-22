@@ -9,7 +9,7 @@ import AddPartialResults from './AddPartialResults/AddPartialResults'
 import Options from "./Options";
 function Stage(props){
 
-   
+    const [categoryName,setCategoryName] = useState('');
     const [prevIndex,setPrevIndex] = useState(-1)
     const [stageData, setStageData] = useState()
     const [options,setOptions] = useState([
@@ -74,12 +74,15 @@ function Stage(props){
     useEffect(()=>{
 
         var stage = window.localStorage.getItem('stage')
-        if (stage)
+        var category = window.localStorage.getItem('category')
+        if (stage && category)
         {
             stage =JSON.parse(stage) 
+            category =JSON.parse(category) 
             setStageData(stage);
+            setCategoryName(category.categorytype.name);
        
-
+            console.log(stage);
             var option= localStorage.getItem('option_');
            
             setSelectedOption((option)?options[option]:options[0])
@@ -91,7 +94,9 @@ function Stage(props){
     return (
         <div>
             <br></br>
-            <div><h1 className="text-center">{(stageData)?stageData.name:"Stage Name"}</h1> </div>
+            <div><h1 className="text-center">{(stageData)?stageData.name:"Stage Name"}</h1>
+            <h5 className="text-center">{(categoryName)?categoryName:"Category Name"}</h5> </div>
+          
             <br></br>
 
             <div className="custom-align">

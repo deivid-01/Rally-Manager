@@ -53,6 +53,7 @@ function PartialResultsTable(
                     textAlign:'center', 
                     fontSize:'1'}}}
         editable={{
+         
             onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
@@ -62,7 +63,8 @@ function PartialResultsTable(
                 if (gpxUploaded)
                     {
                       newData.gpx_uploaded = true
-                      onSetGPXUpload()
+                      onSetGPXUpload(false);
+
                     }
 
                 //Update data in database
