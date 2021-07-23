@@ -3,7 +3,7 @@ import React, {useState,useEffect} from "react";
 import Materialtable,{MTableToolbar}from 'material-table'
 import {IconButton} from '@material-ui/core'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
-import { getResults } from "../../services/results.services";
+import { getResultsByCategory } from "../../services/results.services";
 import { columns } from "./columns";
 
 export const ResultsTable = () => {
@@ -17,7 +17,7 @@ export const ResultsTable = () => {
   const fetchResults = async (stage_id,category_id) => {
     try
     {
-      const res = await getResults(stage_id,category_id)
+      const res = await getResultsByCategory(category_id)
       setData(res);
       setResultsLoaded(true);
     }
@@ -30,17 +30,16 @@ export const ResultsTable = () => {
   
   useEffect(()=>{
  
-   // setShowDetailedInfo(true)
+   setShowDetailedInfo(true)
  
-    var stage = localStorage.getItem('stage')
+
     var category = localStorage.getItem('category')
-    if ( stage && category)
+    if (  category)
     {
-      stage = JSON.parse(stage)
       category = JSON.parse(category)
   
       //results by stage and category
-     // fetchResults(stage._id,category.categorytype._id);
+      fetchResults(category._id);
 
     }
     

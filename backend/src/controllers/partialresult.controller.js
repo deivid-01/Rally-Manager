@@ -97,6 +97,9 @@ partialResultCtrl.deleteOne = async ( req , res ) => {
     var partialRes_id = req.params.id; 
     try
     {
+        //Delete competitor  from Category
+
+
         //Delete from Stage
         var partialResult =  await PartialResult.findById(partialRes_id)
         var stage_id = partialResult.stage

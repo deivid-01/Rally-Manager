@@ -18,7 +18,7 @@ export const columns = [
     },
     {
       title: 'Name',
-      field: 'competitor_name',
+      field: 'fullName',
       width:'10%',
       cellStyle:{
 
@@ -32,8 +32,23 @@ export const columns = [
     }
     },
     {
-      title: 'Lastname',
-      field: 'competitor_lastname',
+      title: 'Number',
+      field: 'number',
+      width:'10%',
+      cellStyle:{
+   
+        textAlign:'center', 
+        fontSize:'1'
+    },
+    headerStyle: {
+        backgroundColor: '#fcba03',
+        
+        textAlign:'center', 
+    }
+    },
+    {
+      title: 'Vehicle',
+      field: 'vehicle',
       width:'10%',
       cellStyle:{
    
@@ -64,7 +79,7 @@ export const columns = [
     },
     {
       title: 'Total Time',
-      field: 'total',
+      field: 'totalTime',
       width:'20%',
       cellStyle:{
   

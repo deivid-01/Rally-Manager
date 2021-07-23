@@ -2,8 +2,8 @@ const analysisCtrl = require('./analysis.controller');
 const Stages = require('../models/stage');
 const Trackpoints = require('../models/trackpoint');
 const raceCtrl = require('./race.controller');
-const waypoint = require('../models/waypoint');
 const toolsCtrl = require('./tools.controller');
+const Category = require('../models/category');
 
 
 
@@ -91,6 +91,50 @@ resultCtrl.getStageResult=async(req,res)=>{
 
  
 };
+
+resultCtrl.getCategoryResults = async (req,res) =>{
+
+
+  var category_id = req.params.id;
+  try{
+
+    await Category.findById(category_id)
+    .populate({
+      path:"stages",select:"partialresults",
+      populate:{path:"partialresults",
+      populate:{path:"competitor", select:"categorytype"}}})
+    .populate('competitors').exec((err,category)=>{
+
+      var competitors = category.competitors.map(comp=>({
+        position: -1,
+        fullName: `${comp.name} ${comp.lastname}`,
+        number:comp.number,
+        vehicle:comp.vehicle,
+        stagesTime:[],
+        totalTime:0
+      }));
+
+      category.stages.forEach((stage)=>{
+        var partialresults = stage.partialresults.filter(partialresult=>
+          String(category.categorytype) ==String(partialresult.competitor.categorytype))
+          partialresults.forEach((partialRes,i)=>{
+            
+            competitors[i].stagesTime.push(partialRes.totalTime);
+            competitors[i].totalTime += partialRes.totalTime;
+         })
+      });
+      
+      //Sort competitors
+      return res.status(200).json(competitors);
+    })
+  
+  }
+  catch(err)
+  {
+    console.log(err)
+  }
+}
+
 
 raceCtrl.fixSpeedPoints = (points) =>{
   dzPoints = []
