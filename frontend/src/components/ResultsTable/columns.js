@@ -1,4 +1,4 @@
-export const columns = [
+export var columns = [
     {
       title: 'Position',
       field: 'position',
@@ -60,22 +60,6 @@ export const columns = [
         
         textAlign:'center', 
     }
-    },
-    {
-      title: 'Stage 1',
-      field: 'stage1',
-      width:'15%',
-      cellStyle:{
-      
-        textAlign:'center', 
-        fontSize:'1'
-    },
-    headerStyle: {
-        backgroundColor: '#fcba03',
-        
-        textAlign:'center', 
-    }
-      
     },
     {
       title: 'Total Time',

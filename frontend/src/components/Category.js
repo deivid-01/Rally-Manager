@@ -9,7 +9,6 @@ import Cards from './Cards'
 import { ResultsTable } from "./ResultsTable/ResultsTable";
 
 function Category(){
-
     const type='Stage'
     const next_URL = "/stage"
     
@@ -52,7 +51,7 @@ function Category(){
 
         newOptions[index].active =true
         setSelectedOption(newOptions[index])
-        
+       
         setOptions(newOptions)
 
     }
@@ -73,7 +72,11 @@ function Category(){
             setCategoryData(category);
             setSelectedOption(options[0])
         }
+
+        
     },[])
+
+ 
     
     return (
         <div>
@@ -92,13 +95,9 @@ function Category(){
                 <Collapse in ={selectedOption.id==1} >
                 <Cards data={stages} type={type} next_URL={next_URL}/>
                 </Collapse>
-                {/*
+ 
                 <Collapse in ={selectedOption.id==2} >
-                    <Competitors></Competitors>
-                </Collapse>
-                */}
-                <Collapse in ={selectedOption.id==2} >
-                    <ResultsTable/>
+                    <ResultsTable/> 
                 </Collapse>
            
         </div>

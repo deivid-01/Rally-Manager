@@ -1,23 +1,26 @@
 import React, {useState,useEffect} from "react";
-
+import { columns } from "./columns";
 import Materialtable,{MTableToolbar}from 'material-table'
 import {IconButton} from '@material-ui/core'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
 import { getResultsByCategory } from "../../services/results.services";
-import { columns } from "./columns";
+
 
 export const ResultsTable = () => {
  
-
+  
   const [resultsLoaded,setResultsLoaded] = useState(false);
   const [showDetailedInfo,setShowDetailedInfo]= useState(true);
   const [data,setData]=useState([])
-
+  const [columns2,setColumns2]=useState([])
  
-  const fetchResults = async (stage_id,category_id) => {
+ 
+  const fetchResults = async (category_id) => {
     try
     {
       const res = await getResultsByCategory(category_id)
+
+      //Set stages time properties
       setData(res);
       setResultsLoaded(true);
     }
@@ -26,6 +29,26 @@ export const ResultsTable = () => {
       console.log(err)
     }  
 
+  }
+
+  const setStageTotalColumns = (num_stages)=>{
+    var stageColumns=[]
+    
+    
+    for (let i = 0; i < num_stages; i++) {
+    
+      var newcol = {...columns[3]}; 
+      newcol.title=`Stage ${i+1}`
+      newcol.field=`stage_${i+1}`
+      stageColumns.push(newcol)
+      
+    }
+    
+    var columnStart = columns.slice(0,columns.length-1);
+    var columnMedium = stageColumns;
+    var columnEnd=  columns.slice(columns.length-1,columns.length)
+
+    setColumns2(columnStart.concat(columnMedium).concat(columnEnd));
   }
   
   useEffect(()=>{
@@ -37,12 +60,20 @@ export const ResultsTable = () => {
     if (  category)
     {
       category = JSON.parse(category)
-  
-      //results by stage and category
+        
+      setStageTotalColumns(category.stages.length);
       fetchResults(category._id);
 
+
+
     }
+  
+
     
+  
+ 
+   // columns.splice(0,0,newcol);
+   // console.log(columns)
   },[])
 
 
@@ -76,7 +107,7 @@ export const ResultsTable = () => {
 
         }  
     }
-        columns={columns}
+        columns={columns2}
         data = {data}
         isLoading ={false}// {!resultsLoaded}
         options ={{

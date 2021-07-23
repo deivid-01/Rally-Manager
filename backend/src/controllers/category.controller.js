@@ -6,14 +6,22 @@ const categoryCtrl = {};
 
 categoryCtrl.getOne= async ( req , res ) =>
 {
-  await Category.findById(req.params.id).
-  populate("race","name").
-  populate("categorytype","name").
-  populate("stages","name").
-  populate("competitors","name").exec((err,category)=>
+  try
   {
-    res.json(category);
-  })
+    await Category.findById(req.params.id).
+    populate("race","name").
+    populate("categorytype","name").
+    populate("stages","name").
+    populate("competitors","name").exec((err,category)=>
+    {
+      res.status(200).json(category);
+    })
+  }
+  catch(err)
+  {
+    return res.status(400).json(err);
+  }
+ 
  
 }
 categoryCtrl.getAll= async ( req , res ) =>

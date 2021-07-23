@@ -105,6 +105,8 @@ resultCtrl.getCategoryResults = async (req,res) =>{
       populate:{path:"competitor", select:"categorytype"}}})
     .populate('competitors').exec((err,category)=>{
 
+      if(err) return res.status(400).json(err)
+
       var competitors = category.competitors.map(comp=>({
         position: -1,
         fullName: `${comp.name} ${comp.lastname}`,
@@ -131,7 +133,8 @@ resultCtrl.getCategoryResults = async (req,res) =>{
   }
   catch(err)
   {
-    console.log(err)
+    return res.status(400).json(rtt);
+
   }
 }
 
