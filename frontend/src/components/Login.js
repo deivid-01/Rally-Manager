@@ -49,7 +49,7 @@ function Login(props){
     }
 
     const handlerSignUp = async(e) => {
-      console.log("loading sign up page...")
+     
       history.push(signup_URL)
   }
 

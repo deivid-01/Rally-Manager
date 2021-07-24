@@ -93,7 +93,7 @@ waypointCtrl.createAll = async ( req , res ) =>
   }
   catch(err)
   {
-    return res.json(err);
+    return res.status(400).json(err);
   }
 
   
@@ -123,14 +123,22 @@ waypointCtrl.updateOne = async ( req , res ) =>{
 waypointCtrl.deleteOne = async ( req,res) => {
 
   //Delete from stage
-  var waypoint = await Waypoint.findById(req.params.id)
-  var stage = await Stage.findById(waypoint.stage);
-  stage.waypoints =stage.waypoints.filter((wp_id)=> (String(wp_id)).localeCompare(req.params.id));
-  stage.save();
+  try
+  {
+    var waypoint = await Waypoint.findById(req.params.id)
+    var stage = await Stage.findById(waypoint.stage);
+    stage.waypoints =stage.waypoints.filter((wp_id)=> (String(wp_id)).localeCompare(req.params.id));
+    stage.save();
+  
+    //Delete  Waypoints
+    await Waypoint.findByIdAndDelete(req.params.id);
+     res.json({'status': 'Waypoint Deleted'})
+  }
+  catch(err)
+  {
+    return res.status(400).json(err);
+  }
 
-  //Delete  Waypoints
-  await Waypoint.findByIdAndDelete(req.params.id);
-   res.json({'status': 'Waypoint Deleted'})
 }
 
 waypointCtrl.deleteAll = async ( req, res ) => {

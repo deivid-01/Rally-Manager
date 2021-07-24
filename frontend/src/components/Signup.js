@@ -43,7 +43,7 @@ function Signup (props){
     }
 
     const loadNextPage = () =>{  
-        console.log("Loading next page");
+       
         history.push(login_URL)
      }
 
@@ -56,7 +56,7 @@ function Signup (props){
        try
        {
           const res =  await axios.post('http://localhost:5000/api/admins',signupData)
-          console.log(res.data)
+        
           loadNextPage();
 
        }

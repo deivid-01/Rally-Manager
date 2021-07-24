@@ -38,7 +38,7 @@ function CreateRace(props){
            Authorization: `Bearer ${token}`
           }
         }
-        console.log(config.headers.Authorization)
+        
         const res = await axios.post(postURL,raceData,config)
 
         loadNextPage();
