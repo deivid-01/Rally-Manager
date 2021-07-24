@@ -12,7 +12,9 @@ function  DetailedSpeedTable({data,map})
 
   const getTotalPenalizationSpeed = () =>{
     var sum = 0;
+    
     data.forEach((point)=>{
+       
          sum += HHMMSSToHours(point.penalization)
     })
     

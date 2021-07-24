@@ -98,7 +98,7 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                             
                             dzPoints.push({
                                 id:dzPoints.length+1,
-                                averageSpeed:String(Math.round(averageSpeed*100)/100)+'m/s',
+                                averageSpeed:String(Math.round(averageSpeed*100)/100)+'km/h',
                                 penalization:toolsCtrl.hoursToHHMMSS(penalization/60),
                                 latitude:latitudeWayPoint,
                                 longitude:longitudeWayPoint

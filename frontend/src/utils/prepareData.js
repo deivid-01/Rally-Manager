@@ -11,12 +11,5 @@ export const prepareWaypoints = (wps) => {
             penalization: waypoint.rule.penalization,
         }))        
     }
-    return [{
-        id: '',
-        type: '',
-        latitude:0,
-        longitude:0,
-        radius: 0,
-        penalization: 0
-    }]
+    return []
 }

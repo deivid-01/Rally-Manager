@@ -8,9 +8,11 @@ import {Button,IconButton} from '@material-ui/core'
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 function WaypointsMissedTable({data,map})
 {
+   
     const getTotalPenalizationMissedWaypoints = () =>{
         var sum = 0;
         data.forEach((waypoint)=>{
+            
              sum += HHMMSSToHours(waypoint.penalization)/60
         })
         

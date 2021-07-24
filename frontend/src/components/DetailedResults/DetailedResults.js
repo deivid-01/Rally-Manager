@@ -50,7 +50,7 @@ function DetailedResults({compInfo})
      
    
       setCompetitorInfo([compInfo])
-    
+        console.log(compInfo.waypointsMissed)
       setMissedWaypoints(prepareWaypoints(compInfo.waypointsMissed))
       setSpeedPoints(compInfo.speedPoints)
 
@@ -66,6 +66,8 @@ function DetailedResults({compInfo})
             fetchTrackpoints()
         }
     },[competitorInfo])
+
+
 
     return(
         <div>

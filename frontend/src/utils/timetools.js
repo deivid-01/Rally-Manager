@@ -1,17 +1,27 @@
 export  const HHMMSSToHours = (str)=>{
   
-    var total = 0;
-    var units = str.split(':')
-    if( units.length == 3 )
+    
+    
+    try
     {
-      units.forEach((unit,i)=>
+      var units = str.split(':')
+      var total = 0;
+      if( units.length == 3 )
       {
-        total+=parseFloat(unit)/Math.pow(60,i);
-      })
+        units.forEach((unit,i)=>
+        {
+          total+=parseFloat(unit)/Math.pow(60,i);
+        })
+      }
+      
+      
+      return total;
+    }
+    catch(err)
+    {
+      return 0;
     }
     
-    
-    return total;
 }
 
 export const ajustUnitFormat = (unit)=>{

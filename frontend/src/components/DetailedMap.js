@@ -6,7 +6,7 @@ import { Map, TileLayer,Polyline } from 'react-leaflet'
 import {setMapCenter} from '../utils/maptools'
 
 function DetailedMap ({mapRef,waypoints,track,zoom}) {
-    console.log(track[0])
+   
     return (       <Map 
        
         center = {(waypoints.length>0)?setMapCenter(waypoints[0],waypoints[waypoints.length-1]):
