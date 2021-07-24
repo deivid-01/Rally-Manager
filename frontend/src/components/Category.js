@@ -99,7 +99,8 @@ function Category(){
                 <Collapse in ={selectedOption.id==2} >
                     <ResultsTable/> 
                 </Collapse>
-           
+            <br></br>
+            <br></br>
         </div>
     )
 }

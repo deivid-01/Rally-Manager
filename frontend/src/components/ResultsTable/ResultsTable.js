@@ -20,14 +20,34 @@ export const ResultsTable = () => {
     {
       const res = await getResultsByCategory(category_id)
 
-      //Set stages time properties
-      setData(res);
+      setData(fixResults(res));
       setResultsLoaded(true);
     }
     catch(err)
     {
       console.log(err)
     }  
+
+  }
+
+  const fixResults = (results)=>{
+    var fixedData = []
+
+    results.forEach((item)=>{
+      
+      item.stagesTime.forEach((stageTime,i)=>{
+
+        var key = `stage_${i+1}`
+        item[key]=stageTime
+
+      })
+
+      delete item.stagesTime;
+      fixedData.push(item);
+
+    })
+    
+    return fixedData;
 
   }
 

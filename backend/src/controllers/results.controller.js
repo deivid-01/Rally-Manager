@@ -125,8 +125,16 @@ resultCtrl.getCategoryResults = async (req,res) =>{
             competitors[i].totalTime += partialRes.totalTime;
          })
       });
-      
-      //Sort competitors
+        //Sort competitors by total
+      competitors = resultCtrl.sortByTotal(competitors);
+
+      //Setting position values
+      for (let i = 0; i < competitors.length; i++) {
+        competitors[i].position= i+1;
+      }
+    
+
+      //Set positions
       return res.status(200).json(competitors);
     })
   
@@ -138,6 +146,20 @@ resultCtrl.getCategoryResults = async (req,res) =>{
   }
 }
 
+resultCtrl.sortByTotal = (items) =>// sort by name
+{
+  items.sort(function(resultA, resultB) {
+   
+    if (resultA.totalTime < resultB.totalTime) {
+      return -1;
+    }
+    if (resultA.totalTime > resultB.totalTime) {
+      return 1;
+    }
+    return 0 
+  })
+  return items;
+}
 
 raceCtrl.fixSpeedPoints = (points) =>{
   dzPoints = []
