@@ -7,19 +7,28 @@ const stageCtrl = {};
 
 stageCtrl.getOne= async ( req , res ) =>
 {
-  await Stage.findById(req.params.id).
-  populate({
-    path:"categories",select:"categorytype",
-    populate:{path:"categorytype",select:"name"}}).
-    populate('waypoints').
+  try
+  {
+    await Stage.findById(req.params.id).
     populate({
-      path:"partialresults",select:["competitor",'start_time','arrival_time','neutralization','penalization'],
-      populate:{path:"competitor",select:["name",'lastname','categorytype'],
-      populate:{path:'categorytype',select:'name'}}})
-    
-    .exec((err,stage)=>{
-    res.json(stage);
-  });
+      path:"categories",select:"categorytype",
+      populate:{path:"categorytype",select:"name"}}).
+      populate('waypoints').
+      populate({
+        path:"partialresults",select:["competitor",'start_time','arrival_time','neutralization','penalization'],
+        populate:{path:"competitor",select:["name",'lastname','categorytype'],
+        populate:{path:'categorytype',select:'name'}}})
+      
+      .exec((err,stage)=>{
+        if (err) return res.status(400).json(err);
+        return res.json(stage);
+    });
+  }
+  catch(err)
+  {
+    return res.status(400).json(err);
+  }
+  
 }
 stageCtrl.getOneByCategory = async ( req , res ) => {
   
@@ -38,6 +47,9 @@ stageCtrl.getOneByCategory = async ( req , res ) => {
         populate:{path:'categorytype',select:'name'}}})
       
       .exec((err,stage)=>{
+        
+        if (err) return res.status(400).json(err);
+
         stage = stageCtrl.filterByCategoryType(stage,categorytype_id)
         return res.json(stage);
     });

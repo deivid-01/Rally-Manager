@@ -8,6 +8,7 @@ import Cards from './Cards'
 import Competitors from './Competitors'
 import ResultsByStage from './ResultsByStage'
 import CreateStage from "./CreateStage";
+import { getCategory } from "../services/categories.services";
 
 function Race(props){
    
@@ -53,9 +54,19 @@ function Race(props){
     const loadNextPage = () => {
         history.push('/createstage')
     }
+
+    
+
     const handleClick = () =>{
         
         loadNextPage();
+
+    }
+
+    const handleFetchCategory =async (id) =>{
+        console.log("Fetching category...");
+        var data = await getCategory(id);
+        return data
 
     }
 
@@ -149,7 +160,13 @@ function Race(props){
 
             <br></br>
             {  
-             selectedOption.id==1 &&  <Cards data = {categories} type={type} next_URL={next_URL}></Cards>
+             selectedOption.id==1 &&  <Cards 
+                                        data = {categories}
+                                        type={type} 
+                                        next_URL={next_URL}
+                                        fetchCardData={handleFetchCategory}
+                                        />  
+                                        
             }
             {  
              selectedOption.id==2 &&  <Competitors></Competitors>

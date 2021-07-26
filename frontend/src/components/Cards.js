@@ -7,7 +7,13 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import '../../src/styles.css'
 import {useHistory} from 'react-router-dom'
 
-function Cards({data,type,next_URL,add_URL}){
+function Cards({
+    data,
+    type,
+    next_URL,
+    add_URL,
+    deleteCardHandler,
+    fetchCardData}){
  
 
     const history   = useHistory();
@@ -34,7 +40,10 @@ function Cards({data,type,next_URL,add_URL}){
                             type={type} 
                             title={card.title} 
                             id ={card.id}
-                            next_URL={next_URL}></Card>
+                            next_URL={next_URL}
+                            deleteCardHandler={deleteCardHandler}
+                            fetchCardData ={fetchCardData}
+                            />
                             </div>
                        
                     ))

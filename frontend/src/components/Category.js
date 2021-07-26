@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import Options from "./Options";
 import Competitors from './Competitors'
+import {getStage} from '../services/stage.services'
 
 import Collapse from '@material-ui/core/Collapse';
 
@@ -41,6 +42,18 @@ function Category(){
             active: false
         }
     )
+
+    const handleDeleteStage = () => {
+        //Deleting stage
+        console.log("Deleting stage...");
+    }
+
+    const handleFetchStage =async (id) =>{
+        console.log("Fetching stages...");
+        var data = await getStage(id);
+        return data
+
+    }
 
     const handleActiveOption = index => e => {
         
@@ -93,7 +106,13 @@ function Category(){
                 <br></br>
 
                 <Collapse in ={selectedOption.id==1} >
-                <Cards data={stages} type={type} next_URL={next_URL}/>
+                <Cards 
+                data={stages}
+                 type={type}
+                  next_URL={next_URL}
+                  deleteCardHandler={handleDeleteStage}
+                  fetchCardData = {handleFetchStage}
+                  />
                 </Collapse>
  
                 <Collapse in ={selectedOption.id==2} >

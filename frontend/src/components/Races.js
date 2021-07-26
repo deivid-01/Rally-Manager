@@ -1,6 +1,7 @@
 import React ,{ useEffect, useState}from "react";
 import Cards from './Cards'
 import { getRaces } from "../services/race.services";
+import {getRace} from '../services/race.services'
 
 function Races(props){
 
@@ -27,6 +28,17 @@ function Races(props){
         }
 
     }
+
+    const handleFetchRace =async (id) =>{
+        console.log("Fetching race...");
+        var data = await getRace(id);
+        return data
+
+    }
+
+
+
+    
 
     useEffect(()=>{
 
@@ -65,8 +77,10 @@ function Races(props){
                 data = {races}   
                 type={type} 
                 next_URL={next_URL} 
-                add_URL = {add_URL}>
-            </Cards>
+                add_URL = {add_URL}
+                fetchCardData = {handleFetchRace}
+            />  
+        
 
 
         </div>

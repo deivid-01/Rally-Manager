@@ -91,15 +91,15 @@ analysisCtrl.checkWaypoints= (waypoints,trackpoints)=>{
                    
                     if(passedByDZ){
                         
-                        averageSpeed = analysisCtrl.calculateSpeed(distanceDZ,startTime,distanceFZ,finishTime);                
-                        penalization = penalization + analysisCtrl.calculateSpeedPenalization(averageSpeed,speedMax);
-                        if ( penalization>0 )
+                        averageSpeed = analysisCtrl.calculateSpeed(distanceDZ,startTime,distanceFZ,finishTime);
+                        penalizationSpeed =    analysisCtrl.calculateSpeedPenalization(averageSpeed,speedMax);             
+                        penalization = penalization + penalizationSpeed;
+                        if ( penalizationSpeed>0 )
                         {
-                            
                             dzPoints.push({
                                 id:dzPoints.length+1,
                                 averageSpeed:String(Math.round(averageSpeed*100)/100)+'km/h',
-                                penalization:toolsCtrl.hoursToHHMMSS(penalization/60),
+                                penalization:toolsCtrl.hoursToHHMMSS(penalizationSpeed/60),
                                 latitude:latitudeWayPoint,
                                 longitude:longitudeWayPoint
                             })
