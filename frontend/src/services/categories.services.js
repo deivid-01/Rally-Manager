@@ -17,3 +17,15 @@ export const getCategory= async(category_id)=>{
   }
 
 }
+export const deleteCategory= async(category_id)=>{
+  
+  try
+  {
+    await  axios.delete(`${BASE_URL}/${category_id}`)    
+  }
+  catch(err)
+  {
+    console.log(err)
+  }
+
+}

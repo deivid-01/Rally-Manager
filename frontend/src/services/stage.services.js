@@ -30,5 +30,19 @@ export const getStage = async(stage_id)=>{
   {
     console.log(err)
   }
-
 }
+
+  
+  export const deleteStage = async(stage_id)=>{
+  
+    try
+    {
+      await  axios.delete(`${BASE_URL}/${stage_id}`)
+      
+    }
+    catch(err)
+    {
+      console.log(err)
+    }
+  
+  }

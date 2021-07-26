@@ -1,7 +1,6 @@
 import React ,{ useEffect, useState}from "react";
 import Cards from './Cards'
-import { getRaces } from "../services/race.services";
-import {getRace} from '../services/race.services'
+import { getRaces,getRace,deleteRace } from "../services/race.services";
 
 function Races(props){
 
@@ -29,10 +28,30 @@ function Races(props){
 
     }
 
+    const handleDeleteRace =async (id) => {
+        //Deleting stage
+        console.log("Deleting race...");
+        try
+        {
+            await deleteRace(id);
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+    }
+
+
     const handleFetchRace =async (id) =>{
-        console.log("Fetching race...");
-        var data = await getRace(id);
-        return data
+        try
+        {
+            var data = await getRace(id);
+            return data
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
 
     }
 
@@ -79,6 +98,7 @@ function Races(props){
                 next_URL={next_URL} 
                 add_URL = {add_URL}
                 fetchCardData = {handleFetchRace}
+                deleteCardHandler={handleDeleteRace}
             />  
         
 

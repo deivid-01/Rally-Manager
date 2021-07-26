@@ -1,8 +1,7 @@
-import React,{useState,useEffect}from 'react'
-import axios from 'axios'
+import React from 'react'
+
 import {Marker,Circle,Popup} from 'react-leaflet'
 import {IconLocation,IconLocation2,IconLocation3,IconFlagFinish,IconFlagStart} from './IconLocation'
-import UploadWayPoints from './UploadWaypoints';
 import { Typography } from '@material-ui/core';
 const  Markers = ({points}) =>
 {

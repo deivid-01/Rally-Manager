@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React from "react";
 import {ResultsTableByStage} from "./ResultsTableByStage/ResultsTableByStage";
 
 function ResultsByStage({resultsBy}){
@@ -8,10 +8,7 @@ function ResultsByStage({resultsBy}){
         //Results by category -> all stages one category
         //Results by race -> all stages all categories
 
-    useEffect(()=>{
 
-
-    },[])
     return (
 
         <div>

@@ -21,7 +21,7 @@ function UploadWayPoints({stageInfo}) {
   const [errorMsg, SetErrorMsg] = useState('Error');
   const [successMsg, SetSuccessMsg] = useState('Success');
   const history   = useHistory();
-  const nextRoute= "/categories";
+
  
  
 
@@ -30,11 +30,6 @@ function UploadWayPoints({stageInfo}) {
       clearInterval(interTimeLeft) 
       localStorage.setItem('option',2)
       window.location.reload(); 
-       //history.replace(nextRoute)
-         //pathname:nextRoute,
-         //location:{option:2}
-
-     //  })
        history.replace()
        },3000))
 

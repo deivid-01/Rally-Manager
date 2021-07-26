@@ -34,3 +34,18 @@ export const getRace= async(race_id)=>{
   }
 
 }
+
+export const deleteRace= async(race_id)=>{
+  
+  try
+  {
+    const  res =await  axios.delete(`${BASE_URL}/${race_id}`)
+    return   res.data
+    
+  }
+  catch(err)
+  {
+    console.log(err)
+  }
+
+}

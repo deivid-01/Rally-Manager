@@ -1,4 +1,4 @@
-import React, { Fragment , useEffect, useState }from 'react'
+import React, {useState }from 'react'
 
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -55,7 +55,7 @@ function Signup (props){
     const createUser = async () =>{
        try
        {
-          const res =  await axios.post('http://localhost:5000/api/admins',signupData)
+          await axios.post('http://localhost:5000/api/admins',signupData)
         
           loadNextPage();
 

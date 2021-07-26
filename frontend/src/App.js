@@ -1,5 +1,3 @@
-import UploadWayPoints from './components/UploadWaypoints'
-import UploadGPX from './components/UploadGPX'
 import {
     BrowserRouter,
     Switch,
@@ -11,9 +9,7 @@ import Race from './components/Race';
 import Category from './components/Category';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import ResultsByStage from './components/ResultsByStage';
 import CreateRace from './components/CreateRace';
-import Waypoints from './components/Waypoints/Waypoints'
 import Stage from './components/Stage';
 import NavBar from './components/NavBar/NavBar';
 import BreadCrumbs_ from './components/BreadCrumbs_';

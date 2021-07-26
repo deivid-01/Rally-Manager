@@ -1,14 +1,12 @@
-import { checkPropTypes } from "prop-types";
 import React, { useState , useEffect} from "react";
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
-import {useHistory} from 'react-router-dom'
 import Cards from './Cards'
 import Competitors from './Competitors'
 import ResultsByStage from './ResultsByStage'
 import CreateStage from "./CreateStage";
-import { getCategory } from "../services/categories.services";
+import { getCategory,deleteCategory } from "../services/categories.services";
 
 function Race(props){
    
@@ -49,30 +47,38 @@ function Race(props){
     )
 
 
-    const history = useHistory();
+ 
+ 
 
-    const loadNextPage = () => {
-        history.push('/createstage')
-    }
 
-    
-
-    const handleClick = () =>{
-        
-        loadNextPage();
-
+    const handleDeleteCategory =async (id) => {
+        //Deleting stage
+        console.log("Deleting category...");
+        try
+        {
+            await deleteCategory(id);
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
     }
 
     const handleFetchCategory =async (id) =>{
-        console.log("Fetching category...");
-        var data = await getCategory(id);
-        return data
+        try
+        {
+            var data = await getCategory(id);
+            return data
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+      
 
     }
 
-    const handleLoadResults =  () =>{
-        console.log("Loading results")
-    }
+
 
     const handleActiveOption = index => e => {
         
@@ -165,6 +171,7 @@ function Race(props){
                                         type={type} 
                                         next_URL={next_URL}
                                         fetchCardData={handleFetchCategory}
+                                        deleteCardHandler={handleDeleteCategory}
                                         />  
                                         
             }

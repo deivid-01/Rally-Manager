@@ -1,8 +1,7 @@
-import React ,{ useEffect, useState}from "react";
+import React from "react";
 import Card from './Card'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import '../../src/styles.css'
 import {useHistory} from 'react-router-dom'

@@ -5,7 +5,7 @@ const BASE_URL = 'http://localhost:5000/api/waypoints/'
 export const deleteWaypoint = async (wpt)=>{
     try
     {
-        const res = await  axios.delete(BASE_URL+wpt.id);
+        await  axios.delete(BASE_URL+wpt.id);
         //Show success message
         console.log("Waypoint deleted");
     }
@@ -18,7 +18,7 @@ export const deleteWaypoint = async (wpt)=>{
 export const updateWaypoint = async (wpt)=>{
     try
     {
-        const res = await  axios.put(BASE_URL+wpt.id,prepareWaypoint(wpt));
+       await  axios.put(BASE_URL+wpt.id,prepareWaypoint(wpt));
         //Show success message
         console.log("Waypoint updated");
     }
@@ -31,7 +31,7 @@ export const updateWaypoint = async (wpt)=>{
 export const createWaypoint = async (wpt)=>{
    try
    {
-       const res = await  axios.post(BASE_URL+wpt.id,prepareWaypoint(wpt));
+       await  axios.post(BASE_URL+wpt.id,prepareWaypoint(wpt));
        //Show success message
        console.log("Waypoint created");
    }

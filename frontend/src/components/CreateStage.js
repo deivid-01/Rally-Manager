@@ -5,11 +5,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import UploadWaypoints from './UploadWaypoints'
 import Button from '@material-ui/core/Button';
 import axios from "axios";
-import {useHistory} from 'react-router-dom'
+
 function CreateStage(props){
     
     const postURL = "http://localhost:5000/api/stages";
-    const nextPage = "/waypointsupload";
+  
     const [options, setOptions ] = useState([ ])
     const [ stageData, setStageData] = useState({
         name:'',
@@ -17,7 +17,6 @@ function CreateStage(props){
       });
 
     const [showStage,setShowStage] = useState(true)
-    const [showWaypoints,setShowWaypoints] = useState(false)
     const [btnconfig,setBtnconfig] = useState([
         {
             text : 'Continue',
@@ -32,7 +31,7 @@ function CreateStage(props){
     
     const [indexConfigEnabled,setindexConfigEnabled]= useState(0)
 
-    const history   = useHistory();
+   
     
     const loadNextPage = (stage_id) => {
       
@@ -79,7 +78,7 @@ function CreateStage(props){
         if (stageInfo)
         {
           setShowStage(false)
-          setShowWaypoints(true)
+      
           setindexConfigEnabled(1)
         }
        
@@ -96,7 +95,7 @@ function CreateStage(props){
           setStageInfo(null)
           setOptions([])
           setShowStage(true)
-          setShowWaypoints(false)
+        
           setindexConfigEnabled(0)
           fetchingData()
         }

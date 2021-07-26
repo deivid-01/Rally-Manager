@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import DeleteIcon from '@material-ui/icons/Delete';
 import FindInPageIcon from '@material-ui/icons/FindInPage';
@@ -22,25 +22,27 @@ function Card({
     
     const [openDialog,setOpenDialog] = useState(false);
     const [cardDeleted,setCardDeleted] = useState(false);
-    const [itemData,setItemData] = useState();
     const history = useHistory();
 
     const onEndAlertCardDeleted = ()=>{
         setCardDeleted(false);
     }
-    const handleCloseDialog = (deleteItem)=>{
+    const handleCloseDialog = async (deleteItem)=>{
         setOpenDialog(false);
 
-        if (deleteItem == true)
+        if (deleteItem != true) return 
+        
+        try
         {
-            
-            //Call service
-            deleteCardHandler();
-            setCardDeleted(true)
-
-            
-            return;
+            await deleteCardHandler(id);
+            setCardDeleted(true)   
         }
+        catch(err)
+        {
+            console.log(false);
+        }
+        
+        
         
 
     }
@@ -49,15 +51,27 @@ function Card({
      
         
         const token = window.localStorage.getItem('token')
+        try
+        {
+            var data = await fetchCardData(id)
+            //Save in localstorage
+            saveInLocalStorage(data);
+               
+            loadNextPage()
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        
+        
+    }
 
-        var data = await fetchCardData(id)
-        //Save in localstorage
+    const saveInLocalStorage = (data)=>{
+
         var key =  type.toLowerCase();
         var value = JSON.stringify(data);
         window.localStorage.setItem(  key, value )
-           
-        loadNextPage()
-        
     }
 
     const onDeleteHandler = ()=>{
@@ -70,15 +84,6 @@ function Card({
 
         history.push(next_URL)
     }
-
-
-
-    useEffect(()=>{
-       setItemData({
-           id:id,
-           name:title
-       })
-    },[])
 
 
 

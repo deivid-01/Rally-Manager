@@ -9,8 +9,7 @@ import { getResultsByCategory } from "../../services/results.services";
 export const ResultsTable = () => {
  
   
-  const [resultsLoaded,setResultsLoaded] = useState(false);
-  const [showDetailedInfo,setShowDetailedInfo]= useState(true);
+
   const [data,setData]=useState([])
   const [columns2,setColumns2]=useState([])
  
@@ -21,7 +20,7 @@ export const ResultsTable = () => {
       const res = await getResultsByCategory(category_id)
 
       setData(fixResults(res));
-      setResultsLoaded(true);
+  
     }
     catch(err)
     {
@@ -73,8 +72,7 @@ export const ResultsTable = () => {
   
   useEffect(()=>{
  
-   setShowDetailedInfo(true)
- 
+  
 
     var category = localStorage.getItem('category')
     if (  category)

@@ -39,7 +39,7 @@ function CreateRace(props){
           }
         }
         
-        const res = await axios.post(postURL,raceData,config)
+        await axios.post(postURL,raceData,config)
 
         loadNextPage();
 

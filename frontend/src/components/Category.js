@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import Options from "./Options";
 import Competitors from './Competitors'
-import {getStage} from '../services/stage.services'
+import {getStage,deleteStage} from '../services/stage.services'
 
 import Collapse from '@material-ui/core/Collapse';
 
@@ -43,13 +43,21 @@ function Category(){
         }
     )
 
-    const handleDeleteStage = () => {
+    const handleDeleteStage =async (id) => {
         //Deleting stage
         console.log("Deleting stage...");
+        try
+        {
+            await deleteStage(id);
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
     }
 
     const handleFetchStage =async (id) =>{
-        console.log("Fetching stages...");
+       
         var data = await getStage(id);
         return data
 
