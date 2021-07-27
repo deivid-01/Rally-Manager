@@ -7,7 +7,7 @@ router.get('/:id/:categorytype_id', stageCtrl.getOneByCategory);
 
 router.get('/', stageCtrl.getAll);
 router.post('/', stageCtrl.createOne);
-router.delete('/:id',stageCtrl.deleteOne);
+router.delete('/:id/:category_id:',stageCtrl.deleteOne);
 router.delete('/',stageCtrl.deleteAll);
 //router.post('/file', trackpointCtrl.createAll);
 

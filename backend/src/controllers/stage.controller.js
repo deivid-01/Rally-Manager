@@ -1,8 +1,9 @@
 const Stage = require('../models/stage.js');
 const Category = require('../models/category.js');
+const Waypoint = require('../models/waypoint.js');
 const PartialResult = require('../models/partialresult.js');
 const partialresult = require('../models/partialresult.js');
-const stage = require('../models/stage.js');
+const Trackpoint = require('../models/trackpoint.js');
 const stageCtrl = {};
 
 stageCtrl.getOne= async ( req , res ) =>
@@ -71,7 +72,9 @@ stageCtrl.filterByCategoryType = (stage,categorytype_id) => {
 }
 stageCtrl.getAll= async ( req , res ) =>
 {
-  await Stage.find(). 
+  try
+  {
+    await Stage.find(). 
     populate({
       path:"categories",select:"categorytype",
       populate:{path:"categorytype",select:"name"}}).
@@ -82,13 +85,18 @@ stageCtrl.getAll= async ( req , res ) =>
       .exec((err,stages)=>{
       res.json(stages);
     });
+  }
+  catch(err)
+  {
+    res.status(500).json(err);
+  }
+ 
 }
 stageCtrl.createOne = async ( req , res ) =>
 {
   
   try
   {
-
 
     var stage = new Stage(req.body);
     await stage.save().then(async()=>{
@@ -139,22 +147,53 @@ stageCtrl.createOne = async ( req , res ) =>
 
 stageCtrl.deleteOne = async ( req,res) => {
 
-  //THIS IS NOT HAS BEEN TESTED YET
   
-  //Delete from Category
-  var category = await Category.findById({"_id":req.body.category_id});
-  category.stages =categorys.stages.filter((stage_id)=> (String(stage_id)).localeCompare(req.params.id));
-  await Category.findByIdAndUpdate(category._id,category);
+  var stage_id = req.params.id
+  try
+  {
+  //Find stage
+  var stage = await Stage.findById(stage_id)
+
+  //Delete stage from categories
+  for (category_id of stage.categories)
+  {
+    var category = await Category.findById(category_id);
+
+      category.stages= category.stages.filter((c_stage_id)=>String(c_stage_id)!=String(stage_id))
+      await category.save();
+
+    
+  } 
+  //Delete waypoints  
+  await Waypoint.deleteMany({ stage: stage_id});
+  
+  //Delete trackpoints
+  for ( partialRes of stage.partialresults)
+  {
+    await Trackpoint.deleteMany({partialresult: partialRes})
+  }
+
+  //Delete partialresults
+  await PartialResult.deleteMany({ stage: stage_id});
+
 
   //Delete  Stage
-  await Stage.findByIdAndDelete(req.params.id);
-   res.json({'status': 'Stage Deleted'})
+  await Stage.deleteOne({_id:stage_id});
+  
+  return  res.status(200).json({'msg': 'Stage Deleted'})
+  }
+  catch(err)
+  {
+    return res.status(400).json(err)
+  }
+
 }
 
 stageCtrl.deleteAll = async ( req, res ) => {
 
-  //THIS IS NOT HAS BEEN TESTED YET
 
+  //Delete stage from categories
+  
   //Delete from Category
   var category = await Category.findById({"_id":req.body.category_id});
   category.stages =[]

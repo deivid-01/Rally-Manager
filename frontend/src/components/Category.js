@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import Options from "./Options";
 import Competitors from './Competitors'
 import {getStage,deleteStage} from '../services/stage.services'
+import {getCategory} from '../services/categories.services'
 
 import Collapse from '@material-ui/core/Collapse';
 
@@ -45,7 +46,7 @@ function Category(){
 
     const handleDeleteStage =async (id) => {
         //Deleting stage
-        console.log("Deleting stage...");
+        
         try
         {
             await deleteStage(id);
@@ -77,6 +78,24 @@ function Category(){
 
     }
 
+    const fetchCategory =async (category_id) =>{
+
+        try
+        {
+            var data = await getCategory(category_id)
+           
+            setStages(data.stages.map(({_id,name})=>(
+                {id : _id,
+                title : name})                
+                ))
+            setCategoryData(data);
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+    }
+
 
 
     
@@ -86,11 +105,7 @@ function Category(){
         if (category)
         {
             category = JSON.parse(category);
-            setStages(category.stages.map(({_id,name})=>(
-                {id : _id,
-                title : name})                
-                ))
-            setCategoryData(category);
+            fetchCategory(category._id)
             setSelectedOption(options[0])
         }
 

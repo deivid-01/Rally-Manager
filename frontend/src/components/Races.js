@@ -60,27 +60,10 @@ function Races(props){
     
 
     useEffect(()=>{
-
-        const loggedAdmin = window.localStorage.getItem('user')
-
-        if ( !props.location.updateData)
-        {       
-            if(loggedAdmin)
-            {
-                var racesData =  JSON.parse(loggedAdmin).races 
-               
-
-                setRaces(racesData.map(({_id,name})=>({
-                    id : _id,
-                    title:name
-                })))
-            }     
-        }
-        else
-        {
-            var token = window.localStorage.getItem('token');
-            fetchRaces( token );
-        }
+        
+        var token = window.localStorage.getItem('token');
+        fetchRaces( token );
+        
            
         
     },[])
