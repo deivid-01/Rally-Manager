@@ -54,11 +54,12 @@ const toolsCtrl = {};
       waypoint.location.type= waypointsPRE[i].type;
       waypoint.location.coordinates[0] =toolsCtrl.DDM2DD( waypointsPRE[i].latitude, typeAD = 1);
       waypoint.location.coordinates[1]  =toolsCtrl.DDM2DD( waypointsPRE[i].longitude,typeAD = 2);
-      waypoint.distance = parseFloat (waypointsPRE[i].distance);
+      waypoint.distance = parseFloat (waypointsPRE[i].distance.replace(',','.'));
       waypoint.speed= waypointsPRE[i].speed;
       waypoint.rule.penalization= waypointsPRE[i].penalization;
-      waypoint.rule.ratius =  parseFloat(waypointsPRE[i].ratius);
+      waypoint.rule.ratius =  parseFloat(waypointsPRE[i].ratius.replace(',','.'));
       waypointsPRE[i] = waypoint;
+      console.log(waypoint.distance);
     
     }
    

@@ -50,6 +50,14 @@ function Category(){
         try
         {
             await deleteStage(id);
+            //Fetch data again
+            var category = window.localStorage.getItem('category')
+            if (category)
+            {
+                category = JSON.parse(category);
+                fetchCategory(category._id)
+            }
+
         }
         catch(err)
         {
@@ -117,7 +125,7 @@ function Category(){
     return (
         <div>
             <br></br>
-            <div><h1 className="text-center">{(categoryData)?categoryData.categorytype.name:"Category Name"}</h1> </div>
+            <div><h1 className="text-center">{(categoryData)?categoryData.categorytype.name:" "}</h1> </div>
             <br></br>
             <div className="custom-align">
 

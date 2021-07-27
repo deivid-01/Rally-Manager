@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const URI = 'mongodb://localhost/gpxanalyzer';
+const URL = 'mongodb://localhost/racemanager';
 
-mongoose.connect( URI, { useNewUrlParser: true , useUnifiedTopology:true , useFindAndModify:false} )
+mongoose.connect( URL, { useNewUrlParser: true , useUnifiedTopology:true , useFindAndModify:false} )
     .then(db => console.log("DB is connected"))
     .catch( err => console.error(err));
 
