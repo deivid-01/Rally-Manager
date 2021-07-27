@@ -65,13 +65,15 @@ raceCtrl.getOne= async ( req , res ) =>
     populate("competitors","name").
     populate("admin","name").
       exec((err,race)=>{
-        res.status(200).json(race);
+        if (err) return res.status(400).json(err);
+
+        return res.status(200).json(race);
     });
     
   }
   catch(err)
   {
-    res.status(400).json(err);
+    return res.status(400).json(err);
   }
 }
 raceCtrl.createOne = async ( req , res ) =>

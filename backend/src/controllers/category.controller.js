@@ -1,6 +1,10 @@
 const Category = require('../models/category.js');
 const CategoryType = require('../models/categorytype.js');
+const partialresult = require('../models/partialresult.js');
+const PartialResult = require('../models/partialresult.js');
+const Trackpoint = require('../models/trackpoint.js');
 const Race = require('../models/race.js');
+const stage = require('../models/stage.js');
 const categoryCtrl = {};
 
 
@@ -107,26 +111,73 @@ categoryCtrl.createMany = async ( req , res ) => {
 
 categoryCtrl.deleteOne = async ( req,res) => {
 
-  //Delete from Race
-  var race = await Race.findById({"_id":req.body.race_id});
-  race.categories = race.categories.filter((category_id)=> (String(category_id)).localeCompare(req.params.id));
-  await Race.findByIdAndUpdate(race._id,race);
+  var category_id = req.params.id;
+  try
+  {
+    await Category.findById(category_id)
+ 
+    .populate({path:'stages',select:['partialresults','categories'],
+    populate:{path:'partialresults',select:'competitor'}})
+    .exec(async (err,category)=>{
+  
+      if (err) return res.status(400).json(err);
 
-  //Delete  Category
-  await Category.findByIdAndDelete(req.params.id);
-   res.json({'status': 'Category  Deleted'})
+      try
+      {
+          //Delete from Stage
+          for (stage of category.stages)
+          {
+            //Delete partialresults and trackpoints
+            for (partialresult of stage.partialresults)
+            {
+              if (category.competitors.includes(partialresult.competitor))
+              {
+                
+                stage.partialresults=stage.partialresults.filter((pr=>String(pr._id)!=String(partialresult._id)))
+                
+                //Remove trackpoints
+                await Trackpoint.deleteMany({partialresult: partialresult._id})
+                //Remove partial result
+                await PartialResult.deleteOne({_id:partialresult._id})
+              }
+            }
+
+            stage.categories=stage.categories.filter((categ=>String(categ._id)!=String(category._id)))
+
+            stage.save()
+          }
+
+          //Delete from race
+
+          var race = await Race.findById(category.race)
+  
+          race.categories=race.categories.filter((categ=>String(categ)!=String(category._id)))
+    
+          race.save();
+      }
+      catch(err)
+      {
+        return res.status(400).json(err);
+      }
+
+      
+  
+    })
+  
+    await Category.findByIdAndDelete(category_id);
+    return res.status(200).json({'status': 'Category  Deleted'})
+
+  }
+
+  catch(err)
+  {
+    return res.status(400).json(err);
+  }
+ 
+
 }
 
 categoryCtrl.deleteAll = async ( req, res ) => {
-  //Delete from Race
-  /**
-   *   var race = await Race.findById({"_id":req.body.race_id});
-  race.categories =[]
-  await Race.findByIdAndUpdate(race._id,race);
-
-   * 
-   * 
-   */
 
   //Delete All categories
   await Category.deleteMany({});

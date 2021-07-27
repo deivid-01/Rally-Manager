@@ -83,7 +83,9 @@ stageCtrl.getAll= async ( req , res ) =>
         populate:{path:"competitor",select:"name"}}).
     populate('waypoints')
       .exec((err,stages)=>{
-      res.json(stages);
+        if ( err) return res.status(400).json(err);
+        
+        return res.status(200).json(stages);
     });
   }
   catch(err)
