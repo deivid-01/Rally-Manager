@@ -26,44 +26,47 @@ const toolsCtrl = {};
  * Applies data pre-processing to .csv file.
  *
  * @param {File} file  The .csv file.
- * @return {number} JSON with Waypoints.
+ * @return {Array} JSON with Waypoints.
  */
  toolsCtrl.getWaypointsFromFile = (file) => {
 
-   var data = file.data.toString('utf8');// Convert to string 
-   var result = parse.parse( data,{header:true}); //CSV to JSON
-   //result.data.forEach(waypoint=>delete waypoint.wpnumber) // Delete wpNumber column
+  // Convert to string 
+   var data = file.data.toString('utf8');
+
+   //CSV to JSON
+   var result = parse.parse( data,{header:true}); 
+ 
+  //Filter types
    result.data=result.data.filter(waypoint=> waypoint.type.length>0 && 
                                             waypoint.type.localeCompare('DAN')!=0 &&
                                             waypoint.type.localeCompare('WPS')!=0
-                                            ); //Filter type column with empty values;
-   waypointsPRE = result.data
-   var i;
-   for(  i = 0;  i < waypointsPRE.length;i++) 
-    { 
-      var waypoint={
+                                            ); 
+   
+    //Fix waypoints format
+    var fixedWaypoints = []
+
+    result.data.forEach((wp=>{
+
+      //Fix waypoint and add to array
+      fixedWaypoints.push({
+
+        speed:  wp.speed,
+        distance:parseFloat (wp.distance.replace(',','.')),
         location:{
-          type:"",
-          coordinates:[]
+          type:wp.type,
+          coordinates:[
+            toolsCtrl.DDM2DD( wp.latitude, typeAD = 1),
+            toolsCtrl.DDM2DD( wp.longitude,typeAD = 2)
+          ]
         },
         rule:{
-          penalization:'00:00:00',
-          ratius:0
+          penalization:wp.penalization,
+          ratius:parseFloat(wp.ratius.replace(',','.')),
         }
-      };
-      waypoint.location.type= waypointsPRE[i].type;
-      waypoint.location.coordinates[0] =toolsCtrl.DDM2DD( waypointsPRE[i].latitude, typeAD = 1);
-      waypoint.location.coordinates[1]  =toolsCtrl.DDM2DD( waypointsPRE[i].longitude,typeAD = 2);
-      waypoint.distance = parseFloat (waypointsPRE[i].distance.replace(',','.'));
-      waypoint.speed= waypointsPRE[i].speed;
-      waypoint.rule.penalization= waypointsPRE[i].penalization;
-      waypoint.rule.ratius =  parseFloat(waypointsPRE[i].ratius.replace(',','.'));
-      waypointsPRE[i] = waypoint;
-      console.log(waypoint.distance);
-    
-    }
+      })
+    }))
    
-   return waypointsPRE;
+   return fixedWaypoints;
  }
 
 toolsCtrl.getPartialResultsFromFile = (file) => {
