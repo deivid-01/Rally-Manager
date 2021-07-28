@@ -29,11 +29,14 @@ function Races(props){
     }
 
     const handleDeleteRace =async (id) => {
-        //Deleting stage
-        console.log("Deleting race...");
+        
         try
         {
             await deleteRace(id);
+            var token = window.localStorage.getItem('token');
+            
+            if(token)
+                fetchRaces( token );
         }
         catch(err)
         {

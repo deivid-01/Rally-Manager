@@ -2,7 +2,11 @@ const jwt = require('jsonwebtoken');
 const Race = require('../models/race.js');
 const Admin = require('../models/admin.js');
 const Category = require('../models/category.js');
+const Stage = require('../models/stage.js')
+const Trackpoint = require('../models/trackpoint.js')
 const Competitor = require('../models/competitor.js');
+const PartialResult = require('../models/partialresult.js');
+const Waypoint = require('../models/waypoint.js');
 const raceCtrl = {};
 
 
@@ -177,30 +181,76 @@ raceCtrl.createOne = async ( req , res ) =>
 }
 
 raceCtrl.deleteOne = async ( req,res) => {
+  
+  var race_id = req.params.id;
+  try
+  {
+    await Race.findById(race_id)
+    .populate({ path:'categories',select:'stages',
+    populate:{path:'stages',select:'partialresults'}})
+    .exec(async(err,race)=>{
+      if (err || race==null) return res.status(400).json(err)
+      
+      
+        for (var  category of race.categories) 
+        {
+          for (var stage of category.stages) 
+          {
+            for(var partialresult of stage.partialresults)
+            {                            
+              await Trackpoint.deleteMany({partialresult: partialresult._id})
+            }
+    
+            await PartialResult.deleteMany({stage:stage._id})
+            await Waypoint.deleteMany({stage:stage._id})
+            await Stage.deleteOne({_id:stage._id})
+          }    
+        }
 
-  //Delete from User
-  var user = await User.findById({"_id":req.body.user_id});
-  user.races =user.races.filter((race_id)=> (String(race_id)).localeCompare(req.params.id));
-  await User.findByIdAndUpdate(user._id,user);
+        //Remove from competitors
+        for(var competitor_id of race.competitors)
+        {
+          var competitor= await  Competitor.findById(competitor_id)
+          competitor.races =competitor.races.filter((race_id)=> (String(race_id)!=String(race._id)))
+          competitor.save();
+        }
+    
+        await Category.deleteMany({race:race._id})
+    
+        //Delete from User
+        var user = await Admin.findById(race.admin)
+        user.races =user.races.filter((race_id)=> (String(race_id)!=String(race._id)))
+        user.save();
+       
+        await Race.findByIdAndDelete(race_id);
+       
+        return res.status(200).json({'status': 'Race Deleted'})
+   
+    })
+  }
+  catch(err)
+  {
+    
+    return res.status(400).json(err)
 
-  //Delete  Race
-  await Race.findByIdAndDelete(req.params.id);
-   res.json({'status': 'Race Deleted'})
+  }
+   
+  
+
+
+
 }
 
 raceCtrl.deleteAll = async ( req, res ) => {
-  //Delete from User
-  /**
-   *   var user = await User.findById({"_id":req.body.user_id});
-  user.races =[]
-  await User.findByIdAndUpdate(user._id,user);
-   * 
-   */
-
-
-  //Delete All races
-  await Race.deleteMany({});
-  res.json({'status': 'All races deleted'})
-
+  try
+  {
+    await Race.deleteMany({});
+    return res.status(200).json({'msg': 'All races deleted'})
+  }
+  catch(err)
+  {
+    return res.status(400).json(err);
+  }
+  
 }
 module.exports = raceCtrl;

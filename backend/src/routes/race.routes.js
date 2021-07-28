@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const raceCtrl = require('../controllers/race.controller');
-const race = require('../models/race');
 
 router.get('/:id', raceCtrl.getOne);
 router.get('/', raceCtrl.getByAdmin);
