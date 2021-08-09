@@ -13,7 +13,7 @@ const PartialResultSchema = new Schema({
     waypointsMissed      : [{type: Schema.Types.ObjectId, ref :'Waypoint'} ],
     speedPoints      : [ {type: Object }],
     gpx_uploaded      : { type: Boolean, required: false, default:false},
-    totalTime : { type: Number, required: false, default:0},
+    totalTime : { type: String, required: false, default:"00:00:00"},
     
     stage:{type: Schema.Types.ObjectId, ref :'Stage', required:true}  
 

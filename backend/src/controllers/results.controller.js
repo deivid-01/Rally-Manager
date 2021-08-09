@@ -113,7 +113,7 @@ resultCtrl.getCategoryResults = async (req,res) =>{
         number:comp.number,
         vehicle:comp.vehicle,
         stagesTime:[],
-        totalTime:0
+        totalTime:"00:00:00"
       }));
 
       category.stages.forEach((stage)=>{
@@ -122,7 +122,7 @@ resultCtrl.getCategoryResults = async (req,res) =>{
           partialresults.forEach((partialRes,i)=>{
             
             competitors[i].stagesTime.push(partialRes.totalTime);
-            competitors[i].totalTime += partialRes.totalTime;
+            competitors[i].totalTime = toolsCtrl.hoursToHHMMSS ( toolsCtrl.HHMMSSToHours (competitors[i].totalTime) + toolsCtrl.HHMMSSToHours(partialRes.totalTime));
          })
       });
         //Sort competitors by total
