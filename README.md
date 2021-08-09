@@ -1,4 +1,4 @@
-# GPX Analyzer
+# Rally Manager
 
 - Run *frontend* with
 ```python
